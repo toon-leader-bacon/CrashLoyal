@@ -9,6 +9,17 @@ struct Point {
 	float y;
 
 public: 
+
+	Point() {
+		this->x = 0;
+		this->y = 0;
+	}
+
+	Point(int x, int y) {
+		this->x = x;
+		this->y = y;
+	}
+
 	static Point midpoint(Point a, Point b) {
 		Point result = *(new Point());
 		result.x = (a.x + b.x) / 2;
@@ -41,6 +52,7 @@ public:
 
 	static bool insideOf(Point a, float aRadius, Point b) {
 		// Returns true if the distance between a and b is less than aRadius
+		// In other words, true => point b is inside of point a+raidus.
 		return dist(a, b) < aRadius;
 	}
 

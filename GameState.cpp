@@ -1,14 +1,39 @@
 #include "GameState.h"
 
+#include <memory>
 #include <vector>
 #include <cmath>
+#include "Building.h"
 #include "Mob.h"
 #include "Waypoint.h"
 #include "Point.h"
 
-std::unordered_set<Mob*> GameState::mobs;
+std::unordered_set<std::shared_ptr<Mob>> GameState::mobs;
 
-std::vector<Waypoint*> GameState::buildWaypoints() {
+bool GameState::removeMob(Mob* mobToRemove) {
+	for (std::shared_ptr<Mob> m : GameState::mobs) {
+		if (mobToRemove->sameMob(m)) {
+			GameState::mobs.erase(m);
+			return true;
+		}
+	}
+	return false;
+}
+
+std::unordered_set<std::shared_ptr<Building>> GameState::buildings;
+
+bool GameState::removeBuilding(Building* buildingToRemove) {
+	for (std::shared_ptr<Building> b : GameState::buildings) {
+		if (buildingToRemove->type == b->type) {
+			GameState::buildings.erase(b);
+			return true;
+		}
+	}
+	return false;
+}
+
+
+std::vector<std::shared_ptr<Waypoint>> GameState::buildWaypoints() {
 	/*
 	  The structure of the returned Waypoint array is as follows. The numbers indicate the position the 
 	  waypoint exists in the list. The location on the grid represents the position the waypoint exists
@@ -38,7 +63,7 @@ std::vector<Waypoint*> GameState::buildWaypoints() {
 
 	 */
 
-	std::vector<Waypoint*> waypoints(22);
+	std::vector<std::shared_ptr<Waypoint>> waypoints(22);
 
 	float X_InitialPos = SCREEN_WIDTH / 4.0;
 
@@ -50,14 +75,14 @@ std::vector<Waypoint*> GameState::buildWaypoints() {
 		Point ptLeft;
 		ptLeft.x = X_InitialPos;
 		ptLeft.y = Y_InitialPos + (i * Y_Increment);
-		Waypoint* wpLeft = new Waypoint();
+		std::shared_ptr<Waypoint> wpLeft = std::shared_ptr<Waypoint>(new Waypoint());
 		wpLeft->pos = ptLeft;
 		waypoints[19 - i] = wpLeft;
 
 		Point ptRight;
 		ptRight.x = SCREEN_WIDTH - X_InitialPos;
 		ptRight.y = (SCREEN_HEIGHT - Y_InitialPos) - (i * Y_Increment);
-		Waypoint* wpRight = new Waypoint();
+		std::shared_ptr<Waypoint> wpRight = std::shared_ptr<Waypoint>(new Waypoint());
 		wpRight->pos = ptRight;
 		waypoints[3 + i] = wpRight;
 	}
@@ -71,29 +96,29 @@ std::vector<Waypoint*> GameState::buildWaypoints() {
 	Point princessTLpt;
 	princessTLpt.x = X_InitialPos;
 	princessTLpt.y = princessYValue;
-	Waypoint* princessTL = new Waypoint();
+	std::shared_ptr<Waypoint> princessTL = std::shared_ptr<Waypoint>(new Waypoint());
 	princessTL->pos = princessTLpt;
 	waypoints[20] = princessTL;
 
 	Point princessTRpt;
 	princessTRpt.x = SCREEN_WIDTH - X_InitialPos;
 	princessTRpt.y = princessYValue;
-	Waypoint* princessTR = new Waypoint();
+	std::shared_ptr<Waypoint> princessTR = std::shared_ptr<Waypoint>(new Waypoint());
 	princessTR->pos = princessTRpt;
 	waypoints[2] = princessTR;
 
 	Point kingTopPt;
 	kingTopPt.x = SCREEN_WIDTH / 2;
 	kingTopPt.y = kingYValue;
-	Waypoint* kingTop = new Waypoint();
+	std::shared_ptr<Waypoint> kingTop = std::shared_ptr<Waypoint>(new Waypoint());
 	kingTop->pos = kingTopPt;
 	waypoints[0] = kingTop;
 
-	Waypoint* topLeftMid = new Waypoint();
+	std::shared_ptr<Waypoint> topLeftMid = std::shared_ptr<Waypoint>(new Waypoint());
 	topLeftMid->pos = Point::midpoint(kingTopPt, princessTLpt);
 	waypoints[21] = topLeftMid;
 
-	Waypoint* topRightMid = new Waypoint();
+	std::shared_ptr<Waypoint> topRightMid = std::shared_ptr<Waypoint>(new Waypoint());
 	topRightMid->pos = Point::midpoint(kingTopPt, princessTRpt);
 	waypoints[1] = topRightMid;
 
@@ -101,29 +126,29 @@ std::vector<Waypoint*> GameState::buildWaypoints() {
 	Point princessBLpt;
 	princessBLpt.x = X_InitialPos;
 	princessBLpt.y = SCREEN_HEIGHT - princessYValue;
-	Waypoint* princessBL = new Waypoint();
+	std::shared_ptr<Waypoint> princessBL = std::shared_ptr<Waypoint>(new Waypoint());
 	princessBL->pos = princessBLpt;
 	waypoints[13] = princessBL;
 
 	Point princessBRpt;
 	princessBRpt.x = SCREEN_WIDTH - X_InitialPos;
 	princessBRpt.y = SCREEN_HEIGHT - princessYValue;
-	Waypoint* princessBR = new Waypoint();
+	std::shared_ptr<Waypoint> princessBR = std::shared_ptr<Waypoint>(new Waypoint());
 	princessBR->pos = princessBRpt;
 	waypoints[9] = princessBR;
 
 	Point kingBotPt;
 	kingBotPt.x = SCREEN_WIDTH / 2;
 	kingBotPt.y = SCREEN_HEIGHT - kingYValue;
-	Waypoint* kingBot = new Waypoint();
+	std::shared_ptr<Waypoint> kingBot = std::shared_ptr<Waypoint>(new Waypoint());
 	kingBot->pos = kingBotPt;
 	waypoints[11] = kingBot;
 
-	Waypoint* botLeftMid = new Waypoint();
+	std::shared_ptr<Waypoint> botLeftMid = std::shared_ptr<Waypoint>(new Waypoint());
 	botLeftMid->pos = Point::midpoint(kingBotPt, princessBLpt);
 	waypoints[12] = botLeftMid;
 
-	Waypoint* botRightMid = new Waypoint();
+	std::shared_ptr<Waypoint> botRightMid = std::shared_ptr<Waypoint>(new Waypoint());
 	botRightMid->pos = Point::midpoint(kingBotPt, princessBRpt);
 	waypoints[10] = botRightMid;
 
@@ -144,4 +169,4 @@ std::vector<Waypoint*> GameState::buildWaypoints() {
 }
 
 
-std::vector<Waypoint*> GameState::waypoints = GameState::buildWaypoints();
+std::vector< std::shared_ptr<Waypoint>> GameState::waypoints = GameState::buildWaypoints();

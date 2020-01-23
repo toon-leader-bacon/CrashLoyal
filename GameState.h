@@ -1,12 +1,15 @@
 #ifndef __GAMESTATE__
 #define __GAMESTATE__
 
+#include <memory>
 #include <vector>;
 #include <unordered_set>
-#include "Mob.h"
+
+class Mob;
+class Building;
+
 #include "Waypoint.h";
 #include "Point.h";
-
 
 
 //Screen dimension constants
@@ -21,14 +24,19 @@ struct GameState
 	
 public:
 	const static int WAYPOINT_COUNT = 22;
-	static std::vector<Waypoint*> waypoints;
+	static std::vector< std::shared_ptr<Waypoint>> waypoints;
 
-	static std::unordered_set<Mob*> mobs; 
+	static std::unordered_set< std::shared_ptr<Mob>> mobs;
+
+	static std::unordered_set< std::shared_ptr<Building>> buildings;
+
+	static bool removeMob(Mob* m);
+	static bool removeBuilding(Building* m);
 
 private :
 
 	// Initialize the waypoints list.
-	static std::vector<Waypoint*> buildWaypoints();
+	static std::vector<std::shared_ptr<Waypoint>> buildWaypoints();
 
 };
 

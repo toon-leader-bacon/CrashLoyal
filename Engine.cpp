@@ -1,6 +1,7 @@
 #ifndef __ENGINE__
 #define __ENGINE__
 
+#include <memory>
 #include <SDL.h>
 #include <SDL_image.h>
 #include <stdio.h>
@@ -81,8 +82,8 @@ void drawSquare(int centerX, int centerY, int size) {
 	SDL_RenderFillRect(gRenderer, &rect);
 }
 
-void drawMob(Mob* m) {
-	drawSquare(m->pos.x, m->pos.y, m->size);
+void drawMob(std::shared_ptr<Mob> m) {
+	drawSquare(m->pos.x, m->pos.y, m->size * 2);
 }
 
 
@@ -98,11 +99,15 @@ Point pixelToGrid(int x, int y) {
 }
 
 void drawGrid(Point grid) {
-
 	SDL_SetRenderDrawColor(gRenderer, 0xFF, 0x00, 0x00, 0xFF);
-	printf("Drawing grid at grid (%d, %d)\n", grid.x, grid.y);
 	drawSquare(grid.x * GAME_GRID_SIZE, grid.y * GAME_GRID_SIZE, GAME_GRID_SIZE);
 }
+
+void processClick(int x, int y, bool leftClick) {
+	std::shared_ptr<Mob> m = std::shared_ptr<Mob>(new Mob(x, y, leftClick));
+	GameState::mobs.insert(m);
+}
+
 
 int main( int argc, char* args[] ) {
 	//Start up SDL and create window
@@ -118,7 +123,7 @@ int main( int argc, char* args[] ) {
 		// Number of frames since start of application
 		int frame = 0;
 
-		Mob* m = new Mob(10, 10, true);
+		std::shared_ptr<Mob> m = std::shared_ptr<Mob>(new Mob(10, 10, true));
 		GameState::mobs.insert(m);
 
 		//While application is running
@@ -135,8 +140,11 @@ int main( int argc, char* args[] ) {
 					quit = true;
 				}
 				if (e.type == SDL_MOUSEBUTTONUP) {
+					const SDL_MouseButtonEvent& mouse_event = e.button;
 					int x, y;
 					SDL_GetMouseState(&x, &y);
+					if      (mouse_event.button == SDL_BUTTON_RIGHT) { processClick(x, y, false); }
+					else if (mouse_event.button == SDL_BUTTON_LEFT)  { processClick(x, y, true); }
 					printf("MouseUp detected at pos: ( %d, %d)\n", x, y);
 				}
 				if (e.type == SDL_MOUSEBUTTONDOWN) {
@@ -153,7 +161,7 @@ int main( int argc, char* args[] ) {
 			// TODO remove this
 			for (int i = 0; i < GameState::WAYPOINT_COUNT; i++) {
 				// NOTE there are 22 waypoints.
-				Waypoint* wp = GameState::waypoints.at(i);
+				std::shared_ptr<Waypoint> wp = GameState::waypoints.at(i);
 				drawSquare(wp->pos.x, wp->pos.y, 5);
 			}
 
@@ -161,9 +169,9 @@ int main( int argc, char* args[] ) {
 			
 			// Draw and move mobs
 			SDL_SetRenderDrawColor(gRenderer, 0xFF, 0x00, 0xFF, 0xFF);
-			for (Mob* m : GameState::mobs) {
-				if (frame % 100 == 0) {
-					m->moveTowards();
+			for (std::shared_ptr<Mob> m : GameState::mobs) {
+				if (frame % 10 == 0) {
+					m->update();
 				}
 				drawMob(m);
 			}
