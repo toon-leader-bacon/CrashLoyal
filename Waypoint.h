@@ -41,6 +41,7 @@ const int SOUTH_KING_WAYPOINT_INDEX = 11;
 const int SOUTH_RIGHT_TOWER_WAYPOINT_INDEX = 9;
 const int SOUTH_LEFT_TOWER_WAYPOINT_INDEX = 13;
 
+const int WAYPOINT_SIZE = 5;
 struct Waypoint
 {
 	Point pos;  // The coordinates (in pixels) this waypoint represents

@@ -83,6 +83,9 @@ void drawSquare(int centerX, int centerY, int size) {
 }
 
 void drawMob(std::shared_ptr<Mob> m) {
+	int healthToAlpha = (m->maxHealth / m->currentHealth) * 255;
+	if (m->attackingNorth) { SDL_SetRenderDrawColor(gRenderer, 0xFF, 0x00, 0x00, healthToAlpha);	} 
+	else                   { SDL_SetRenderDrawColor(gRenderer, 0x00, 0x00, 0xFF, healthToAlpha); }
 	drawSquare(m->pos.x, m->pos.y, m->size * 2);
 }
 
@@ -122,9 +125,6 @@ int main( int argc, char* args[] ) {
 
 		// Number of frames since start of application
 		int frame = 0;
-
-		std::shared_ptr<Mob> m = std::shared_ptr<Mob>(new Mob(10, 10, true));
-		GameState::mobs.insert(m);
 
 		//While application is running
 		while( !quit ) {
@@ -170,7 +170,7 @@ int main( int argc, char* args[] ) {
 			// Draw and move mobs
 			SDL_SetRenderDrawColor(gRenderer, 0xFF, 0x00, 0xFF, 0xFF);
 			for (std::shared_ptr<Mob> m : GameState::mobs) {
-				if (frame % 10 == 0) {
+				if (frame % 20 == 0) {
 					m->update();
 				}
 				drawMob(m);

@@ -22,7 +22,8 @@ public:
 	// Stats related
 	// TODO: Make these private
 	bool attackingNorth;
-	int health;
+	int maxHealth;
+	int currentHealth;
 	float speed; // Represents how many pixels this mob moves each frame
 	float size; // Represents the radius of the circle that is this mob's hitbox
 				// Also is the side-length of the square that draws this mob to the screen
@@ -35,10 +36,11 @@ public:
 	Point targetPosition; // The actual place this mob is moving towards
 
 	// Combat related
+	int dmg = 2;
 	bool targetLocked;
-	//std::shared_ptr<Mob> targetMob;
-	//std::shared_ptr<Building> targetBuilding;
 	std::shared_ptr<Attackable> target;
+	int const attackCooldown = 200; // Number of frames that must pass before another attack can happen
+	int lastAttackTime;           // How many frames ago was the last attack? 
 
 	Mob(int x, int y, bool attackingNorth);
 
@@ -54,7 +56,7 @@ public:
 	// Find the closest Waypoint to the mob and start moving towards it
 	void findClosestWaypoint();
 
-	bool isDead() { return this->health <= 0; }
+	bool isDead() { return this->currentHealth <= 0; }
 
 	int attack(int dmg);
 
@@ -87,6 +89,8 @@ private:
 	std::shared_ptr<Mob> checkMobCollision();
 
 	void processMobCollision(std::shared_ptr<Mob> otherMob);
+
+	void attackProcedure();
 
 	void moveProcedure();
 

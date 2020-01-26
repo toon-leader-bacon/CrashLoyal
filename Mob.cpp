@@ -2,6 +2,7 @@
 
 #include <memory>
 #include <limits>
+#include <stdlib.h>
 #include <stdio.h>
 #include "Building.h"
 #include "Waypoint.h"
@@ -17,8 +18,9 @@ Mob::Mob(int x, int y, bool attackingNorth) {
 	this->pos.x = x;
 	this->pos.y = y;
 	this->attackingNorth = attackingNorth;
-	this->speed = 0.3;
-	this->health = 10;
+	this->speed = 0.06;
+	this->maxHealth = 10;
+	this->currentHealth = 10;
 	findClosestWaypoint();
 
 	// TODO: change these vars
@@ -28,11 +30,11 @@ Mob::Mob(int x, int y, bool attackingNorth) {
 }
 
 int Mob::attack(int dmg) {
-	this->health -= dmg;
+	this->currentHealth -= dmg;
 	if (this->isDead()) {
 		GameState::removeMob(this);
 	}
-	return health;
+	return currentHealth;
 }
 
 void Mob::moveTowards() {
@@ -70,10 +72,15 @@ void Mob::updateMoveTarget(Point target) {
 	this->targetPosition = target;
 }
 
+int randomNumber(int minValue, int maxValue) {
+	// Retunrs a random number between [min, max). Min is inclusive, max is not.
+	return (rand() % maxValue) + minValue;
+}
+
 void Mob::pushAway(Point awayFrom) {
 	// TODO: Consider making a little random noise when pushing to avoid walking direcly into a push
-	int deltaX = awayFrom.x - this->pos.x;
-	int deltaY = awayFrom.y - this->pos.y;
+	int deltaX = (awayFrom.x - this->pos.x) + randomNumber(0, 10) / 20;
+	int deltaY = (awayFrom.y - this->pos.y) + randomNumber(0, 10) / 20;
 	Point* p = new Point(deltaX, deltaY);
 	p->normalize();
 	p->multiply(this->speed * -1);
@@ -124,8 +131,27 @@ void Mob::processMobCollision(std::shared_ptr<Mob> otherMob) {
 		otherMob->pushAway(this->pos);
 	} else {
 		// this mob collided with enemy Mob
+		this->state = Attacking;
 		this->setAttackTarget(otherMob);
 	}
+}
+
+void Mob::attackProcedure() {
+	if (this->target->isDead()) {
+		this->targetLocked = false;
+		this->target = nullptr;
+		this->state = Moving;
+	}
+
+	if (this->lastAttackTime >= this->attackCooldown) {
+		// If our last attack was longer ago than our cooldown
+		printf("Attacking\n");
+		this->target->attack(this->dmg);
+		this->lastAttackTime = 0;
+		return;
+	}
+
+	this->lastAttackTime += 1;
 }
 
 void Mob::moveProcedure() {
@@ -143,7 +169,7 @@ void Mob::moveProcedure() {
 		return;
 	}
 
-	if (this->nextWaypoint->pos.insideOf(this->pos, this->size)) {
+	if (this->nextWaypoint->pos.insideOf(this->pos, (this->size + WAYPOINT_SIZE))) {
 		std::shared_ptr<Waypoint> trueNextWP = this->attackingNorth ?
 			this->nextWaypoint->upNeighbor :
 			this->nextWaypoint->downNeighbor;
@@ -156,8 +182,14 @@ void Mob::moveProcedure() {
 
 
 void Mob::update() {
-	this->moveProcedure();
 
-	// If move state then moveProcedure
-	// else attackProcedure
+	switch (this->state) {
+	case Attacking:
+		this->attackProcedure();
+		break;
+	case Moving:
+	default:
+		this->moveProcedure();
+		break;
+	}
 }
