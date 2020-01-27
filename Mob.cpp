@@ -137,7 +137,7 @@ void Mob::processMobCollision(std::shared_ptr<Mob> otherMob) {
 }
 
 void Mob::attackProcedure() {
-	if (this->target->isDead()) {
+	if (this->target == nullptr || this->target->isDead()) {
 		this->targetLocked = false;
 		this->target = nullptr;
 		this->state = Moving;

@@ -111,6 +111,46 @@ void processClick(int x, int y, bool leftClick) {
 	GameState::mobs.insert(m);
 }
 
+void drawBG() {
+	SDL_Rect bgRect = {
+		0,
+		0,
+		SCREEN_WIDTH,
+		SCREEN_HEIGHT
+	};
+	SDL_SetRenderDrawColor(gRenderer, 79, 161, 0, 0xFF); // Dark green
+	SDL_RenderFillRect(gRenderer, &bgRect);
+	int upshift = 5;
+	// Draw the river
+	SDL_Rect riverRect = {
+		0,
+		(SCREEN_HEIGHT / 2) - upshift,
+		SCREEN_WIDTH,
+		20
+	};
+	SDL_SetRenderDrawColor(gRenderer, 51, 119, 255, 0xFF); // Light blue
+	SDL_RenderFillRect(gRenderer, &riverRect);
+
+	// Draw bridges
+	SDL_Rect bridgeLeft = {
+		SCREEN_WIDTH / 5,
+		(SCREEN_HEIGHT / 2) - 2 - upshift,
+		30,
+		25
+	};
+	SDL_SetRenderDrawColor(gRenderer, 179, 59, 0, 0xFF); // Brown
+	SDL_RenderFillRect(gRenderer, &bridgeLeft);
+	
+
+	SDL_Rect bridgeRight = {
+		(SCREEN_WIDTH * 3 / 4) - 15,
+		(SCREEN_HEIGHT / 2) - 2 - upshift,
+		30,
+		25
+	};
+	SDL_SetRenderDrawColor(gRenderer, 179, 59, 0, 0xFF); // Brown
+	SDL_RenderFillRect(gRenderer, &bridgeRight);
+}
 
 int main( int argc, char* args[] ) {
 	//Start up SDL and create window
@@ -133,6 +173,8 @@ int main( int argc, char* args[] ) {
 			SDL_SetRenderDrawColor(gRenderer, 0xFF, 0xFF, 0xFF, 0xFF);
 			SDL_RenderClear(gRenderer);
 
+			drawBG();
+
 			//Handle events on queue
 			while( SDL_PollEvent( &e ) != 0 ) {
 				//User requests quit
@@ -153,9 +195,6 @@ int main( int argc, char* args[] ) {
 					drawGrid(pixelToGrid(pixelX, pixelY));
 				}
 			}
-
-			SDL_SetRenderDrawColor(gRenderer, 0xFF, 0x00, 0x00, 0xFF);
-			//drawMob(m);
 
 			// Draw waypoints
 			// TODO remove this
