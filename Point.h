@@ -3,6 +3,7 @@
 
 #include <cmath>
 #include <iostream>
+#include <stdio.h>
 
 struct Point {
 	float x;
@@ -19,6 +20,11 @@ public:
 		this->x = x;
 		this->y = y;
 	}
+
+	/*Point(const Point& other) {
+		this->x = other.x;
+		this->y = other.y;
+	}*/
 
 	static Point midpoint(Point a, Point b) {
 		Point result = *(new Point());
@@ -40,7 +46,11 @@ public:
 	}
 
 	void normalize() {
-		float mag = sqrt(x * x + y * y);
+		float mag = sqrt((x * x) + (y * y));
+
+		float nearZero = 0.00001;
+		if (mag <= nearZero) { return; }
+
 		this->x = this->x / mag;
 		this->y = this->y / mag;
 	}

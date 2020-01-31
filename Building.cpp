@@ -26,3 +26,11 @@ int Building::attack(int dmg) {
 	if (this->isDead()) { GameState::removeBuilding(this); }
 	return health;
 }
+
+std::shared_ptr<Point> Building::getPosition() {
+	return std::shared_ptr<Point>(&(this->pos));
+}
+
+int Building::getSize() {
+	return this->radius;
+}

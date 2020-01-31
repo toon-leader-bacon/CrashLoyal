@@ -158,12 +158,10 @@ std::vector<std::shared_ptr<Waypoint>> GameState::buildWaypoints() {
 		// Right side of the map
 		waypoints[i]->upNeighbor = waypoints[abs((i - 1) % 22)];
 		waypoints[i]->downNeighbor = waypoints[i + 1];
-		printf("index %u up=%u down=%u\n", i, abs((i - 1) % 22), i + 1);
 		// Left side of the map
 		int mirroredIndex = 21 - i;
 		waypoints[mirroredIndex]->upNeighbor = waypoints[(mirroredIndex + 1) % 22];
 		waypoints[mirroredIndex]->downNeighbor = waypoints[mirroredIndex - 1];
-		printf("index %u up=%u down=%u\n", 21-i, (mirroredIndex + 1) % 22, mirroredIndex - 1);
 	}
 
 	return waypoints;

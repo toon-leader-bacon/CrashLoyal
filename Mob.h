@@ -33,7 +33,7 @@ public:
 	// Movement related
 	Point pos; // The position of this mob
 	std::shared_ptr<Waypoint> nextWaypoint; // The default movement target if there are no enemies nearby
-	Point targetPosition; // The actual place this mob is moving towards
+	std::shared_ptr<Point> targetPosition; // The actual place this mob is moving towards
 
 	// Combat related
 	int dmg = 2;
@@ -51,10 +51,12 @@ public:
 	// Call this function once per frame to update the Mob's position.
 	// If this mob reaches it's target waypoint "nextWaypoint" it will
 	// read the next waypoint and path towards it.
-	void moveTowards();
+	void moveTowards(std::shared_ptr<Point> moveTarget);
 
 	// Find the closest Waypoint to the mob and start moving towards it
-	void findClosestWaypoint();
+	bool findClosestWaypoint();
+	bool findAndSetAttackableMob();
+	void findNewTarget();
 
 	bool isDead() { return this->currentHealth <= 0; }
 
@@ -62,6 +64,9 @@ public:
 
 	bool sameMob(Mob* otherMob) { return this->uuid == otherMob->uuid; }
 	bool sameMob(std::shared_ptr<Mob> otherMob) { return this->uuid == otherMob->uuid; }
+
+	std::shared_ptr<Point> getPosition();
+	int getSize();
 
 private: 
 
@@ -72,14 +77,17 @@ private:
 	// Have this mob start moving towards the provided target
 	// TODO: Impliment true pathfinding instead of just walking straight
 	//       Consider storing a list of Point objects that is refreshed in the event of a collision
+	void updateMoveTarget(std::shared_ptr<Point> target);
+
 	void updateMoveTarget(Point target);
 
-	// Have this move start moving towards the provided target
-	void updateMoveTarget(std::shared_ptr<Waypoint> wp) { 
-		this->updateMoveTarget(wp->pos); 
-		this->nextWaypoint = wp;
+
+	void setNewWaypoint(std::shared_ptr<Waypoint> newWaypoint) {
+		this->nextWaypoint = newWaypoint;
+		this->updateMoveTarget(newWaypoint->pos);
 	}
 
+	// Push this unit away from the provided point
 	void pushAway(Point awayFrom);
 
 	std::shared_ptr<Building> checkBuildingCollision();
@@ -95,6 +103,7 @@ private:
 	void moveProcedure();
 
 	void setAttackTarget(std::shared_ptr<Attackable> b);
+	bool targetInRange(std::shared_ptr<Attackable> possibleTarget);
 
 };
 

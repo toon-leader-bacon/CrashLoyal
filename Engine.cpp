@@ -84,7 +84,7 @@ void drawSquare(int centerX, int centerY, int size) {
 
 void drawMob(std::shared_ptr<Mob> m) {
 	int healthToAlpha = (m->maxHealth / m->currentHealth) * 255;
-	if (m->attackingNorth) { SDL_SetRenderDrawColor(gRenderer, 0xFF, 0x00, 0x00, healthToAlpha);	} 
+	if (m->attackingNorth) { SDL_SetRenderDrawColor(gRenderer, 0xFF, 0x00, 0x00, healthToAlpha); } 
 	else                   { SDL_SetRenderDrawColor(gRenderer, 0x00, 0x00, 0xFF, healthToAlpha); }
 	drawSquare(m->pos.x, m->pos.y, m->size * 2);
 }

@@ -39,6 +39,10 @@ public:
 
 	int attack(int dmg);
 
+	std::shared_ptr<Point> getPosition();
+
+	int getSize();
+
 private:
 
 
