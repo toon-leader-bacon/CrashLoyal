@@ -116,7 +116,8 @@
     <PostBuildEvent>
       <Command>xcopy /y /d  "$(SolutionDir)external\SDL2\lib\x86\*.dll" "$(OutDir)"
 xcopy /y /d  "$(SolutionDir)external\SDL2_image\lib\x86\*.dll" "$(OutDir)"
-xcopy /y /d  "$(SolutionDir)external\SDL2_ttf\lib\x86\*.dll" "$(OutDir)"</Command>
+xcopy /y /d  "$(SolutionDir)external\SDL2_ttf\lib\x86\*.dll" "$(OutDir)"
+xcopy /y /d  "$(SolutionDir)CrashLoyal\fonts\abelregular.ttf" "$(OutDir)"</Command>
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
