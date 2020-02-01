@@ -18,25 +18,10 @@ Mob::Mob(const Point& pos, bool attackingNorth)
 	Mob::previousUUID = 1 + Mob::previousUUID;
 	this->uuid = Mob::previousUUID;
 
-<<<<<<< HEAD
-	this->pos.x = x;
-	this->pos.y = y;
-	this->attackingNorth = attackingNorth;
-	this->speed = 0.006f;
-	this->maxHealth = 10;
-	this->currentHealth = 10;
-
-=======
->>>>>>> master
 	this->targetPosition = std::shared_ptr<Point>(new Point());
 	this->state = MobState::Moving;
 	findClosestWaypoint();
 
-<<<<<<< HEAD
-	// TODO: change these vars
-	size = 1.0;
-=======
->>>>>>> master
 	targetLocked = false;
 }
 
