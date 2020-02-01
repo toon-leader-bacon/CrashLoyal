@@ -82,6 +82,25 @@ void drawSquare(int centerX, int centerY, int size) {
 	SDL_RenderFillRect(gRenderer, &rect);
 }
 
+void drawBuilding(std::shared_ptr<Building> b) {
+	switch (b->type)
+	{
+	case BuildingType::NorthKing:
+	case BuildingType::NorthLeftTower:
+	case BuildingType::NorthRightTower:
+		SDL_SetRenderDrawColor(gRenderer, 0x00, 0x00, 0xFF, 0xFF);
+		break;
+	case BuildingType::SouthKing:
+	case BuildingType::SouthLeftTower:
+	case BuildingType::SouthRightTower:
+	default:
+		SDL_SetRenderDrawColor(gRenderer, 0xFF, 0x00, 0x00, 0xFF);
+		break;
+	}
+
+	drawSquare(b->pos.x, b->pos.y, b->getSize());
+}
+
 void drawMob(std::shared_ptr<Mob> m) {
 	int healthToAlpha = (m->maxHealth / m->currentHealth) * 255;
 	if (m->attackingNorth) { SDL_SetRenderDrawColor(gRenderer, 0xFF, 0x00, 0x00, healthToAlpha); } 
@@ -198,15 +217,14 @@ int main( int argc, char* args[] ) {
 
 			// Draw waypoints
 			// TODO remove this
-			for (int i = 0; i < GameState::WAYPOINT_COUNT; i++) {
-				// NOTE there are 22 waypoints.
-				std::shared_ptr<Waypoint> wp = GameState::waypoints.at(i);
-				drawSquare(wp->pos.x, wp->pos.y, 5);
-			}
+			for (std::shared_ptr<Waypoint> wp : GameState::waypoints) 
+				{ drawSquare(wp->pos.x, wp->pos.y, 5); }
 
+			// Draw Buildings
+			for (std::shared_ptr<Building> b : GameState::buildings) 
+				{ drawBuilding(b); }
 			
-			
-			// Draw and move mobs
+			// Draw and update mobs
 			SDL_SetRenderDrawColor(gRenderer, 0xFF, 0x00, 0xFF, 0xFF);
 			for (std::shared_ptr<Mob> m : GameState::mobs) {
 				if (frame % 20 == 0) {
@@ -215,19 +233,14 @@ int main( int argc, char* args[] ) {
 				drawMob(m);
 			}
 			
-			
-
-			//Update screen
+			// Push changes to the screen
 			SDL_RenderPresent( gRenderer );
-
 			frame++;
 		}
 		
 	}
 
-	//Free resources and close SDL
 	close();
-
 	return 0;
 }
 

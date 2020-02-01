@@ -44,23 +44,12 @@ public:
 
 	Mob(int x, int y, bool attackingNorth);
 
-	// TODO: Destructor
-
+	// The main function that drives this mob. Should be called once every game tick.
 	void update();
-
-	// Call this function once per frame to update the Mob's position.
-	// If this mob reaches it's target waypoint "nextWaypoint" it will
-	// read the next waypoint and path towards it.
-	void moveTowards(std::shared_ptr<Point> moveTarget);
-
-	// Find the closest Waypoint to the mob and start moving towards it
-	bool findClosestWaypoint();
-	bool findAndSetAttackableMob();
-	void findNewTarget();
 
 	bool isDead() { return this->currentHealth <= 0; }
 
-	int attack(int dmg);
+	int attack(int dmg); // deal dmg to this mob
 
 	bool sameMob(Mob* otherMob) { return this->uuid == otherMob->uuid; }
 	bool sameMob(std::shared_ptr<Mob> otherMob) { return this->uuid == otherMob->uuid; }
@@ -71,24 +60,40 @@ public:
 private: 
 
 	static int previousUUID;
-
 	int uuid;
 
+
+	bool findClosestWaypoint();
+
+	void findNewTarget();
+
 	// Have this mob start moving towards the provided target
-	// TODO: Impliment true pathfinding instead of just walking straight
-	//       Consider storing a list of Point objects that is refreshed in the event of a collision
 	void updateMoveTarget(std::shared_ptr<Point> target);
 
 	void updateMoveTarget(Point target);
 
+	void moveTowards(std::shared_ptr<Point> moveTarget);
+	// Movement related
+	//////////////////////////////////
+	// Combat related
+
+	bool findAndSetAttackableMob();
+
+	// Push this unit away from the provided point
+	void pushAway(Point awayFrom);
 
 	void setNewWaypoint(std::shared_ptr<Waypoint> newWaypoint) {
 		this->nextWaypoint = newWaypoint;
 		this->updateMoveTarget(newWaypoint->pos);
 	}
 
-	// Push this unit away from the provided point
-	void pushAway(Point awayFrom);
+	void setAttackTarget(std::shared_ptr<Attackable> b);
+
+	bool targetInRange();
+
+	// Combat related
+	////////////////////////////////////////////////////////////
+	// Collisions
 
 	std::shared_ptr<Building> checkBuildingCollision();
 
@@ -98,13 +103,13 @@ private:
 
 	void processMobCollision(std::shared_ptr<Mob> otherMob);
 
+	// Collisions
+	///////////////////////////////////////////////
+	// Procedures
+
 	void attackProcedure();
 
 	void moveProcedure();
-
-	void setAttackTarget(std::shared_ptr<Attackable> b);
-
-	bool targetInRange();
 
 };
 

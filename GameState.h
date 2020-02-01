@@ -37,6 +37,9 @@ private :
 	// Initialize the waypoints list.
 	static std::vector<std::shared_ptr<Waypoint>> buildWaypoints();
 
+	// Initialize the building lists
+	static std::unordered_set<std::shared_ptr<Building>> buildBuildings();
+
 };
 
 #endif

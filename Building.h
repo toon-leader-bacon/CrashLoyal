@@ -11,6 +11,15 @@ const int KingTowerHealth = 100;
 const int SmallTowerSize = 20;
 const int smallTowerHalth = 50;
 
+const int KingX = SCREEN_WIDTH / 2;
+const int PrincessLeftX = SCREEN_WIDTH / 4;
+const int PrincessRightX = SCREEN_WIDTH - PrincessLeftX;
+
+const int NorthPrincessY = SCREEN_HEIGHT * (3 / 20.0);
+const int NorthKingY = SCREEN_HEIGHT * (1 / 20.0);
+const int SouthPrincessY = SCREEN_HEIGHT - NorthPrincessY;
+const int SouthKingY = SCREEN_HEIGHT - NorthKingY;
+
 enum BuildingType {
 	NorthKing,
 	NorthRightTower,

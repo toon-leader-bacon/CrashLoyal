@@ -20,7 +20,38 @@ bool GameState::removeMob(Mob* mobToRemove) {
 	return false;
 }
 
-std::unordered_set<std::shared_ptr<Building>> GameState::buildings;
+std::unordered_set<std::shared_ptr<Building>> GameState::buildBuildings() {
+	std::unordered_set<std::shared_ptr<Building>> result;
+	
+	// Kings
+	std::shared_ptr<Building> northKing = std::make_shared<Building>(
+		Building( Point(KingX, NorthKingY), BuildingType::NorthKing));
+	std::shared_ptr<Building> southKing = std::make_shared<Building>(
+		Building( Point(KingX, SouthKingY), BuildingType::SouthKing));
+	result.insert(northKing);
+	result.insert(southKing);
+
+	// Northern Princesses
+	std::shared_ptr<Building> northLeftPrincess = std::make_shared<Building>(
+		Building( Point(PrincessLeftX, NorthPrincessY), BuildingType::NorthLeftTower));
+	std::shared_ptr<Building> northRightPrincess = std::make_shared<Building>(
+		Building( Point(PrincessRightX, NorthPrincessY), BuildingType::NorthRightTower));
+	result.insert(northLeftPrincess);
+	result.insert(northRightPrincess);
+
+	// Southern Princesses
+	std::shared_ptr<Building> southLeftPrincess = std::make_shared<Building>(
+		Building( Point(PrincessLeftX, SouthPrincessY), BuildingType::SouthLeftTower));
+	std::shared_ptr<Building> southRightPrincess = std::make_shared<Building>(
+		Building( Point(PrincessRightX, SouthPrincessY), BuildingType::SouthRightTower));
+	result.insert(southLeftPrincess);
+	result.insert(southRightPrincess);
+
+
+	return result;
+}
+
+std::unordered_set<std::shared_ptr<Building>> GameState::buildings = GameState::buildBuildings();
 
 bool GameState::removeBuilding(Building* buildingToRemove) {
 	for (std::shared_ptr<Building> b : GameState::buildings) {
@@ -88,27 +119,24 @@ std::vector<std::shared_ptr<Waypoint>> GameState::buildWaypoints() {
 	}
 
 	// Build the waypoints for the tower rows
-	int princessYValue = Y_InitialPos - Y_Increment;
-	int kingYValue = princessYValue - Y_Increment;
-	
 	// Top Row
 	Point princessTLpt;
-	princessTLpt.x = X_InitialPos;
-	princessTLpt.y = princessYValue;
+	princessTLpt.x = PrincessLeftX;
+	princessTLpt.y = NorthPrincessY;
 	std::shared_ptr<Waypoint> princessTL = std::shared_ptr<Waypoint>(new Waypoint());
 	princessTL->pos = princessTLpt;
 	waypoints[20] = princessTL;
 
 	Point princessTRpt;
-	princessTRpt.x = SCREEN_WIDTH - X_InitialPos;
-	princessTRpt.y = princessYValue;
+	princessTRpt.x = PrincessRightX;
+	princessTRpt.y = NorthPrincessY;
 	std::shared_ptr<Waypoint> princessTR = std::shared_ptr<Waypoint>(new Waypoint());
 	princessTR->pos = princessTRpt;
 	waypoints[2] = princessTR;
 
 	Point kingTopPt;
-	kingTopPt.x = SCREEN_WIDTH / 2;
-	kingTopPt.y = kingYValue;
+	kingTopPt.x = KingX;
+	kingTopPt.y = NorthKingY;
 	std::shared_ptr<Waypoint> kingTop = std::shared_ptr<Waypoint>(new Waypoint());
 	kingTop->pos = kingTopPt;
 	waypoints[0] = kingTop;
@@ -123,22 +151,22 @@ std::vector<std::shared_ptr<Waypoint>> GameState::buildWaypoints() {
 
 	// Bot Row
 	Point princessBLpt;
-	princessBLpt.x = X_InitialPos;
-	princessBLpt.y = SCREEN_HEIGHT - princessYValue;
+	princessBLpt.x = PrincessLeftX;
+	princessBLpt.y = SouthPrincessY;
 	std::shared_ptr<Waypoint> princessBL = std::shared_ptr<Waypoint>(new Waypoint());
 	princessBL->pos = princessBLpt;
 	waypoints[13] = princessBL;
 
 	Point princessBRpt;
-	princessBRpt.x = SCREEN_WIDTH - X_InitialPos;
-	princessBRpt.y = SCREEN_HEIGHT - princessYValue;
+	princessBRpt.x = PrincessRightX;
+	princessBRpt.y = SouthPrincessY;
 	std::shared_ptr<Waypoint> princessBR = std::shared_ptr<Waypoint>(new Waypoint());
 	princessBR->pos = princessBRpt;
 	waypoints[9] = princessBR;
 
 	Point kingBotPt;
-	kingBotPt.x = SCREEN_WIDTH / 2;
-	kingBotPt.y = SCREEN_HEIGHT - kingYValue;
+	kingBotPt.x = KingX;
+	kingBotPt.y = SouthKingY;
 	std::shared_ptr<Waypoint> kingBot = std::shared_ptr<Waypoint>(new Waypoint());
 	kingBot->pos = kingBotPt;
 	waypoints[11] = kingBot;
