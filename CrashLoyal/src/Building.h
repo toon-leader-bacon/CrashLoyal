@@ -7,8 +7,8 @@
 const int KingTowerSize = 30;
 const int KingTowerHealth = 100;
 
-const float SmallTowerSize = (float)20;
-const float smallTowerHalth = (float)50;
+const float SmallTowerSize = 20.0f;
+const float smallTowerHalth = 50.0f;
 
 const float KingX = SCREEN_WIDTH / 2;
 const float PrincessLeftX = SCREEN_WIDTH / 4;

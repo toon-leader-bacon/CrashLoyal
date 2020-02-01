@@ -7,7 +7,7 @@ Building::Building(float x, float y, BuildingType type) {
 	this->pos = p;
 	this->type = type;
 
-	if (this->type == NorthKing || this->type == SouthKing) {
+	if (this->type == BuildingType::NorthKing || this->type == BuildingType::SouthKing) {
 		this->radius = KingTowerSize;
 		this->health = KingTowerHealth;
 	} else {
@@ -16,9 +16,9 @@ Building::Building(float x, float y, BuildingType type) {
 
 	}
 
-	this->isNorthBuilding = (this->type == NorthKing || 
-							 this->type == NorthLeftTower || 
-							 this->type == NorthRightTower);
+	this->isNorthBuilding = (this->type == BuildingType::NorthKing ||
+							 this->type == BuildingType::NorthLeftTower ||
+							 this->type == BuildingType::NorthRightTower);
 }
 
 int Building::attack(int dmg) {

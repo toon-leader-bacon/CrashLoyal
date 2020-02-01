@@ -71,13 +71,13 @@ void close() {
 }
 
 
-void drawSquare(int centerX, int centerY, int size) {
+void drawSquare(float centerX, float centerY, float size) {
 	// Draws a square at the given pixel coorinate
 	SDL_Rect rect = {
-		centerX - (size / 2),
-		centerY - (size / 2),
-		size,
-		size
+		(int)(centerX - (size / 2.f)),
+		(int)(centerY - (size / 2.f)),
+		(int)(size),
+		(int)(size)
 	};
 	SDL_RenderFillRect(gRenderer, &rect);
 }
@@ -115,8 +115,8 @@ Point pixelToGrid(int x, int y) {
 	// As always, (0,0) is top left
 
 	Point result;
-	result.x = fmax(0, x / 10);
-	result.y = fmax(0, y / 10);
+	result.x = fmax(0.f, x / 10.0f);
+	result.y = fmax(0.f, y / 10.0f);
 	return result;
 }
 
@@ -126,7 +126,7 @@ void drawGrid(Point grid) {
 }
 
 void processClick(int x, int y, bool leftClick) {
-	std::shared_ptr<Mob> m = std::shared_ptr<Mob>(new Mob(x, y, leftClick));
+	std::shared_ptr<Mob> m = std::shared_ptr<Mob>(new Mob((float)x, (float)y, leftClick));
 	GameState::mobs.insert(m);
 }
 
