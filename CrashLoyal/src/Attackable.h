@@ -1,5 +1,4 @@
-#ifndef __ATTACKABLE__
-#define __ATTACKABLE__
+#pragma once
 
 #include <memory>
 #include "Point.h"
@@ -17,4 +16,4 @@ public:
 	virtual int getSize() = 0;
 };
 
-#endif
+

@@ -1,5 +1,4 @@
-#ifndef __WAYPOINT_H__
-#define __WAYPOINT_H__
+#pragma once
 
 #include <memory>
 #include "Point.h"
@@ -49,4 +48,3 @@ struct Waypoint
 	std::shared_ptr<Waypoint> downNeighbor;
 };
 
-#endif
