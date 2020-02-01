@@ -32,7 +32,7 @@ public:
 	std::shared_ptr<Point> targetPosition; // The actual place this mob is moving towards
 
 	// The main function that drives this mob. Should be called once every game tick.
-	void update();
+	void update(double elapsedTime);
 
 	bool isDead() { return health <= 0; }
 
@@ -72,7 +72,7 @@ protected:
 
 	void updateMoveTarget(Point target);
 
-	void moveTowards(std::shared_ptr<Point> moveTarget);
+	void moveTowards(std::shared_ptr<Point> moveTarget, double elapsedTime);
 	// Movement related
 	//////////////////////////////////
 	// Combat related
@@ -80,7 +80,7 @@ protected:
 	bool findAndSetAttackableMob();
 
 	// Push this unit away from the provided point
-	void pushAway(Point awayFrom);
+	void pushAway(Point awayFrom, double elapsedTime);
 
 	void setNewWaypoint(std::shared_ptr<Waypoint> newWaypoint) {
 		this->nextWaypoint = newWaypoint;
@@ -97,19 +97,19 @@ protected:
 
 	std::shared_ptr<Building> checkBuildingCollision();
 
-	void processBuildingCollision(std::shared_ptr<Building> b);
+	void processBuildingCollision(std::shared_ptr<Building> b, double elapsedTime);
 
 	std::shared_ptr<Mob> checkMobCollision();
 
-	void processMobCollision(std::shared_ptr<Mob> otherMob);
+	void processMobCollision(std::shared_ptr<Mob> otherMob, double elapsedTime);
 
 	// Collisions
 	///////////////////////////////////////////////
 	// Procedures
 
-	void attackProcedure();
+	void attackProcedure(double elapsedTime);
 
-	void moveProcedure();
+	void moveProcedure(double elapsedTime);
 
 };
 

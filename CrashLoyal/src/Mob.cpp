@@ -66,12 +66,13 @@ bool Mob::findClosestWaypoint() {
 	return true;
 }
 
-void Mob::moveTowards(std::shared_ptr<Point> moveTarget) {
+void Mob::moveTowards(std::shared_ptr<Point> moveTarget, double elapsedTime) {
 	Point movementVector;
 	movementVector.x = moveTarget->x - this->pos.x;
 	movementVector.y = moveTarget->y - this->pos.y;
 	movementVector.normalize();
 	movementVector *= (float)this->GetSpeed();
+	movementVector *= elapsedTime;
 	pos += movementVector;
 }
 
@@ -133,13 +134,13 @@ int randomNumber(int minValue, int maxValue) {
 	return (rand() % maxValue) + minValue;
 }
 
-void Mob::pushAway(Point awayFrom) {
+void Mob::pushAway(Point awayFrom, double elapsedTime) {
 	// TODO: Consider making a little random noise when pushing to avoid walking direcly into a push
 	float deltaX = (awayFrom.x - this->pos.x) + randomNumber(0, 10) / 20.0f;
 	float deltaY = (awayFrom.y - this->pos.y) + randomNumber(0, 10) / 20.0f;
 	Point p = Point(deltaX, deltaY);
 	p.normalize();
-	p *= this->GetSpeed() * -1.f;
+	p *= this->GetSpeed() * -2.f * elapsedTime;
 	this->pos += p;
 }
 
@@ -168,10 +169,10 @@ std::shared_ptr<Building> Mob::checkBuildingCollision() {
 	return std::shared_ptr<Building>(nullptr);
 }
 
-void Mob::processBuildingCollision(std::shared_ptr<Building> b) {
+void Mob::processBuildingCollision(std::shared_ptr<Building> b, double elapsedTime) {
 	if (this->attackingNorth != b->isNorthBuilding) {
 		// Mob collided with friendly building
-		this->pushAway(b->pos);
+		this->pushAway(b->pos, elapsedTime);
 	} else {
 		// Mob collided with enemy building
 		this->setAttackTarget(b);
@@ -188,10 +189,10 @@ std::shared_ptr<Mob> Mob::checkMobCollision() {
 	return std::shared_ptr<Mob>(nullptr);
 }
 
-void Mob::processMobCollision(std::shared_ptr<Mob> otherMob) {
+void Mob::processMobCollision(std::shared_ptr<Mob> otherMob, double elapsedTime) {
 	if (otherMob->attackingNorth == this->attackingNorth) {
 		// Mob collided with friendly mob
-		otherMob->pushAway(this->pos);
+		otherMob->pushAway(this->pos, elapsedTime);
 	} else {
 		// this mob collided with enemy Mob
 		this->state = MobState::Attacking;
@@ -203,7 +204,7 @@ void Mob::processMobCollision(std::shared_ptr<Mob> otherMob) {
 ///////////////////////////////////////////////
 // Procedures
 
-void Mob::attackProcedure() {
+void Mob::attackProcedure(double elapsedTime) {
 	if (this->target == nullptr || this->target->isDead()) {
 		this->targetLocked = false;
 		this->target = nullptr;
@@ -223,13 +224,13 @@ void Mob::attackProcedure() {
 	}
 	else {
 		// If the target is not in range
-		moveTowards(target->getPosition());
+		moveTowards(target->getPosition(), elapsedTime);
 	}
 }
 
-void Mob::moveProcedure() {
+void Mob::moveProcedure(double elapsedTime) {
 	if (targetPosition) {
-		moveTowards(targetPosition);
+		moveTowards(targetPosition, elapsedTime);
 
 		// Check for collisions
 		if (this->nextWaypoint->pos.insideOf(this->pos, (this->GetSize() + WAYPOINT_SIZE))) {
@@ -237,6 +238,11 @@ void Mob::moveProcedure() {
 												   this->nextWaypoint->upNeighbor :
 												   this->nextWaypoint->downNeighbor;
 			setNewWaypoint(trueNextWP);
+		}
+
+		std::shared_ptr<Mob> otherMob = this->checkMobCollision();
+		if (otherMob) {
+			this->processMobCollision(otherMob, elapsedTime);
 		}
 
 		// Fighting otherMob takes priority always
@@ -248,15 +254,15 @@ void Mob::moveProcedure() {
 	}
 }
 
-void Mob::update() {
+void Mob::update(double elapsedTime) {
 
 	switch (this->state) {
 	case MobState::Attacking:
-		this->attackProcedure();
+		this->attackProcedure(elapsedTime);
 		break;
 	case MobState::Moving:
 	default:
-		this->moveProcedure();
+		this->moveProcedure(elapsedTime);
 		break;
 	}
 }

@@ -12,6 +12,8 @@
 #include <assert.h>
 #include <cmath>
 #include <iostream>
+#include <time.h>
+#include <chrono>
 #include <memory>
 #include <stdio.h>
 #include <string>
@@ -21,6 +23,8 @@
 SDL_Window* gWindow = NULL;
 //The window renderer itself
 SDL_Renderer* gRenderer = NULL;
+// The font used to write the names of mobs
+TTF_Font* sans;
 
 bool init()
 {
@@ -69,6 +73,11 @@ bool init()
 	if (TTF_Init() < 0) {
 		printf("Text library TTF could not be Initialized correctly.\n");
 	}
+
+
+	// Load in the font 
+	sans = TTF_OpenFont("fonts/abelregular.ttf", 36);
+	if (!sans) { printf("TTF_OpenFont: %s\n", TTF_GetError()); }
 	return success;
 }
 
@@ -122,8 +131,6 @@ void drawMob(std::shared_ptr<Mob> m) {
 
 	drawSquare(centerX, centerY, squareSize);
 
-	TTF_Font* sans = TTF_OpenFont("fonts/abelregular.ttf", 36); 
-	if (!sans) { printf("TTF_OpenFont: %s\n", TTF_GetError()); }
 	SDL_Color white = {0, 0, 0, 254};
 	SDL_Surface* surfaceMessage = TTF_RenderText_Solid(sans, m->GetDisplayLetter(), white); // TODO Make this print something other than m
 	if (!surfaceMessage) { printf("TTF_OpenFont: %s\n", TTF_GetError()); }
@@ -223,8 +230,13 @@ int main(int argc, char* args[]) {
 		// Number of frames since start of application
 		int frame = 0;
 
+		// Time at the start of the world, used to calculate the time between update cycles
+		auto previousTime = std::chrono::high_resolution_clock::now();
+		auto now = std::chrono::high_resolution_clock::now();
+
 		//While application is running
 		while (!quit) {
+
 
 			//Clear screen
 			SDL_SetRenderDrawColor(gRenderer, 0xFF, 0xFF, 0xFF, 0xFF);
@@ -267,13 +279,17 @@ int main(int argc, char* args[]) {
 				drawBuilding(b);
 			}
 
+			now = std::chrono::high_resolution_clock::now();;
+			double deltaTSec = (std::chrono::duration_cast<std::chrono::duration<double>>(now - previousTime)).count() * 10;
+			previousTime = now;
+
 			// Draw and update mobs
 			SDL_SetRenderDrawColor(gRenderer, 0xFF, 0x00, 0xFF, 0xFF);
 
 			for (std::shared_ptr<Mob> m : GameState::mobs) {
 				if (!m->isDead())
 				{
-					m->update();
+					m->update(deltaTSec);
 				}
 
 				drawMob(m);
