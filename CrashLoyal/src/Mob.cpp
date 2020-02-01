@@ -11,18 +11,26 @@
 
 int Mob::previousUUID;
 
-Mob::Mob(const Point& pos, bool attackingNorth) 
-	: pos(pos)
-	, attackingNorth(attackingNorth)
+Mob::Mob() 
+	: pos(-10000.f,-10000.f)
+	, nextWaypoint(NULL)
+	, targetPosition(new Point)
+	, state(MobState::Moving)
+	, uuid(Mob::previousUUID)
+	, attackingNorth(true)
+	, health(-1)
+	, targetLocked(false)
+	, target(NULL)
+	, lastAttackTime(0)
 {
-	Mob::previousUUID = 1 + Mob::previousUUID;
-	this->uuid = Mob::previousUUID;
+}
 
-	this->targetPosition = std::shared_ptr<Point>(new Point());
-	this->state = MobState::Moving;
+void Mob::Init(const Point& pos, bool attackingNorth)
+{
+	health = GetMaxHealth();
+	this->pos = pos;
+	this->attackingNorth = attackingNorth;
 	findClosestWaypoint();
-
-	targetLocked = false;
 }
 
 std::shared_ptr<Point> Mob::getPosition() {
@@ -94,9 +102,6 @@ void Mob::updateMoveTarget(Point target) {
 
 int Mob::attack(int dmg) {
 	this->health -= dmg;
-	if (this->isDead()) {
-		GameState::removeMob(this);
-	}
 	return health;
 }
 

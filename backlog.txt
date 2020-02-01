@@ -1,0 +1,13 @@
+Game:
+- Mob subclasses for different unit types
+- Graphical representation of unit type
+- Visual representation for attack
+- Support for elixir, selecting units
+- implement attack range
+- (?) Unit: Giant, Swordsman, Archer, Skeleton, Wizard
+- (?) Spell: Fireball, Tornado, Haste
+
+Code Debt:
+- Get rid of shared_ptr
+- Code conventions
+- Units are meters, seconds

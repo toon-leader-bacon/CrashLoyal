@@ -9,8 +9,10 @@
 class Mob : public Attackable {
 
 public:
-	Mob(const Point& pos, bool attackingNorth);
+	Mob();
 	virtual ~Mob() {}
+
+	virtual void Init(const Point& pos, bool attackingNorth);
 
 	bool IsAttackingNorth() const { return attackingNorth; }
 

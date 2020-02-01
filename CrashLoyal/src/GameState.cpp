@@ -8,17 +8,7 @@
 #include "Waypoint.h"
 #include "Point.h"
 
-std::unordered_set<std::shared_ptr<Mob>> GameState::mobs;
-
-bool GameState::removeMob(Mob* mobToRemove) {
-	for (std::shared_ptr<Mob> m : GameState::mobs) {
-		if (mobToRemove->sameMob(m)) {
-			GameState::mobs.erase(m);
-			return true;
-		}
-	}
-	return false;
-}
+std::vector<std::shared_ptr<Mob>> GameState::mobs;
 
 std::unordered_set<std::shared_ptr<Building>> GameState::buildBuildings() {
 	std::unordered_set<std::shared_ptr<Building>> result;
