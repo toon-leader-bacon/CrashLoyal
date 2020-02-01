@@ -29,7 +29,7 @@ Mob::Mob(float x, float y, bool attackingNorth) {
 
 
 	// TODO: change these vars
-	size = 5.0;
+	size = 10.0;
 	targetLocked = false;
 }
 

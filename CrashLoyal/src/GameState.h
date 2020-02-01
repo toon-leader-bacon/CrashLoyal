@@ -11,8 +11,8 @@ class Building;
 #include "Point.h"
 
 //Screen dimension constants
-const int GAME_GRID_SIZE = 10; // A single in game grid is a square with this side length
-const int GAME_GRID_WIDTH = 30; // How many tiles wide the game grid is. Should be an even number
+const int GAME_GRID_SIZE = 15; // A single in game grid is a square with this side length
+const int GAME_GRID_WIDTH = 45; // How many tiles wide the game grid is. Should be an even number
 const int GAME_GRID_HEIGHT = 50; // How many tiles tall the game grid is. 
 const int SCREEN_WIDTH = GAME_GRID_SIZE * GAME_GRID_WIDTH;   // The total number of pixels wide the window is
 const int SCREEN_HEIGHT = GAME_GRID_SIZE * GAME_GRID_HEIGHT; // The total number of pixels tall the window is
