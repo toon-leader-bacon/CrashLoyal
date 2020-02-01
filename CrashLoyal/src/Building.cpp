@@ -2,7 +2,7 @@
 #include "GameState.h"
 #include "Building.h"
 
-Building::Building(int x, int y, BuildingType type) {
+Building::Building(float x, float y, BuildingType type) {
 	Point p = *(new Point(x, y));
 	this->pos = p;
 	this->type = type;
@@ -31,6 +31,6 @@ std::shared_ptr<Point> Building::getPosition() {
 	return std::shared_ptr<Point>(&(this->pos));
 }
 
-int Building::getSize() {
+float Building::getSize() {
 	return this->radius;
 }

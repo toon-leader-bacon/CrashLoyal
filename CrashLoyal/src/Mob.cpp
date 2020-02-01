@@ -11,7 +11,7 @@
 
 int Mob::previousUUID;
 
-Mob::Mob(int x, int y, bool attackingNorth) {
+Mob::Mob(float x, float y, bool attackingNorth) {
 
 	Mob::previousUUID = 1 + Mob::previousUUID;
 	this->uuid = Mob::previousUUID;
@@ -19,7 +19,7 @@ Mob::Mob(int x, int y, bool attackingNorth) {
 	this->pos.x = x;
 	this->pos.y = y;
 	this->attackingNorth = attackingNorth;
-	this->speed = 0.06;
+	this->speed = 0.06f;
 	this->maxHealth = 10;
 	this->currentHealth = 10;
 
@@ -37,7 +37,7 @@ std::shared_ptr<Point> Mob::getPosition() {
 	return std::make_shared<Point>(this->pos);
 }
 
-int Mob::getSize() {
+float Mob::getSize() {
 	return this->size;
 }
 
@@ -143,8 +143,8 @@ int randomNumber(int minValue, int maxValue) {
 
 void Mob::pushAway(Point awayFrom) {
 	// TODO: Consider making a little random noise when pushing to avoid walking direcly into a push
-	int deltaX = (awayFrom.x - this->pos.x) + randomNumber(0, 10) / 20;
-	int deltaY = (awayFrom.y - this->pos.y) + randomNumber(0, 10) / 20;
+	float deltaX = (awayFrom.x - this->pos.x) + randomNumber(0, 10) / 20.0f;
+	float deltaY = (awayFrom.y - this->pos.y) + randomNumber(0, 10) / 20.0f;
 	Point* p = new Point(deltaX, deltaY);
 	p->normalize();
 	p->multiply(this->speed * -1);
@@ -159,8 +159,8 @@ void Mob::setAttackTarget(std::shared_ptr<Attackable> newTarget) {
 }
 
 bool Mob::targetInRange() {
-	int range = this->size; // TODO: change this for ranged units
-	int totalSize = range + target->getSize();
+	float range = this->size; // TODO: change this for ranged units
+	float totalSize = range + target->getSize();
 	return this->pos.insideOf(*(target->getPosition()), totalSize);
 }
 // Combat related
@@ -204,7 +204,7 @@ void Mob::processMobCollision(std::shared_ptr<Mob> otherMob) {
 		otherMob->pushAway(this->pos);
 	} else {
 		// this mob collided with enemy Mob
-		this->state = Attacking;
+		this->state = MobState::Attacking;
 		this->setAttackTarget(otherMob);
 	}
 }
@@ -217,7 +217,7 @@ void Mob::attackProcedure() {
 	if (this->target == nullptr || this->target->isDead()) {
 		this->targetLocked = false;
 		this->target = nullptr;
-		this->state = Moving;
+		this->state = MobState::Moving;
 		return;
 	}
 
@@ -261,10 +261,10 @@ void Mob::moveProcedure() {
 void Mob::update() {
 
 	switch (this->state) {
-	case Attacking:
+	case MobState::Attacking:
 		this->attackProcedure();
 		break;
-	case Moving:
+	case MobState::Moving:
 	default:
 		this->moveProcedure();
 		break;

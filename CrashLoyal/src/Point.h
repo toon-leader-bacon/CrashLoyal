@@ -15,8 +15,13 @@ public:
 		this->x = 0;
 		this->y = 0;
 	}
-
+	
 	Point(int x, int y) {
+		this->x = (float)x;
+		this->y = (float)y;
+	}
+
+	Point(float x, float y) {
 		this->x = x;
 		this->y = y;
 	}
@@ -48,7 +53,7 @@ public:
 	void normalize() {
 		float mag = sqrt((x * x) + (y * y));
 
-		float nearZero = 0.00001;
+		float nearZero = 0.00001f;
 		if (mag <= nearZero) { return; }
 
 		this->x = this->x / mag;

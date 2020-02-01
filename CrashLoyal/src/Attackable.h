@@ -14,7 +14,7 @@ public:
 
 	virtual std::shared_ptr<Point> getPosition() = 0;
 
-	virtual int getSize() = 0;
+	virtual float getSize() = 0;
 };
 
 #endif

@@ -8,19 +8,19 @@
 const int KingTowerSize = 30;
 const int KingTowerHealth = 100;
 
-const int SmallTowerSize = 20;
-const int smallTowerHalth = 50;
+const float SmallTowerSize = (float)20;
+const float smallTowerHalth = (float)50;
 
-const int KingX = SCREEN_WIDTH / 2;
-const int PrincessLeftX = SCREEN_WIDTH / 4;
-const int PrincessRightX = SCREEN_WIDTH - PrincessLeftX;
+const float KingX = SCREEN_WIDTH / 2;
+const float PrincessLeftX = SCREEN_WIDTH / 4;
+const float PrincessRightX = SCREEN_WIDTH - PrincessLeftX;
 
-const int NorthPrincessY = SCREEN_HEIGHT * (3 / 20.0);
-const int NorthKingY = SCREEN_HEIGHT * (1 / 20.0);
-const int SouthPrincessY = SCREEN_HEIGHT - NorthPrincessY;
-const int SouthKingY = SCREEN_HEIGHT - NorthKingY;
+const float NorthPrincessY = SCREEN_HEIGHT * (3 / 20.0);
+const float NorthKingY = SCREEN_HEIGHT * (1 / 20.0);
+const float SouthPrincessY = SCREEN_HEIGHT - NorthPrincessY;
+const float SouthKingY = SCREEN_HEIGHT - NorthKingY;
 
-enum BuildingType {
+enum class BuildingType {
 	NorthKing,
 	NorthRightTower,
 	NorthLeftTower,
@@ -40,7 +40,7 @@ public:
 	BuildingType type;
 	bool isNorthBuilding;
 
-	Building(int x, int y,  BuildingType type);
+	Building(float x, float y,  BuildingType type);
 
 	Building(Point p, BuildingType type) : Building(p.x, p.y, type) { }
 
@@ -50,7 +50,7 @@ public:
 
 	std::shared_ptr<Point> getPosition();
 
-	int getSize();
+	float getSize();
 
 private:
 

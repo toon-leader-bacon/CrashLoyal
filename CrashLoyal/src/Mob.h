@@ -7,7 +7,7 @@
 #include "Waypoint.h"
 #include "Point.h"
 
-enum MobState
+enum class MobState
 {
 	Moving,
 	Attacking
@@ -42,7 +42,7 @@ public:
 	int const attackCooldown = 200; // Number of frames that must pass before another attack can happen
 	int lastAttackTime;           // How many frames ago was the last attack? 
 
-	Mob(int x, int y, bool attackingNorth);
+	Mob(float x, float y, bool attackingNorth);
 
 	// The main function that drives this mob. Should be called once every game tick.
 	void update();
@@ -55,7 +55,7 @@ public:
 	bool sameMob(std::shared_ptr<Mob> otherMob) { return this->uuid == otherMob->uuid; }
 
 	std::shared_ptr<Point> getPosition();
-	int getSize();
+	float getSize();
 
 private: 
 
