@@ -1,0 +1,18 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <ClCompile Include="src\Engine.cpp" />
+    <ClCompile Include="src\GameState.cpp" />
+    <ClCompile Include="src\Mob.cpp" />
+    <ClCompile Include="src\Building.cpp" />
+    <ClCompile Include="src\CrashLoyal.cpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="src\GameState.h" />
+    <ClInclude Include="src\Mob.h" />
+    <ClInclude Include="src\Point.h" />
+    <ClInclude Include="src\Waypoint.h" />
+    <ClInclude Include="src\Attackable.h" />
+    <ClInclude Include="src\Building.h" />
+  </ItemGroup>
+</Project>
