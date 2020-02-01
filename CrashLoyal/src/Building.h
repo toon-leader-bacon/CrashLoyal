@@ -4,10 +4,10 @@
 #include "Attackable.h"
 #include "Point.h"
 
-const int KingTowerSize = 30;
+const int KingTowerSize = 50;
 const int KingTowerHealth = 100;
 
-const float SmallTowerSize = 20.0f;
+const float SmallTowerSize = 30.0f;
 const float smallTowerHalth = 50.0f;
 
 const float KingX = SCREEN_WIDTH / 2;

@@ -206,9 +206,8 @@ int main(int argc, char* args[]) {
 					const SDL_MouseButtonEvent& mouse_event = e.button;
 					int x, y;
 					SDL_GetMouseState(&x, &y);
-					if (mouse_event.button == SDL_BUTTON_RIGHT) { processClick(x, y, false); }
+					if (mouse_event.button == SDL_BUTTON_RIGHT)     { processClick(x, y, false); }
 					else if (mouse_event.button == SDL_BUTTON_LEFT) { processClick(x, y, true); }
-					printf("MouseUp detected at pos: ( %d, %d)\n", x, y);
 				}
 				if (e.type == SDL_MOUSEBUTTONDOWN) {
 					int pixelX, pixelY;
