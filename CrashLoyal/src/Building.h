@@ -10,14 +10,14 @@ const int KingTowerHealth = 100;
 const float SmallTowerSize = 30.0f;
 const float smallTowerHalth = 50.0f;
 
-const float KingX = SCREEN_WIDTH / 2;
-const float PrincessLeftX = SCREEN_WIDTH / 4;
-const float PrincessRightX = SCREEN_WIDTH - PrincessLeftX;
+const float KingX = GAME_GRID_WIDTH / 2;
+const float PrincessLeftX = GAME_GRID_WIDTH / 4;
+const float PrincessRightX = GAME_GRID_WIDTH - PrincessLeftX;
 
-const float NorthPrincessY = SCREEN_HEIGHT * (3 / 20.0);
-const float NorthKingY = SCREEN_HEIGHT * (1 / 20.0);
-const float SouthPrincessY = SCREEN_HEIGHT - NorthPrincessY;
-const float SouthKingY = SCREEN_HEIGHT - NorthKingY;
+const float NorthPrincessY = GAME_GRID_HEIGHT * (3 / 20.0);
+const float NorthKingY = GAME_GRID_HEIGHT * (1 / 20.0);
+const float SouthPrincessY = GAME_GRID_HEIGHT - NorthPrincessY;
+const float SouthKingY = GAME_GRID_HEIGHT - NorthKingY;
 
 enum class BuildingType {
 	NorthKing,

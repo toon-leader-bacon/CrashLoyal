@@ -1,6 +1,7 @@
 #include <memory>
 #include "SDL.h"
 #include "SDL_image.h"
+#include "SDL_ttf.h"
 #include <stdio.h>
 #include <string>
 #include <cmath>
@@ -98,14 +99,18 @@ void drawBuilding(std::shared_ptr<Building> b) {
 		break;
 	}
 
-	drawSquare(b->pos.x, b->pos.y, b->GetSize());
+	drawSquare(b->pos.x * PIXELS_PER_METER, b->pos.y * PIXELS_PER_METER, b->GetSize());
 }
 
 void drawMob(std::shared_ptr<Mob> m) {
 	int healthToAlpha = int(((float)m->GetHealth() / (float)m->GetMaxHealth()) * 155) + 100;
 	if (m->IsAttackingNorth()) { SDL_SetRenderDrawColor(gRenderer, 0xFF, 0x00, 0x00, healthToAlpha); }
 	else { SDL_SetRenderDrawColor(gRenderer, 0x00, 0x00, 0xFF, healthToAlpha); }
-	drawSquare(m->pos.x, m->pos.y, m->GetSize() * 2);
+
+	drawSquare(m->pos.x * PIXELS_PER_METER, m->pos.y * PIXELS_PER_METER, m->GetSize() * 2 * PIXELS_PER_METER);
+	
+	TTF_Font* sans = TTF_OpenFont("Sans.ttf", 24);
+
 }
 
 
@@ -122,11 +127,11 @@ Point pixelToGrid(int x, int y) {
 
 void drawGrid(Point grid) {
 	SDL_SetRenderDrawColor(gRenderer, 0xFF, 0x00, 0x00, 0xFF);
-	drawSquare(grid.x * GAME_GRID_SIZE, grid.y * GAME_GRID_SIZE, GAME_GRID_SIZE);
+	drawSquare(grid.x * PIXELS_PER_METER, grid.y * PIXELS_PER_METER, PIXELS_PER_METER);
 }
 
 void processClick(int x, int y, bool leftClick) {
-	const Point pos((float)x, (float)y);
+	const Point pos(x / (float)PIXELS_PER_METER, y / (float)PIXELS_PER_METER);
 	std::shared_ptr<Mob> m = std::shared_ptr<Mob>(new Swordsman(pos, leftClick));
 	GameState::mobs.insert(m);
 }
@@ -220,7 +225,9 @@ int main(int argc, char* args[]) {
 			// TODO remove this
 			for (std::shared_ptr<Waypoint> wp : GameState::waypoints)
 			{
-				drawSquare(wp->pos.x, wp->pos.y, 5);
+				drawSquare(wp->pos.x * PIXELS_PER_METER, 
+						   wp->pos.y * PIXELS_PER_METER, 
+						   WAYPOINT_SIZE * PIXELS_PER_METER);
 			}
 
 			// Draw Buildings
