@@ -1,6 +1,7 @@
 #include <memory>
 #include "SDL.h"
 #include "SDL_image.h"
+#include "SDL_ttf.h"
 #include <stdio.h>
 #include <string>
 #include <cmath>
@@ -107,6 +108,9 @@ void drawMob(std::shared_ptr<Mob> m) {
 	else { SDL_SetRenderDrawColor(gRenderer, 0x00, 0x00, 0xFF, healthToAlpha); }
 
 	drawSquare(m->pos.x * PIXELS_PER_METER, m->pos.y * PIXELS_PER_METER, m->size * 2 * PIXELS_PER_METER);
+	
+	TTF_Font* sans = TTF_OpenFont("Sans.ttf", 24);
+
 }
 
 
