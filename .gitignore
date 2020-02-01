@@ -1,3 +1,4 @@
 debug/
 .vs/
-/CrashLoyal/*.user
+x64/
+*.user

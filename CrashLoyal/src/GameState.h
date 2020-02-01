@@ -1,5 +1,4 @@
-#ifndef __GAMESTATE__
-#define __GAMESTATE__
+#pragma once
 
 #include <memory>
 #include <vector>
@@ -42,4 +41,3 @@ private :
 
 };
 
-#endif

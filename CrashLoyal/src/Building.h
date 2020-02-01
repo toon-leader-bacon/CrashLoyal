@@ -1,5 +1,4 @@
-#ifndef __BUILDING_H__
-#define __BUILDING_H__
+#pragma once
 
 #include "GameState.h"
 #include "Attackable.h"
@@ -57,4 +56,3 @@ private:
 
 };
 
-#endif

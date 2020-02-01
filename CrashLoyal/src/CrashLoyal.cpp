@@ -1,9 +1,6 @@
-#ifndef __ENGINE__
-#define __ENGINE__
-
 #include <memory>
-#include <SDL.h>
-#include <SDL_image.h>
+#include "SDL.h"
+#include "SDL_image.h"
 #include <stdio.h>
 #include <string>
 #include <cmath>
@@ -252,4 +249,3 @@ int main(int argc, char* args[]) {
 	return 0;
 }
 
-#endif
