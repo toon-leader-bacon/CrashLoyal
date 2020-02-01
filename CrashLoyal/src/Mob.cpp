@@ -58,13 +58,16 @@ bool Mob::findClosestWaypoint() {
 	return true;
 }
 
-void Mob::moveTowards(std::shared_ptr<Point> moveTarget) {
+void Mob::moveTowards(std::shared_ptr<Point> moveTarget, double elapsedTime) {
 	Point movementVector;
 	movementVector.x = moveTarget->x - this->pos.x;
 	movementVector.y = moveTarget->y - this->pos.y;
 	movementVector.normalize();
 	movementVector *= (float)this->GetSpeed();
+	movementVector *= elapsedTime;
 	pos += movementVector;
+
+	printf("MoveVector(%f, %f)     newPos(%f  %f)\n", movementVector.x, movementVector.y, pos.x, pos.y);
 }
 
 
@@ -198,7 +201,7 @@ void Mob::processMobCollision(std::shared_ptr<Mob> otherMob) {
 ///////////////////////////////////////////////
 // Procedures
 
-void Mob::attackProcedure() {
+void Mob::attackProcedure(double elapsedTime) {
 	if (this->target == nullptr || this->target->isDead()) {
 		this->targetLocked = false;
 		this->target = nullptr;
@@ -218,13 +221,13 @@ void Mob::attackProcedure() {
 	}
 	else {
 		// If the target is not in range
-		moveTowards(target->getPosition());
+		moveTowards(target->getPosition(), elapsedTime);
 	}
 }
 
-void Mob::moveProcedure() {
+void Mob::moveProcedure(double elapsedTime) {
 	if (targetPosition) {
-		moveTowards(targetPosition);
+		moveTowards(targetPosition, elapsedTime);
 
 		// Check for collisions
 		if (this->nextWaypoint->pos.insideOf(this->pos, (this->GetSize() + WAYPOINT_SIZE))) {
@@ -243,15 +246,15 @@ void Mob::moveProcedure() {
 	}
 }
 
-void Mob::update() {
+void Mob::update(double elapsedTime) {
 
 	switch (this->state) {
 	case MobState::Attacking:
-		this->attackProcedure();
+		this->attackProcedure(elapsedTime);
 		break;
 	case MobState::Moving:
 	default:
-		this->moveProcedure();
+		this->moveProcedure(elapsedTime);
 		break;
 	}
 }

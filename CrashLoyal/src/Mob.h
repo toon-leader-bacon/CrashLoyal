@@ -29,7 +29,7 @@ public:
 	std::shared_ptr<Point> targetPosition; // The actual place this mob is moving towards
 
 	// The main function that drives this mob. Should be called once every game tick.
-	void update();
+	void update(double elapsedTime);
 
 	bool isDead() { return health <= 0; }
 
@@ -69,7 +69,7 @@ protected:
 
 	void updateMoveTarget(Point target);
 
-	void moveTowards(std::shared_ptr<Point> moveTarget);
+	void moveTowards(std::shared_ptr<Point> moveTarget, double elapsedTime);
 	// Movement related
 	//////////////////////////////////
 	// Combat related
@@ -104,9 +104,9 @@ protected:
 	///////////////////////////////////////////////
 	// Procedures
 
-	void attackProcedure();
+	void attackProcedure(double elapsedTime);
 
-	void moveProcedure();
+	void moveProcedure(double elapsedTime);
 
 };
 

@@ -6,6 +6,8 @@
 #include <string>
 #include <cmath>
 #include <iostream>
+#include <time.h>
+#include <chrono>
 #include <vector>
 #include "Swordsman.h"
 #include "Point.h"
@@ -212,8 +214,16 @@ int main(int argc, char* args[]) {
 		// Number of frames since start of application
 		int frame = 0;
 
+		// Time at the start of the world, used to calculate the time between update cycles
+		auto previousTime = std::chrono::high_resolution_clock::now();
+		auto now = std::chrono::high_resolution_clock::now();
+
+
+		
+
 		//While application is running
 		while (!quit) {
+
 
 			//Clear screen
 			SDL_SetRenderDrawColor(gRenderer, 0xFF, 0xFF, 0xFF, 0xFF);
@@ -256,11 +266,17 @@ int main(int argc, char* args[]) {
 				drawBuilding(b);
 			}
 
+			now = std::chrono::high_resolution_clock::now();;
+			double deltaTSec = (std::chrono::duration_cast<std::chrono::duration<double>>(now - previousTime)).count();
+			previousTime = now;
+
 			// Draw and update mobs
 			SDL_SetRenderDrawColor(gRenderer, 0xFF, 0x00, 0xFF, 0xFF);
-			for (std::shared_ptr<Mob> m : GameState::mobs) {
+			for (std::shared_ptr<Mob> m : GameState::mobs)
+			{
+
 				if (frame % 20 == 0) {
-					m->update();
+					m->update(deltaTSec);
 				}
 				drawMob(m);
 			}

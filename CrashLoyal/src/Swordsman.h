@@ -12,7 +12,7 @@ public:
 	}
 
 	virtual int GetMaxHealth() const { return 10; }
-	virtual float GetSpeed() const { return 0.06f; }
+	virtual float GetSpeed() const { return 2.f; }
 	virtual float GetSize() const { return 1.f; }
 	virtual int GetDamage() const { return 2; }
 	virtual float GetAttackTime() const { return 200; }
