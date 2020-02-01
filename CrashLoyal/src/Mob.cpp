@@ -11,34 +11,22 @@
 
 int Mob::previousUUID;
 
-Mob::Mob(float x, float y, bool attackingNorth) {
-
+Mob::Mob(const Point& pos, bool attackingNorth) 
+	: pos(pos)
+	, attackingNorth(attackingNorth)
+{
 	Mob::previousUUID = 1 + Mob::previousUUID;
 	this->uuid = Mob::previousUUID;
-
-	this->pos.x = x;
-	this->pos.y = y;
-	this->attackingNorth = attackingNorth;
-	this->speed = 0.06f;
-	this->maxHealth = 10;
-	this->currentHealth = 10;
 
 	this->targetPosition = std::shared_ptr<Point>(new Point());
 	this->state = MobState::Moving;
 	findClosestWaypoint();
 
-
-	// TODO: change these vars
-	size = 5.0;
 	targetLocked = false;
 }
 
 std::shared_ptr<Point> Mob::getPosition() {
 	return std::make_shared<Point>(this->pos);
-}
-
-float Mob::getSize() {
-	return this->size;
 }
 
 bool Mob::findClosestWaypoint() {
@@ -75,9 +63,8 @@ void Mob::moveTowards(std::shared_ptr<Point> moveTarget) {
 	movementVector.x = moveTarget->x - this->pos.x;
 	movementVector.y = moveTarget->y - this->pos.y;
 	movementVector.normalize();
-	movementVector.multiply(this->speed);
-	this->pos.x += movementVector.x;
-	this->pos.y += movementVector.y;
+	movementVector *= (float)this->GetSpeed();
+	pos += movementVector;
 }
 
 
@@ -106,11 +93,11 @@ void Mob::updateMoveTarget(Point target) {
 // Combat related
 
 int Mob::attack(int dmg) {
-	this->currentHealth -= dmg;
+	this->health -= dmg;
 	if (this->isDead()) {
 		GameState::removeMob(this);
 	}
-	return currentHealth;
+	return health;
 }
 
 bool Mob::findAndSetAttackableMob() {
@@ -145,12 +132,10 @@ void Mob::pushAway(Point awayFrom) {
 	// TODO: Consider making a little random noise when pushing to avoid walking direcly into a push
 	float deltaX = (awayFrom.x - this->pos.x) + randomNumber(0, 10) / 20.0f;
 	float deltaY = (awayFrom.y - this->pos.y) + randomNumber(0, 10) / 20.0f;
-	Point* p = new Point(deltaX, deltaY);
-	p->normalize();
-	p->multiply(this->speed * -1);
-	this->pos.x += p->x;
-	this->pos.y += p->y;
-	delete p;
+	Point p = Point(deltaX, deltaY);
+	p.normalize();
+	p *= this->GetSpeed() * -1.f;
+	this->pos += p;
 }
 
 void Mob::setAttackTarget(std::shared_ptr<Attackable> newTarget) {
@@ -159,8 +144,8 @@ void Mob::setAttackTarget(std::shared_ptr<Attackable> newTarget) {
 }
 
 bool Mob::targetInRange() {
-	float range = this->size; // TODO: change this for ranged units
-	float totalSize = range + target->getSize();
+	float range = this->GetSize(); // TODO: change this for ranged units
+	float totalSize = range + target->GetSize();
 	return this->pos.insideOf(*(target->getPosition()), totalSize);
 }
 // Combat related
@@ -171,7 +156,7 @@ std::shared_ptr<Building> Mob::checkBuildingCollision() {
 	// Returns a refrence to the building this mob is currently collided with
 	// If the mob is not hitting a building, returns nullptr
 	for (std::shared_ptr<Building> b : GameState::buildings) {
-		if (this->pos.insideOf(b->pos, (b->radius + this->size))) {
+		if (this->pos.insideOf(b->pos, (b->radius + this->GetSize()))) {
 			return b;
 		}
 	}
@@ -191,7 +176,7 @@ void Mob::processBuildingCollision(std::shared_ptr<Building> b) {
 std::shared_ptr<Mob> Mob::checkMobCollision() {
 	for (std::shared_ptr<Mob> otherMob : GameState::mobs) {
 		if (this->sameMob(otherMob)) { continue; }
-		if (this->pos.insideOf(otherMob->pos, (this->size + otherMob->size))) {
+		if (this->pos.insideOf(otherMob->pos, (this->GetSize() + otherMob->GetSize()))) {
 			return otherMob;
 		}
 	}
@@ -222,9 +207,9 @@ void Mob::attackProcedure() {
 	}
 
 	if (targetInRange()) {
-		if (this->lastAttackTime >= this->attackCooldown) {
+		if (this->lastAttackTime >= this->GetAttackTime()) {
 			// If our last attack was longer ago than our cooldown
-			this->target->attack(this->dmg);
+			this->target->attack(this->GetDamage());
 			this->lastAttackTime = 0;
 			return;
 		}
@@ -242,7 +227,7 @@ void Mob::moveProcedure() {
 		moveTowards(targetPosition);
 
 		// Check for collisions
-		if (this->nextWaypoint->pos.insideOf(this->pos, (this->size + WAYPOINT_SIZE))) {
+		if (this->nextWaypoint->pos.insideOf(this->pos, (this->GetSize() + WAYPOINT_SIZE))) {
 			std::shared_ptr<Waypoint> trueNextWP = this->attackingNorth ?
 												   this->nextWaypoint->upNeighbor :
 												   this->nextWaypoint->downNeighbor;

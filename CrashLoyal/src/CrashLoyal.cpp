@@ -6,7 +6,7 @@
 #include <cmath>
 #include <iostream>
 #include <vector>
-#include "Mob.h"
+#include "Swordsman.h"
 #include "Point.h"
 #include "Waypoint.h"
 #include "GameState.h"
@@ -98,14 +98,14 @@ void drawBuilding(std::shared_ptr<Building> b) {
 		break;
 	}
 
-	drawSquare(b->pos.x, b->pos.y, b->getSize());
+	drawSquare(b->pos.x, b->pos.y, b->GetSize());
 }
 
 void drawMob(std::shared_ptr<Mob> m) {
-	int healthToAlpha = (m->maxHealth / m->currentHealth) * 255;
-	if (m->attackingNorth) { SDL_SetRenderDrawColor(gRenderer, 0xFF, 0x00, 0x00, healthToAlpha); }
+	int healthToAlpha = int(((float)m->GetHealth() / (float)m->GetMaxHealth()) * 155) + 100;
+	if (m->IsAttackingNorth()) { SDL_SetRenderDrawColor(gRenderer, 0xFF, 0x00, 0x00, healthToAlpha); }
 	else { SDL_SetRenderDrawColor(gRenderer, 0x00, 0x00, 0xFF, healthToAlpha); }
-	drawSquare(m->pos.x, m->pos.y, m->size * 2);
+	drawSquare(m->pos.x, m->pos.y, m->GetSize() * 2);
 }
 
 
@@ -126,7 +126,8 @@ void drawGrid(Point grid) {
 }
 
 void processClick(int x, int y, bool leftClick) {
-	std::shared_ptr<Mob> m = std::shared_ptr<Mob>(new Mob((float)x, (float)y, leftClick));
+	const Point pos((float)x, (float)y);
+	std::shared_ptr<Mob> m = std::shared_ptr<Mob>(new Swordsman(pos, leftClick));
 	GameState::mobs.insert(m);
 }
 

@@ -45,6 +45,14 @@ public:
 		return result;
 	}
 
+	Point& operator=(const Point& rhs) { x = rhs.x; y = rhs.y; return *this; }
+
+	Point operator+(const Point& rhs) const { return Point(x + rhs.x, y + rhs.y); }
+	Point& operator+=(const Point& rhs) { x += rhs.x; y += rhs.y; return *this; }
+
+	Point operator*(const float f) const { return Point(x * f, y * f); }
+	Point& operator*=(const float f) { x *= f; y *= f; return *this; }
+
 	float dist(Point other) {
 		return Point::dist(*this, other);
 	}
@@ -57,11 +65,6 @@ public:
 
 		this->x = this->x / mag;
 		this->y = this->y / mag;
-	}
-
-	void multiply(float a) {
-		this->x *= a;
-		this->y *= a;
 	}
 
 	static bool insideOf(Point a, float aRadius, Point b) {

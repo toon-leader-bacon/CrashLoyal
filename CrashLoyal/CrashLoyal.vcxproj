@@ -31,6 +31,7 @@
     <ClInclude Include="src\GameState.h" />
     <ClInclude Include="src\Mob.h" />
     <ClInclude Include="src\Point.h" />
+    <ClInclude Include="src\Swordsman.h" />
     <ClInclude Include="src\Waypoint.h" />
   </ItemGroup>
   <PropertyGroup Label="Globals">

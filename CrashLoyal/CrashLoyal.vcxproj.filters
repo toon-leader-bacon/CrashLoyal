@@ -3,16 +3,28 @@
   <ItemGroup>
     <ClCompile Include="src\Engine.cpp" />
     <ClCompile Include="src\GameState.cpp" />
-    <ClCompile Include="src\Mob.cpp" />
     <ClCompile Include="src\Building.cpp" />
     <ClCompile Include="src\CrashLoyal.cpp" />
+    <ClCompile Include="src\Mob.cpp">
+      <Filter>Mobs</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\GameState.h" />
-    <ClInclude Include="src\Mob.h" />
     <ClInclude Include="src\Point.h" />
     <ClInclude Include="src\Waypoint.h" />
     <ClInclude Include="src\Attackable.h" />
     <ClInclude Include="src\Building.h" />
+    <ClInclude Include="src\Mob.h">
+      <Filter>Mobs</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Swordsman.h">
+      <Filter>Mobs</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <Filter Include="Mobs">
+      <UniqueIdentifier>{7a953e00-6a20-49d7-b381-b0d82cbdcb20}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
 </Project>
