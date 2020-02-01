@@ -225,7 +225,9 @@ int main(int argc, char* args[]) {
 			// TODO remove this
 			for (std::shared_ptr<Waypoint> wp : GameState::waypoints)
 			{
-				drawSquare(wp->pos.x * PIXELS_PER_METER, wp->pos.y * PIXELS_PER_METER, 5);
+				drawSquare(wp->pos.x * PIXELS_PER_METER, 
+						   wp->pos.y * PIXELS_PER_METER, 
+						   WAYPOINT_SIZE * PIXELS_PER_METER);
 			}
 
 			// Draw Buildings
