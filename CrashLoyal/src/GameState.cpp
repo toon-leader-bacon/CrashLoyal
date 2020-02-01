@@ -96,10 +96,10 @@ std::vector<std::shared_ptr<Waypoint>> GameState::buildWaypoints() {
 
 	std::vector<std::shared_ptr<Waypoint>> waypoints(22);
 
-	float X_InitialPos = SCREEN_WIDTH / 4.0;
+	float X_InitialPos = GAME_GRID_WIDTH / 4.0;
 
-	float Y_InitialPos = SCREEN_HEIGHT / 4.0;
-	float Y_Increment = SCREEN_HEIGHT / 10.0; // Split the middle 50% into 5 equal sections, waypoint before+after each slice
+	float Y_InitialPos = GAME_GRID_HEIGHT / 4.0;
+	float Y_Increment = GAME_GRID_HEIGHT / 10.0; // Split the middle 50% into 5 equal sections, waypoint before+after each slice
 
 	// Build the waypoints for a lane
 	for (int i = 0; i < 6; i++) {
@@ -111,7 +111,7 @@ std::vector<std::shared_ptr<Waypoint>> GameState::buildWaypoints() {
 		waypoints[19 - i] = wpLeft;
 
 		Point ptRight;
-		ptRight.x = SCREEN_WIDTH - X_InitialPos;
+		ptRight.x = GAME_GRID_WIDTH - X_InitialPos;
 		ptRight.y = Y_InitialPos + (i * Y_Increment);
 		std::shared_ptr<Waypoint> wpRight = std::shared_ptr<Waypoint>(new Waypoint());
 		wpRight->pos = ptRight;

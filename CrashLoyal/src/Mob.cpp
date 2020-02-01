@@ -19,7 +19,7 @@ Mob::Mob(float x, float y, bool attackingNorth) {
 	this->pos.x = x;
 	this->pos.y = y;
 	this->attackingNorth = attackingNorth;
-	this->speed = 0.06f;
+	this->speed = 0.006f;
 	this->maxHealth = 10;
 	this->currentHealth = 10;
 
@@ -27,9 +27,8 @@ Mob::Mob(float x, float y, bool attackingNorth) {
 	this->state = MobState::Moving;
 	findClosestWaypoint();
 
-
 	// TODO: change these vars
-	size = 10.0;
+	size = 1.0;
 	targetLocked = false;
 }
 

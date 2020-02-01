@@ -98,14 +98,15 @@ void drawBuilding(std::shared_ptr<Building> b) {
 		break;
 	}
 
-	drawSquare(b->pos.x, b->pos.y, b->getSize());
+	drawSquare(b->pos.x * PIXELS_PER_METER, b->pos.y * PIXELS_PER_METER, b->getSize());
 }
 
 void drawMob(std::shared_ptr<Mob> m) {
 	int healthToAlpha = (m->maxHealth / m->currentHealth) * 255;
 	if (m->attackingNorth) { SDL_SetRenderDrawColor(gRenderer, 0xFF, 0x00, 0x00, healthToAlpha); }
 	else { SDL_SetRenderDrawColor(gRenderer, 0x00, 0x00, 0xFF, healthToAlpha); }
-	drawSquare(m->pos.x, m->pos.y, m->size * 2);
+
+	drawSquare(m->pos.x * PIXELS_PER_METER, m->pos.y * PIXELS_PER_METER, m->size * 2 * PIXELS_PER_METER);
 }
 
 
@@ -122,11 +123,16 @@ Point pixelToGrid(int x, int y) {
 
 void drawGrid(Point grid) {
 	SDL_SetRenderDrawColor(gRenderer, 0xFF, 0x00, 0x00, 0xFF);
-	drawSquare(grid.x * GAME_GRID_SIZE, grid.y * GAME_GRID_SIZE, GAME_GRID_SIZE);
+	drawSquare(grid.x * PIXELS_PER_METER, grid.y * PIXELS_PER_METER, PIXELS_PER_METER);
 }
 
 void processClick(int x, int y, bool leftClick) {
-	std::shared_ptr<Mob> m = std::shared_ptr<Mob>(new Mob((float)x, (float)y, leftClick));
+	// Process a click event given an x and y in pixels. 
+	// If leftClick is true, the mob will be attacking north
+	// else the mob is attacking south
+	float gameSpaceX = x / (float)PIXELS_PER_METER;
+	float gameSpaceY = y / (float)PIXELS_PER_METER;
+	std::shared_ptr<Mob> m = std::shared_ptr<Mob>(new Mob(gameSpaceX, gameSpaceY, leftClick));
 	GameState::mobs.insert(m);
 }
 
@@ -219,7 +225,7 @@ int main(int argc, char* args[]) {
 			// TODO remove this
 			for (std::shared_ptr<Waypoint> wp : GameState::waypoints)
 			{
-				drawSquare(wp->pos.x, wp->pos.y, 5);
+				drawSquare(wp->pos.x * PIXELS_PER_METER, wp->pos.y * PIXELS_PER_METER, 5);
 			}
 
 			// Draw Buildings
