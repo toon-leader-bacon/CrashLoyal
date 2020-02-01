@@ -60,6 +60,10 @@ bool init()
 		}
 	}
 
+	// init the text libraries
+	if (TTF_Init() < 0) {
+		printf("Text library TTF could not be Initialized correctly.\n");
+	}
 	return success;
 }
 
@@ -107,10 +111,26 @@ void drawMob(std::shared_ptr<Mob> m) {
 	if (m->IsAttackingNorth()) { SDL_SetRenderDrawColor(gRenderer, 0xFF, 0x00, 0x00, healthToAlpha); }
 	else { SDL_SetRenderDrawColor(gRenderer, 0x00, 0x00, 0xFF, healthToAlpha); }
 
-	drawSquare(m->pos.x * PIXELS_PER_METER, m->pos.y * PIXELS_PER_METER, m->GetSize() * 2 * PIXELS_PER_METER);
-	
-	TTF_Font* sans = TTF_OpenFont("Sans.ttf", 24);
+	int centerX = m->pos.x * PIXELS_PER_METER;
+	int centerY = m->pos.y * PIXELS_PER_METER;
+	int squareSize = m->GetSize() * 2 * PIXELS_PER_METER;
 
+	drawSquare(centerX, centerY, squareSize);
+
+	TTF_Font* sans = TTF_OpenFont("fonts/abelregular.ttf", 36); 
+	if (!sans) { printf("TTF_OpenFont: %s\n", TTF_GetError()); }
+	SDL_Color white = {0, 0, 0, 254};
+	SDL_Surface* surfaceMessage = TTF_RenderText_Solid(sans, "m", white); // TODO Make this print something other than m
+	if (!surfaceMessage) { printf("TTF_OpenFont: %s\n", TTF_GetError()); }
+	SDL_Texture* message = SDL_CreateTextureFromSurface(gRenderer, surfaceMessage);
+	if (!message) { printf("Error 2\n"); }
+	SDL_Rect messageRect = {
+		centerX - (squareSize / 2.f),
+		centerY - (squareSize / 2.f),
+		squareSize ,
+		squareSize 
+	};
+	SDL_RenderCopy(gRenderer, message, NULL, &messageRect);
 }
 
 
