@@ -125,7 +125,7 @@ void drawMob(std::shared_ptr<Mob> m) {
 	TTF_Font* sans = TTF_OpenFont("fonts/abelregular.ttf", 36); 
 	if (!sans) { printf("TTF_OpenFont: %s\n", TTF_GetError()); }
 	SDL_Color white = {0, 0, 0, 254};
-	SDL_Surface* surfaceMessage = TTF_RenderText_Solid(sans, "m", white); // TODO Make this print something other than m
+	SDL_Surface* surfaceMessage = TTF_RenderText_Solid(sans, m->GetDisplayLetter(), white); // TODO Make this print something other than m
 	if (!surfaceMessage) { printf("TTF_OpenFont: %s\n", TTF_GetError()); }
 	SDL_Texture* message = SDL_CreateTextureFromSurface(gRenderer, surfaceMessage);
 	if (!message) { printf("Error 2\n"); }

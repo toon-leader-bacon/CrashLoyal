@@ -10,4 +10,5 @@ public:
 	virtual float GetSize() const { return 3.f; }
 	virtual int GetDamage() const { return 2; }
 	virtual float GetAttackTime() const { return 200; }
+	const char* GetDisplayLetter() const { return "S"; }
 };

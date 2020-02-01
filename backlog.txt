@@ -1,6 +1,6 @@
 Game:
-- Mob subclasses for different unit types
 - Graphical representation of unit type
+- Game time based on system time, not tick frequency
 - Visual representation for attack
 - Support for elixir, selecting units
 - implement attack range
@@ -10,4 +10,9 @@ Game:
 Code Debt:
 - Get rid of shared_ptr
 - Code conventions
-- Units are meters, seconds
+- Units are seconds
+
+
+Completed:
+- Mob subclasses for different unit types
+- Units are meters
