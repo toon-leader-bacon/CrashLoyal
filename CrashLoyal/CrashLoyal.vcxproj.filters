@@ -12,12 +12,17 @@
     <ClInclude Include="src\GameState.h" />
     <ClInclude Include="src\Point.h" />
     <ClInclude Include="src\Waypoint.h" />
-    <ClInclude Include="src\Attackable.h" />
     <ClInclude Include="src\Building.h" />
     <ClInclude Include="src\Mob.h">
       <Filter>Mobs</Filter>
     </ClInclude>
-    <ClInclude Include="src\Swordsman.h">
+    <ClInclude Include="src\Mob_Swordsman.h">
+      <Filter>Mobs</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Mob_Archer.h">
+      <Filter>Mobs</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Attackable.h">
       <Filter>Mobs</Filter>
     </ClInclude>
   </ItemGroup>

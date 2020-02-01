@@ -1,18 +1,23 @@
-#include <memory>
+
+#include "GameState.h"
+#include "Mob_Archer.h"
+#include "Mob_Swordsman.h"
+#include "Point.h"
 #include "SDL.h"
 #include "SDL_image.h"
 #include "SDL_ttf.h"
-#include <stdio.h>
-#include <string>
+#include "Waypoint.h"
+
+#include <algorithm>
+#include <assert.h>
 #include <cmath>
 #include <iostream>
 #include <time.h>
 #include <chrono>
+#include <memory>
+#include <stdio.h>
+#include <string>
 #include <vector>
-#include "Swordsman.h"
-#include "Point.h"
-#include "Waypoint.h"
-#include "GameState.h"
 
 //The window that houses the renderrer
 SDL_Window* gWindow = NULL;
@@ -127,7 +132,7 @@ void drawMob(std::shared_ptr<Mob> m) {
 	drawSquare(centerX, centerY, squareSize);
 
 	SDL_Color white = {0, 0, 0, 254};
-	SDL_Surface* surfaceMessage = TTF_RenderText_Solid(sans, "m", white); // TODO Make this print something other than m
+	SDL_Surface* surfaceMessage = TTF_RenderText_Solid(sans, m->GetDisplayLetter(), white); // TODO Make this print something other than m
 	if (!surfaceMessage) { printf("TTF_OpenFont: %s\n", TTF_GetError()); }
 	SDL_Texture* message = SDL_CreateTextureFromSurface(gRenderer, surfaceMessage);
 	if (!message) { printf("Error 2\n"); }
@@ -157,10 +162,16 @@ void drawGrid(Point grid) {
 	drawSquare(grid.x * PIXELS_PER_METER, grid.y * PIXELS_PER_METER, PIXELS_PER_METER);
 }
 
-void processClick(int x, int y, bool leftClick) {
+void processClick(int x, int y, bool leftClick)
+{
+	static const Uint8* keyboardState = SDL_GetKeyboardState(NULL);
 	const Point pos(x / (float)PIXELS_PER_METER, y / (float)PIXELS_PER_METER);
-	std::shared_ptr<Mob> m = std::shared_ptr<Mob>(new Swordsman(pos, leftClick));
-	GameState::mobs.insert(m);
+	std::shared_ptr<Mob> m =
+		keyboardState[SDL_SCANCODE_LSHIFT]			// if left-shift is down
+		? std::shared_ptr<Mob>(new Mob_Archer)
+		: std::shared_ptr<Mob>(new Mob_Swordsman);
+	m->Init(pos, leftClick);
+	GameState::mobs.push_back(m);
 }
 
 void drawBG() {
@@ -243,7 +254,7 @@ int main(int argc, char* args[]) {
 					const SDL_MouseButtonEvent& mouse_event = e.button;
 					int x, y;
 					SDL_GetMouseState(&x, &y);
-					if (mouse_event.button == SDL_BUTTON_RIGHT)     { processClick(x, y, false); }
+					if (mouse_event.button == SDL_BUTTON_RIGHT) { processClick(x, y, false); }
 					else if (mouse_event.button == SDL_BUTTON_LEFT) { processClick(x, y, true); }
 				}
 				if (e.type == SDL_MOUSEBUTTONDOWN) {
@@ -274,12 +285,29 @@ int main(int argc, char* args[]) {
 
 			// Draw and update mobs
 			SDL_SetRenderDrawColor(gRenderer, 0xFF, 0x00, 0xFF, 0xFF);
-			for (std::shared_ptr<Mob> m : GameState::mobs)
-			{
-				if (frame % 20 == 0) {
+
+			for (std::shared_ptr<Mob> m : GameState::mobs) {
+				if (!m->isDead())
+				{
 					m->update(deltaTSec);
 				}
+
 				drawMob(m);
+			}
+
+			// Clean up dead mobs
+			// NOTE: remove_if moves all the dead ones to the end of the 
+			//	vector, but you still have to call erase() to change the 
+			//	size of the vector. 
+			GameState::mobs.erase(std::remove_if(GameState::mobs.begin(),
+				GameState::mobs.end(),
+				[](std::shared_ptr<Mob> m) {return m->isDead(); }),
+				GameState::mobs.end());
+
+			size_t numDead = 0;
+			for (int i = 0; i < (int)GameState::mobs.size(); ++i)
+			{
+
 			}
 
 			// Push changes to the screen

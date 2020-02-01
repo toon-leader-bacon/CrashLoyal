@@ -23,13 +23,12 @@ struct GameState
 	
 public:
 	const static int WAYPOINT_COUNT = 22;
-	static std::vector< std::shared_ptr<Waypoint>> waypoints;
+	static std::vector<std::shared_ptr<Waypoint>> waypoints;
 
-	static std::unordered_set< std::shared_ptr<Mob>> mobs;
+	static std::vector<std::shared_ptr<Mob>> mobs;
 
 	static std::unordered_set< std::shared_ptr<Building>> buildings;
 
-	static bool removeMob(Mob* m);
 	static bool removeBuilding(Building* m);
 
 private :

@@ -1,0 +1,18 @@
+Game:
+- Graphical representation of unit type
+- Game time based on system time, not tick frequency
+- Visual representation for attack
+- Support for elixir, selecting units
+- implement attack range
+- (?) Unit: Giant, Swordsman, Archer, Skeleton, Wizard
+- (?) Spell: Fireball, Tornado, Haste
+
+Code Debt:
+- Get rid of shared_ptr
+- Code conventions
+- Units are seconds
+
+
+Completed:
+- Mob subclasses for different unit types
+- Units are meters

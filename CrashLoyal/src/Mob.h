@@ -9,17 +9,20 @@
 class Mob : public Attackable {
 
 public:
-	Mob(const Point& pos, bool attackingNorth);
+	Mob();
 	virtual ~Mob() {}
+
+	virtual void Init(const Point& pos, bool attackingNorth);
 
 	bool IsAttackingNorth() const { return attackingNorth; }
 
-	// Stats related
+	// Unit-specific values, to be set in subclass
 	virtual int GetMaxHealth() const = 0;
 	virtual float GetSpeed() const = 0;
 	virtual float GetSize() const = 0;
 	virtual int GetDamage() const = 0;
 	virtual float GetAttackTime() const = 0;
+	virtual const char* GetDisplayLetter() const = 0;
 
 	int GetHealth() const { return health; }
 
