@@ -1,5 +1,4 @@
-#ifndef __MOB_H__
-#define __MOB_H__
+#pragma once
 
 #include <memory>
 #include "Attackable.h"
@@ -113,4 +112,3 @@ private:
 
 };
 
-#endif
