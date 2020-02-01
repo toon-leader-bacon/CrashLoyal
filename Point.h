@@ -21,10 +21,10 @@ public:
 		this->y = y;
 	}
 
-	/*Point(const Point& other) {
+	Point(const Point& other) {
 		this->x = other.x;
 		this->y = other.y;
-	}*/
+	}
 
 	static Point midpoint(Point a, Point b) {
 		Point result = *(new Point());

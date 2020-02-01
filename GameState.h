@@ -2,15 +2,14 @@
 #define __GAMESTATE__
 
 #include <memory>
-#include <vector>;
+#include <vector>
 #include <unordered_set>
 
 class Mob;
 class Building;
 
-#include "Waypoint.h";
-#include "Point.h";
-
+#include "Waypoint.h"
+#include "Point.h"
 
 //Screen dimension constants
 const int GAME_GRID_SIZE = 10; // A single in game grid is a square with this side length

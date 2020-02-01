@@ -1,5 +1,5 @@
 
-#include "GameState.h";
+#include "GameState.h"
 #include "Building.h"
 
 Building::Building(int x, int y, BuildingType type) {

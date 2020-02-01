@@ -103,7 +103,8 @@ private:
 	void moveProcedure();
 
 	void setAttackTarget(std::shared_ptr<Attackable> b);
-	bool targetInRange(std::shared_ptr<Attackable> possibleTarget);
+
+	bool targetInRange();
 
 };
 

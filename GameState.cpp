@@ -90,8 +90,7 @@ std::vector<std::shared_ptr<Waypoint>> GameState::buildWaypoints() {
 	// Build the waypoints for the tower rows
 	int princessYValue = Y_InitialPos - Y_Increment;
 	int kingYValue = princessYValue - Y_Increment;
-	int X_Increment = SCREEN_WIDTH / 8.0; // Split the middle 50% into 4 equal parts, waypoints before + after each slice
-
+	
 	// Top Row
 	Point princessTLpt;
 	princessTLpt.x = X_InitialPos;

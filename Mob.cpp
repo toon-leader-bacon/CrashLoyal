@@ -34,7 +34,7 @@ Mob::Mob(int x, int y, bool attackingNorth) {
 }
 
 std::shared_ptr<Point> Mob::getPosition() {
-	return std::shared_ptr<Point>(&(this->pos));
+	return std::make_shared<Point>(this->pos);
 }
 
 int Mob::getSize() {
@@ -58,7 +58,6 @@ bool Mob::findClosestWaypoint() {
 
 		float dist = this->pos.dist(wp->pos);
 		if (dist < smallestDist) {
-			printf("found closer\n");
 			smallestDist = dist;
 			closestWP = wp;
 		}
@@ -121,8 +120,12 @@ bool Mob::findAndSetAttackableMob() {
 	for (std::shared_ptr<Mob> otherMob : GameState::mobs) {
 		if (otherMob->attackingNorth == this->attackingNorth) { continue; }
 
-		if (((this->pos.x < (SCREEN_WIDTH / 2)) != (otherMob->pos.x < (SCREEN_WIDTH / 2))) ||
-			((this->pos.y < (SCREEN_HEIGHT / 2)) != (otherMob->pos.y < (SCREEN_HEIGHT / 2)))) {
+		bool imLeft    = this->pos.x     < (SCREEN_WIDTH / 2);
+		bool otherLeft = otherMob->pos.x < (SCREEN_WIDTH / 2);
+
+		bool imTop    = this->pos.y     < (SCREEN_HEIGHT / 2);
+		bool otherTop = otherMob->pos.y < (SCREEN_HEIGHT / 2);
+		if ((imLeft == otherLeft) && (imTop == otherTop)) {
 			// If we're in the same quardrant as the otherMob
 			// Mark it as the new target
 			this->setAttackTarget(otherMob);
@@ -155,11 +158,10 @@ void Mob::setAttackTarget(std::shared_ptr<Attackable> newTarget) {
 	target = newTarget;
 }
 
-bool Mob::targetInRange(std::shared_ptr<Attackable> possibleTarget) {
-	std::shared_ptr<Point> targetPos = possibleTarget->getPosition();
-
+bool Mob::targetInRange() {
 	int range = this->size; // TODO: change this for ranged units
-	return this->pos.insideOf(*targetPos, (range + possibleTarget->getSize()));
+	int totalSize = range + target->getSize();
+	return this->pos.insideOf(*(target->getPosition()), totalSize);
 }
 // Combat related
 ////////////////////////////////////////////////////////////
@@ -219,7 +221,7 @@ void Mob::attackProcedure() {
 		return;
 	}
 
-	if (targetInRange(target)) {
+	if (targetInRange()) {
 		if (this->lastAttackTime >= this->attackCooldown) {
 			// If our last attack was longer ago than our cooldown
 			this->target->attack(this->dmg);
@@ -233,7 +235,6 @@ void Mob::attackProcedure() {
 		// If the target is not in range
 		moveTowards(target->getPosition());
 	}
-
 }
 
 void Mob::moveProcedure() {
