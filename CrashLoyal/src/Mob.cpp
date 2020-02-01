@@ -66,8 +66,6 @@ void Mob::moveTowards(std::shared_ptr<Point> moveTarget, double elapsedTime) {
 	movementVector *= (float)this->GetSpeed();
 	movementVector *= elapsedTime;
 	pos += movementVector;
-
-	printf("MoveVector(%f, %f)     newPos(%f  %f)\n", movementVector.x, movementVector.y, pos.x, pos.y);
 }
 
 
@@ -131,13 +129,13 @@ int randomNumber(int minValue, int maxValue) {
 	return (rand() % maxValue) + minValue;
 }
 
-void Mob::pushAway(Point awayFrom) {
+void Mob::pushAway(Point awayFrom, double elapsedTime) {
 	// TODO: Consider making a little random noise when pushing to avoid walking direcly into a push
 	float deltaX = (awayFrom.x - this->pos.x) + randomNumber(0, 10) / 20.0f;
 	float deltaY = (awayFrom.y - this->pos.y) + randomNumber(0, 10) / 20.0f;
 	Point p = Point(deltaX, deltaY);
 	p.normalize();
-	p *= this->GetSpeed() * -1.f;
+	p *= this->GetSpeed() * -2.f * elapsedTime;
 	this->pos += p;
 }
 
@@ -166,10 +164,10 @@ std::shared_ptr<Building> Mob::checkBuildingCollision() {
 	return std::shared_ptr<Building>(nullptr);
 }
 
-void Mob::processBuildingCollision(std::shared_ptr<Building> b) {
+void Mob::processBuildingCollision(std::shared_ptr<Building> b, double elapsedTime) {
 	if (this->attackingNorth != b->isNorthBuilding) {
 		// Mob collided with friendly building
-		this->pushAway(b->pos);
+		this->pushAway(b->pos, elapsedTime);
 	} else {
 		// Mob collided with enemy building
 		this->setAttackTarget(b);
@@ -186,10 +184,10 @@ std::shared_ptr<Mob> Mob::checkMobCollision() {
 	return std::shared_ptr<Mob>(nullptr);
 }
 
-void Mob::processMobCollision(std::shared_ptr<Mob> otherMob) {
+void Mob::processMobCollision(std::shared_ptr<Mob> otherMob, double elapsedTime) {
 	if (otherMob->attackingNorth == this->attackingNorth) {
 		// Mob collided with friendly mob
-		otherMob->pushAway(this->pos);
+		otherMob->pushAway(this->pos, elapsedTime);
 	} else {
 		// this mob collided with enemy Mob
 		this->state = MobState::Attacking;
@@ -235,6 +233,11 @@ void Mob::moveProcedure(double elapsedTime) {
 												   this->nextWaypoint->upNeighbor :
 												   this->nextWaypoint->downNeighbor;
 			setNewWaypoint(trueNextWP);
+		}
+
+		std::shared_ptr<Mob> otherMob = this->checkMobCollision();
+		if (otherMob) {
+			this->processMobCollision(otherMob, elapsedTime);
 		}
 
 		// Fighting otherMob takes priority always

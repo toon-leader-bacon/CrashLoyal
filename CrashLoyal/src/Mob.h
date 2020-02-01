@@ -77,7 +77,7 @@ protected:
 	bool findAndSetAttackableMob();
 
 	// Push this unit away from the provided point
-	void pushAway(Point awayFrom);
+	void pushAway(Point awayFrom, double elapsedTime);
 
 	void setNewWaypoint(std::shared_ptr<Waypoint> newWaypoint) {
 		this->nextWaypoint = newWaypoint;
@@ -94,11 +94,11 @@ protected:
 
 	std::shared_ptr<Building> checkBuildingCollision();
 
-	void processBuildingCollision(std::shared_ptr<Building> b);
+	void processBuildingCollision(std::shared_ptr<Building> b, double elapsedTime);
 
 	std::shared_ptr<Mob> checkMobCollision();
 
-	void processMobCollision(std::shared_ptr<Mob> otherMob);
+	void processMobCollision(std::shared_ptr<Mob> otherMob, double elapsedTime);
 
 	// Collisions
 	///////////////////////////////////////////////
