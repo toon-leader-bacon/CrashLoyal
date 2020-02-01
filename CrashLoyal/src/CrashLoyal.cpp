@@ -267,7 +267,7 @@ int main(int argc, char* args[]) {
 			}
 
 			now = std::chrono::high_resolution_clock::now();;
-			double deltaTSec = (std::chrono::duration_cast<std::chrono::duration<double>>(now - previousTime)).count();
+			double deltaTSec = (std::chrono::duration_cast<std::chrono::duration<double>>(now - previousTime)).count() * 10;
 			previousTime = now;
 
 			// Draw and update mobs
