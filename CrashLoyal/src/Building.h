@@ -49,7 +49,7 @@ public:
 
 	std::shared_ptr<Point> getPosition();
 
-	float getSize();
+	float GetSize() const;
 
 private:
 

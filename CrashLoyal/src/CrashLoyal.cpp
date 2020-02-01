@@ -7,7 +7,7 @@
 #include <cmath>
 #include <iostream>
 #include <vector>
-#include "Mob.h"
+#include "Swordsman.h"
 #include "Point.h"
 #include "Waypoint.h"
 #include "GameState.h"
@@ -99,15 +99,15 @@ void drawBuilding(std::shared_ptr<Building> b) {
 		break;
 	}
 
-	drawSquare(b->pos.x * PIXELS_PER_METER, b->pos.y * PIXELS_PER_METER, b->getSize());
+	drawSquare(b->pos.x * PIXELS_PER_METER, b->pos.y * PIXELS_PER_METER, b->GetSize());
 }
 
 void drawMob(std::shared_ptr<Mob> m) {
-	int healthToAlpha = (m->maxHealth / m->currentHealth) * 255;
-	if (m->attackingNorth) { SDL_SetRenderDrawColor(gRenderer, 0xFF, 0x00, 0x00, healthToAlpha); }
+	int healthToAlpha = int(((float)m->GetHealth() / (float)m->GetMaxHealth()) * 155) + 100;
+	if (m->IsAttackingNorth()) { SDL_SetRenderDrawColor(gRenderer, 0xFF, 0x00, 0x00, healthToAlpha); }
 	else { SDL_SetRenderDrawColor(gRenderer, 0x00, 0x00, 0xFF, healthToAlpha); }
 
-	drawSquare(m->pos.x * PIXELS_PER_METER, m->pos.y * PIXELS_PER_METER, m->size * 2 * PIXELS_PER_METER);
+	drawSquare(m->pos.x * PIXELS_PER_METER, m->pos.y * PIXELS_PER_METER, m->GetSize() * 2 * PIXELS_PER_METER);
 	
 	TTF_Font* sans = TTF_OpenFont("Sans.ttf", 24);
 
@@ -131,12 +131,8 @@ void drawGrid(Point grid) {
 }
 
 void processClick(int x, int y, bool leftClick) {
-	// Process a click event given an x and y in pixels. 
-	// If leftClick is true, the mob will be attacking north
-	// else the mob is attacking south
-	float gameSpaceX = x / (float)PIXELS_PER_METER;
-	float gameSpaceY = y / (float)PIXELS_PER_METER;
-	std::shared_ptr<Mob> m = std::shared_ptr<Mob>(new Mob(gameSpaceX, gameSpaceY, leftClick));
+	const Point pos(x / (float)PIXELS_PER_METER, y / (float)PIXELS_PER_METER);
+	std::shared_ptr<Mob> m = std::shared_ptr<Mob>(new Swordsman(pos, leftClick));
 	GameState::mobs.insert(m);
 }
 

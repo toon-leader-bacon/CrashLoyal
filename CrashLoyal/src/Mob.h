@@ -6,47 +6,32 @@
 #include "Waypoint.h"
 #include "Point.h"
 
-enum class MobState
-{
-	Moving,
-	Attacking
-};
-
 class Mob : public Attackable {
 
 public:
+	Mob(const Point& pos, bool attackingNorth);
+	virtual ~Mob() {}
 
-	MobState state;
+	bool IsAttackingNorth() const { return attackingNorth; }
 
 	// Stats related
-	// TODO: Make these private
-	bool attackingNorth;
-	int maxHealth;
-	int currentHealth;
-	float speed; // Represents how many pixels this mob moves each frame
-	float size; // Represents the radius of the circle that is this mob's hitbox
-				// Also is the side-length of the square that draws this mob to the screen
-				// Units are in pixels
-	            // TODO: currently Mob-to-Mob collision is not implimented
+	virtual int GetMaxHealth() const = 0;
+	virtual float GetSpeed() const = 0;
+	virtual float GetSize() const = 0;
+	virtual int GetDamage() const = 0;
+	virtual float GetAttackTime() const = 0;
+
+	int GetHealth() const { return health; }
 
 	// Movement related
 	Point pos; // The position of this mob
 	std::shared_ptr<Waypoint> nextWaypoint; // The default movement target if there are no enemies nearby
 	std::shared_ptr<Point> targetPosition; // The actual place this mob is moving towards
 
-	// Combat related
-	int dmg = 2;
-	bool targetLocked;
-	std::shared_ptr<Attackable> target;
-	int const attackCooldown = 200; // Number of frames that must pass before another attack can happen
-	int lastAttackTime;           // How many frames ago was the last attack? 
-
-	Mob(float x, float y, bool attackingNorth);
-
 	// The main function that drives this mob. Should be called once every game tick.
 	void update();
 
-	bool isDead() { return this->currentHealth <= 0; }
+	bool isDead() { return health <= 0; }
 
 	int attack(int dmg); // deal dmg to this mob
 
@@ -54,13 +39,26 @@ public:
 	bool sameMob(std::shared_ptr<Mob> otherMob) { return this->uuid == otherMob->uuid; }
 
 	std::shared_ptr<Point> getPosition();
-	float getSize();
 
-private: 
+protected: 
+	enum class MobState
+	{
+		Moving,
+		Attacking
+	};
+	MobState state;
 
 	static int previousUUID;
 	int uuid;
 
+	bool attackingNorth;
+
+	int health;
+
+	bool targetLocked;
+	std::shared_ptr<Attackable> target;
+
+	int lastAttackTime;           // How many frames ago was the last attack? 
 
 	bool findClosestWaypoint();
 

@@ -31,6 +31,7 @@ std::shared_ptr<Point> Building::getPosition() {
 	return std::shared_ptr<Point>(&(this->pos));
 }
 
-float Building::getSize() {
+float Building::GetSize() const
+{
 	return this->radius;
 }

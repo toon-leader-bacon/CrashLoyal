@@ -13,7 +13,7 @@ public:
 
 	virtual std::shared_ptr<Point> getPosition() = 0;
 
-	virtual float getSize() = 0;
+	virtual float GetSize() const = 0;
 };
 
 
