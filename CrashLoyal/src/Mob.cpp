@@ -153,9 +153,10 @@ bool Mob::targetInRange() {
 //  2) handle collision with towers & river 
 std::shared_ptr<Mob> Mob::checkCollision() {
 	for (std::shared_ptr<Mob> otherMob : GameState::mobs) {
+		// don't collide with yourself
 		if (this->sameMob(otherMob)) { continue; }
-		if (this->pos.insideOf(otherMob->pos, (this->GetSize() + otherMob->GetSize()))) {
-			return otherMob;
+
+		// PROJECT 3: YOUR CODE CHECKING FOR A COLLISION GOES HERE
 		}
 	}
 	return std::shared_ptr<Mob>(nullptr);
