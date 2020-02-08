@@ -20,6 +20,7 @@ public:
 	virtual int GetMaxHealth() const = 0;
 	virtual float GetSpeed() const = 0;
 	virtual float GetSize() const = 0;
+	virtual float GetMass() const = 0;
 	virtual int GetDamage() const = 0;
 	virtual float GetAttackTime() const = 0;
 	virtual const char* GetDisplayLetter() const = 0;

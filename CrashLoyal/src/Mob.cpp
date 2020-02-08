@@ -72,7 +72,7 @@ void Mob::moveTowards(std::shared_ptr<Point> moveTarget, double elapsedTime) {
 	movementVector.y = moveTarget->y - this->pos.y;
 	movementVector.normalize();
 	movementVector *= (float)this->GetSpeed();
-	movementVector *= elapsedTime;
+	movementVector *= (float)elapsedTime;
 	pos += movementVector;
 }
 
@@ -157,7 +157,6 @@ std::shared_ptr<Mob> Mob::checkCollision() {
 		if (this->sameMob(otherMob)) { continue; }
 
 		// PROJECT 3: YOUR CODE CHECKING FOR A COLLISION GOES HERE
-		}
 	}
 	return std::shared_ptr<Mob>(nullptr);
 }
