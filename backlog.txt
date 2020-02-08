@@ -1,15 +1,17 @@
 Game:
-- (K) Mac build
-- (K) Collision avoidance API
-- (K) Make units be giants and swordsmen
-- (K) Get builing attacks working
-- (K) Collision avoidance completed
+- (A) Mac build
+- Collision handling
+- Buildings can attack
+- Buildings can die
+- Victory conditions
+- Elixir costs
+- AI API
+- Unit: Giant, Skeleton, Wizard
+- UI for dropping units
 - Visual representation for attack
 - implement attack range
-- Unit: Giant, Swordsman, Archer, Skeleton, Wizard
 - Support for elixir, selecting units
 - Spell: Fireball, Tornado, Haste
-- AI API
 
 Code Debt:
 - Get rid of shared_ptr
