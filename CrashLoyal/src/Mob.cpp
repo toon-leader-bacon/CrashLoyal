@@ -158,28 +158,10 @@ bool Mob::targetInRange() {
 ////////////////////////////////////////////////////////////
 // Collisions
 
-std::shared_ptr<Building> Mob::checkBuildingCollision() {
-	// Returns a refrence to the building this mob is currently collided with
-	// If the mob is not hitting a building, returns nullptr
-	for (std::shared_ptr<Building> b : GameState::buildings) {
-		if (this->pos.insideOf(b->pos, (b->radius + this->GetSize()))) {
-			return b;
-		}
-	}
-	return std::shared_ptr<Building>(nullptr);
-}
-
-void Mob::processBuildingCollision(std::shared_ptr<Building> b, double elapsedTime) {
-	if (this->attackingNorth != b->isNorthBuilding) {
-		// Mob collided with friendly building
-		this->pushAway(b->pos, elapsedTime);
-	} else {
-		// Mob collided with enemy building
-		this->setAttackTarget(b);
-	}
-}
-
-std::shared_ptr<Mob> Mob::checkMobCollision() {
+// PROJECT 3: 
+//  1) return a vector of mobs that we're colliding with
+//  2) handle collision with towers & river 
+std::shared_ptr<Mob> Mob::checkCollision() {
 	for (std::shared_ptr<Mob> otherMob : GameState::mobs) {
 		if (this->sameMob(otherMob)) { continue; }
 		if (this->pos.insideOf(otherMob->pos, (this->GetSize() + otherMob->GetSize()))) {
@@ -189,15 +171,8 @@ std::shared_ptr<Mob> Mob::checkMobCollision() {
 	return std::shared_ptr<Mob>(nullptr);
 }
 
-void Mob::processMobCollision(std::shared_ptr<Mob> otherMob, double elapsedTime) {
-	if (otherMob->attackingNorth == this->attackingNorth) {
-		// Mob collided with friendly mob
-		otherMob->pushAway(this->pos, elapsedTime);
-	} else {
-		// this mob collided with enemy Mob
-		this->state = MobState::Attacking;
-		this->setAttackTarget(otherMob);
-	}
+void Mob::processCollision(std::shared_ptr<Mob> otherMob, double elapsedTime) {
+	// PROJECT 3: YOUR COLLISION HANDLING CODE GOES HERE
 }
 
 // Collisions
@@ -240,9 +215,11 @@ void Mob::moveProcedure(double elapsedTime) {
 			setNewWaypoint(trueNextWP);
 		}
 
-		std::shared_ptr<Mob> otherMob = this->checkMobCollision();
+		// PROJECT 3: You should not change this code very much, but this is where your 
+		// collision code will be called from
+		std::shared_ptr<Mob> otherMob = this->checkCollision();
 		if (otherMob) {
-			this->processMobCollision(otherMob, elapsedTime);
+			this->processCollision(otherMob, elapsedTime);
 		}
 
 		// Fighting otherMob takes priority always
