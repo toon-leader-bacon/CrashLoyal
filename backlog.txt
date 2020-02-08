@@ -1,22 +1,21 @@
 Game:
 - (A) Mac build
 - Collision handling
+- implement attack range
 - Buildings can attack
 - Buildings can die
 - Victory conditions
 - Elixir costs
-- AI API
 - Unit: Giant, Skeleton, Wizard
 - UI for dropping units
 - Visual representation for attack
-- implement attack range
-- Support for elixir, selecting units
 - Spell: Fireball, Tornado, Haste
+- AI vs. AI play
 
 Code Debt:
 - Get rid of shared_ptr
+- Cleanup/Refactor
 - Code conventions
-
 
 Completed:
 - Mob subclasses for different unit types
