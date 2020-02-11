@@ -125,9 +125,9 @@ void drawMob(std::shared_ptr<Mob> m) {
 	if (m->IsAttackingNorth()) { SDL_SetRenderDrawColor(gRenderer, 0xFF, 0x00, 0x00, healthToAlpha); }
 	else { SDL_SetRenderDrawColor(gRenderer, 0x00, 0x00, 0xFF, healthToAlpha); }
 
-	int centerX = m->pos.x * PIXELS_PER_METER;
-	int centerY = m->pos.y * PIXELS_PER_METER;
-	int squareSize = m->GetSize() * 2 * PIXELS_PER_METER;
+	float centerX = m->pos.x * PIXELS_PER_METER;
+	float centerY = m->pos.y * PIXELS_PER_METER;
+	float squareSize = m->GetSize() * 2 * PIXELS_PER_METER;
 
 	drawSquare(centerX, centerY, squareSize);
 
@@ -137,10 +137,10 @@ void drawMob(std::shared_ptr<Mob> m) {
 	SDL_Texture* message = SDL_CreateTextureFromSurface(gRenderer, surfaceMessage);
 	if (!message) { printf("Error 2\n"); }
 	SDL_Rect messageRect = {
-		centerX - (squareSize / 2.f),
-		centerY - (squareSize / 2.f),
-		squareSize ,
-		squareSize 
+		(int)(centerX - (squareSize / 2.f)),
+		(int)(centerY - (squareSize / 2.f)),
+		(int)squareSize,
+		(int)squareSize 
 	};
 	SDL_RenderCopy(gRenderer, message, NULL, &messageRect);
 	SDL_FreeSurface(surfaceMessage);
@@ -188,30 +188,30 @@ void drawBG() {
 	int upshift = 5;
 	// Draw the river
 	SDL_Rect riverRect = {
-		0,
-		(SCREEN_HEIGHT / 2) - upshift,
-		SCREEN_WIDTH,
-		20
+		(int)(RIVER_LEFT_X * PIXELS_PER_METER),
+		(int)(RIVER_TOP_Y * PIXELS_PER_METER),
+		(int)(SCREEN_WIDTH * PIXELS_PER_METER),
+		(int)((RIVER_BOT_Y - RIVER_TOP_Y) * PIXELS_PER_METER)
 	};
 	SDL_SetRenderDrawColor(gRenderer, 51, 119, 255, 0xFF); // Light blue
 	SDL_RenderFillRect(gRenderer, &riverRect);
 
 	// Draw bridges
 	SDL_Rect bridgeLeft = {
-		SCREEN_WIDTH / 5,
-		(SCREEN_HEIGHT / 2) - 2 - upshift,
-		30,
-		25
+		(int)(LEFT_BRIDGE_CENTER_X - (BRIDGE_WIDTH / 2.0)) * PIXELS_PER_METER,
+		(int)(LEFT_BRIDGE_CENTER_Y - (BRIDGE_HEIGHT / 2.0)) * PIXELS_PER_METER,
+		(int)(BRIDGE_WIDTH * PIXELS_PER_METER),
+		(int)(BRIDGE_HEIGHT * PIXELS_PER_METER)
 	};
 	SDL_SetRenderDrawColor(gRenderer, 179, 59, 0, 0xFF); // Brown
 	SDL_RenderFillRect(gRenderer, &bridgeLeft);
 
 
 	SDL_Rect bridgeRight = {
-		(SCREEN_WIDTH * 3 / 4) - 15,
-		(SCREEN_HEIGHT / 2) - 2 - upshift,
-		30,
-		25
+		(int)(RIGHT_BRIDGE_CENTER_X - (BRIDGE_WIDTH / 2.0)) * PIXELS_PER_METER,
+		(int)(RIGHT_BRIDGE_CENTER_Y - (BRIDGE_HEIGHT / 2.0)) * PIXELS_PER_METER,
+		(int)(BRIDGE_WIDTH * PIXELS_PER_METER),
+		(int)(BRIDGE_HEIGHT * PIXELS_PER_METER)
 	};
 	SDL_SetRenderDrawColor(gRenderer, 179, 59, 0, 0xFF); // Brown
 	SDL_RenderFillRect(gRenderer, &bridgeRight);

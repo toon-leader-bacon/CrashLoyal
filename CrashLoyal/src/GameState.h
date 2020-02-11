@@ -18,6 +18,21 @@ const int GAME_GRID_HEIGHT = 100; // How many tiles tall the game grid is.
 const int SCREEN_WIDTH = PIXELS_PER_METER * GAME_GRID_WIDTH;   // The total number of pixels wide the window is
 const int SCREEN_HEIGHT = PIXELS_PER_METER * GAME_GRID_HEIGHT; // The total number of pixels tall the window is
 
+// Definig sizes of the river rectangle
+const float RIVER_LEFT_X = 0;
+const float RIVER_RIGHT_X = GAME_GRID_WIDTH;
+const float RIVER_TOP_Y = (GAME_GRID_HEIGHT / 2) - 1.5;
+const float RIVER_BOT_Y = (GAME_GRID_HEIGHT / 2) + 1.5;
+
+// Defining sizes of the bridges
+const float BRIDGE_WIDTH = 3;
+const float BRIDGE_HEIGHT = 3.5;
+const float LEFT_BRIDGE_CENTER_X = GAME_GRID_WIDTH / 4.0;
+const float LEFT_BRIDGE_CENTER_Y = GAME_GRID_HEIGHT / 2.0;
+
+const float RIGHT_BRIDGE_CENTER_X = GAME_GRID_WIDTH - LEFT_BRIDGE_CENTER_X;
+const float RIGHT_BRIDGE_CENTER_Y = LEFT_BRIDGE_CENTER_Y;
+
 struct GameState
 {
 	
