@@ -143,6 +143,8 @@ void drawMob(std::shared_ptr<Mob> m) {
 		squareSize 
 	};
 	SDL_RenderCopy(gRenderer, message, NULL, &messageRect);
+	SDL_FreeSurface(surfaceMessage);
+	SDL_DestroyTexture(message);
 }
 
 
