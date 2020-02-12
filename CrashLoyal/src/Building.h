@@ -3,12 +3,16 @@
 #include "GameState.h"
 #include "Attackable.h"
 #include "Point.h"
+#include "Mob.h"
 
-const int KingTowerSize = 50;
+const float KingTowerSize = 5.0f;
 const int KingTowerHealth = 100;
 
-const float SmallTowerSize = 30.0f;
-const float smallTowerHalth = 50.0f;
+const float SmallTowerSize = 3.f;
+const int SmallTowerHealth = 50.0f;
+
+const float KingTowerAttackRadius = 20.f;
+const float SmallTowerAttackRadius = 20.f;
 
 const float KingX = GAME_GRID_WIDTH / 2;
 const float PrincessLeftX = GAME_GRID_WIDTH / 4;
@@ -29,15 +33,12 @@ enum class BuildingType {
 	SouthLeftTower
 };
 
-class Building : public Attackable {
+class Building {
 
 public:
-	int health;
-	Point pos;
-	float radius;
 
-	BuildingType type;
 	bool isNorthBuilding;
+
 
 	Building(float x, float y,  BuildingType type);
 
@@ -51,7 +52,40 @@ public:
 
 	float GetSize() const;
 
+	Point getPoint() const { return this->pos; }
+
+	BuildingType getType() { return this->type; }
+
+	void update(double elapsedTime);
+
 private:
+	int health;
+	Point pos;
+	float size;
+	float attackRadius;
+
+	BuildingType type;
+
+	Attackable* target;  // May be null => no current target
+	float lastAttackTime;
+
+
+	enum class BuildingState {
+		Attacking,
+		Scaning
+	};
+	BuildingState state;
+
+	void attackProcedure(double elapsedTime);
+
+	virtual int GetDamage() const { return 2; }
+	virtual float GetAttackTime() const { return 0.15f; }
+
+	Attackable* findTargetInRange();
+
+	void scanProcedure(double elapsedTime);
+
+
 
 
 };

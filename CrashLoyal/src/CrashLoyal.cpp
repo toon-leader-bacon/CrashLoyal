@@ -102,7 +102,7 @@ void drawSquare(float centerX, float centerY, float size) {
 }
 
 void drawBuilding(std::shared_ptr<Building> b) {
-	switch (b->type)
+	switch (b->getType())
 	{
 	case BuildingType::NorthKing:
 	case BuildingType::NorthLeftTower:
@@ -117,7 +117,9 @@ void drawBuilding(std::shared_ptr<Building> b) {
 		break;
 	}
 
-	drawSquare(b->pos.x * PIXELS_PER_METER, b->pos.y * PIXELS_PER_METER, b->GetSize());
+	drawSquare(b->getPoint().x * PIXELS_PER_METER, 
+			   b->getPoint().y * PIXELS_PER_METER,
+			   b->GetSize() * PIXELS_PER_METER);
 }
 
 void drawMob(std::shared_ptr<Mob> m) {
@@ -275,26 +277,26 @@ int main(int argc, char* args[]) {
 						   WAYPOINT_SIZE * PIXELS_PER_METER);
 			}
 
-			// Draw Buildings
-			for (std::shared_ptr<Building> b : GameState::buildings)
-			{
-				drawBuilding(b);
-			}
-
 			now = std::chrono::high_resolution_clock::now();;
 			double deltaTSec = (std::chrono::duration_cast<std::chrono::duration<double>>(now - previousTime)).count() * 10;
 			previousTime = now;
+
+			// Draw and update Buildings
+			for (std::shared_ptr<Building> b : GameState::buildings) {
+				if (!b->isDead()) {
+					b->update(deltaTSec);
+					drawBuilding(b);
+				}
+			}
 
 			// Draw and update mobs
 			SDL_SetRenderDrawColor(gRenderer, 0xFF, 0x00, 0xFF, 0xFF);
 
 			for (std::shared_ptr<Mob> m : GameState::mobs) {
-				if (!m->isDead())
-				{
+				if (!m->isDead()) {
+					drawMob(m);
 					m->update(deltaTSec);
 				}
-
-				drawMob(m);
 			}
 
 			// Clean up dead mobs

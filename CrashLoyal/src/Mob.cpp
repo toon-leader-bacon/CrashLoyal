@@ -181,11 +181,9 @@ void Mob::attackProcedure(double elapsedTime) {
 		if (this->lastAttackTime >= this->GetAttackTime()) {
 			// If our last attack was longer ago than our cooldown
 			this->target->attack(this->GetDamage());
-			this->lastAttackTime = 0;
+			this->lastAttackTime = 0; // lastAttackTime is incremented in the main update function
 			return;
 		}
-
-		this->lastAttackTime += 1;
 	}
 	else {
 		// If the target is not in range
@@ -232,4 +230,6 @@ void Mob::update(double elapsedTime) {
 		this->moveProcedure(elapsedTime);
 		break;
 	}
+
+	this->lastAttackTime += (float)elapsedTime;
 }

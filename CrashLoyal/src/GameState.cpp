@@ -45,7 +45,7 @@ std::unordered_set<std::shared_ptr<Building>> GameState::buildings = GameState::
 
 bool GameState::removeBuilding(Building* buildingToRemove) {
 	for (std::shared_ptr<Building> b : GameState::buildings) {
-		if (buildingToRemove->type == b->type) {
+		if (buildingToRemove->getType() == b->getType()) {
 			GameState::buildings.erase(b);
 			return true;
 		}

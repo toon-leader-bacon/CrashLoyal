@@ -10,6 +10,6 @@ public:
 	virtual float GetSize() const { return 1.f; }
 	virtual float GetMass() const { return 5.f; }
 	virtual int GetDamage() const { return 2; }
-	virtual float GetAttackTime() const { return 200; }
+	virtual float GetAttackTime() const { return 2.5f; }
 	const char* GetDisplayLetter() const { return "S"; }
 };

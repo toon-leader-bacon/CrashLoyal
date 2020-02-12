@@ -62,7 +62,7 @@ protected:
 	bool targetLocked;
 	std::shared_ptr<Attackable> target;
 
-	int lastAttackTime;           // How many frames ago was the last attack? 
+	float lastAttackTime;           // How long ago was the last attack? 
 
 	bool findClosestWaypoint();
 
