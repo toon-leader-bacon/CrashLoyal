@@ -12,7 +12,7 @@ const float SmallTowerSize = 3.f;
 const int SmallTowerHealth = 50.0f;
 
 const float KingTowerAttackRadius = 20.f;
-const float SmallTowerAttackRadius = 20.f;
+const float SmallTowerAttackRadius = 10.f;
 
 const float KingX = GAME_GRID_WIDTH / 2;
 const float PrincessLeftX = GAME_GRID_WIDTH / 4;
@@ -44,7 +44,7 @@ public:
 
 	Building(Point p, BuildingType type) : Building(p.x, p.y, type) { }
 
-	bool isDead() { return this->health >= 0; }
+	bool isDead() { return this->health <= 0; }
 
 	int attack(int dmg);
 
@@ -66,7 +66,7 @@ private:
 
 	BuildingType type;
 
-	Attackable* target;  // May be null => no current target
+	std::shared_ptr<Attackable> target;  // May be null => no current target
 	float lastAttackTime;
 
 
@@ -79,13 +79,13 @@ private:
 	void attackProcedure(double elapsedTime);
 
 	virtual int GetDamage() const { return 2; }
-	virtual float GetAttackTime() const { return 0.15f; }
+	virtual float GetAttackTime() const { return 2.f; }
 
-	Attackable* findTargetInRange();
+	std::shared_ptr<Attackable> findTargetInRange();
 
 	void scanProcedure(double elapsedTime);
 
-
+	bool inAttackRange(Point p);
 
 
 };

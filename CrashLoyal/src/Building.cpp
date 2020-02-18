@@ -41,17 +41,38 @@ float Building::GetSize() const {
 }
 
 void Building::attackProcedure(double elapsedTime) {
-	if (this->lastAttackTime >= this->GetAttackTime()) {
-		this->target->attack(this->GetDamage());
-		this->lastAttackTime = 0; // lastAttackTime is incremented in the main update function
+
+	if (this->target == nullptr || this->target->isDead()) {
+		this->target = nullptr;
+		this->state = BuildingState::Scaning;
 		return;
+	}
+
+	if (inAttackRange(*(this->target->getPosition()))) {
+		if (this->lastAttackTime >= this->GetAttackTime()) {
+			// If our last attack was longer ago than our cooldown
+			this->target->attack(this->GetDamage());
+			this->lastAttackTime = 0; // lastAttackTime is incremented in the main update function
+			return;
+		}
+	}
+	else {
+		// If the target is not in range
+		this->state = BuildingState::Scaning;
 	}
 }
 
-Attackable* Building::findTargetInRange() {
+bool Building::inAttackRange(Point p) {
+	float dist = this->pos.dist(p);
+	return dist < this->attackRadius;
+}
+
+std::shared_ptr<Attackable> Building::findTargetInRange() {
 	for (std::shared_ptr<Mob> mob : GameState::mobs) {
-		if (mob->IsAttackingNorth() != this->isNorthBuilding) { 
-			return mob.get();
+		if (mob->IsAttackingNorth() == this->isNorthBuilding) {
+			if (inAttackRange(*(mob->getPosition()))) {
+				return std::static_pointer_cast<Attackable>(mob);
+			}
 		}
 	}
 	return nullptr;
@@ -59,9 +80,9 @@ Attackable* Building::findTargetInRange() {
 
 void Building::scanProcedure(double elapsedTime) {
 	// Look for an enemy mob in range
-	Attackable* possibleTargete = findTargetInRange();
-	if (possibleTargete != nullptr) {
-		this->target = possibleTargete;
+	std::shared_ptr<Attackable> possibleTarget = findTargetInRange();
+	if (possibleTarget != nullptr) {
+		this->target = possibleTarget;
 		this->state = BuildingState::Attacking;
 	}
 }

@@ -281,6 +281,8 @@ int main(int argc, char* args[]) {
 			double deltaTSec = (std::chrono::duration_cast<std::chrono::duration<double>>(now - previousTime)).count() * 10;
 			previousTime = now;
 
+			GameState::mobs;
+
 			// Draw and update Buildings
 			for (std::shared_ptr<Building> b : GameState::buildings) {
 				if (!b->isDead()) {
@@ -293,7 +295,7 @@ int main(int argc, char* args[]) {
 			SDL_SetRenderDrawColor(gRenderer, 0xFF, 0x00, 0xFF, 0xFF);
 
 			for (std::shared_ptr<Mob> m : GameState::mobs) {
-				if (!m->isDead()) {
+				if (!(m == nullptr || m->isDead())) {
 					drawMob(m);
 					m->update(deltaTSec);
 				}
