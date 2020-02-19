@@ -44,7 +44,7 @@ public:
 
 	Building(Point p, BuildingType type) : Building(p.x, p.y, type) { }
 
-	bool isDead() { return this->health >= 0; }
+	bool isDead() { return this->health <= 0; }
 
 	int attack(int dmg);
 
