@@ -16,13 +16,14 @@ Mob::Mob()
 	, nextWaypoint(NULL)
 	, targetPosition(new Point)
 	, state(MobState::Moving)
-	, uuid(Mob::previousUUID)
+	, uuid(Mob::previousUUID + 1)
 	, attackingNorth(true)
 	, health(-1)
 	, targetLocked(false)
 	, target(NULL)
 	, lastAttackTime(0)
 {
+	Mob::previousUUID += 1;
 }
 
 void Mob::Init(const Point& pos, bool attackingNorth)
