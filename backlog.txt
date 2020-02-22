@@ -1,9 +1,6 @@
 Game:
 - (A) Mac build
-- Collision handling
-- implement attack range
-- Buildings can attack
-- Buildings can die
+- Mob->Building collision => attack building
 - Victory conditions
 - Elixir costs
 - Unit: Giant, Skeleton, Wizard
