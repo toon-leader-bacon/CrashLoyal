@@ -33,7 +33,7 @@ int Building::attack(int dmg) {
 }
 
 std::shared_ptr<Point> Building::getPosition() {
-	return std::shared_ptr<Point>(&(this->pos));
+	return std::make_shared<Point>(this->pos);
 }
 
 float Building::GetSize() const {
@@ -42,8 +42,11 @@ float Building::GetSize() const {
 
 void Building::attackProcedure(double elapsedTime) {
 	if (this->lastAttackTime >= this->GetAttackTime()) {
-		this->target->attack(this->GetDamage());
-		this->lastAttackTime = 0; // lastAttackTime is incremented in the main update function
+		if (this->target != nullptr) {
+			//this->target->attack(this->GetDamage());
+			this->lastAttackTime = 0; // lastAttackTime is incremented in the main update function
+		}
+		
 		return;
 	}
 }
