@@ -1,8 +1,30 @@
+// MIT License
+// 
+// Copyright(c) 2020 Arthur Bacon and Kevin Dill
+// 
+// Permission is hereby granted, free of charge, to any person obtaining a copy
+// of this softwareand associated documentation files(the "Software"), to deal
+// in the Software without restriction, including without limitation the rights
+// to use, copy, modify, merge, publish, distribute, sublicense, and /or sell
+// copies of the Software, and to permit persons to whom the Software is
+// furnished to do so, subject to the following conditions :
+// 
+// The above copyright noticeand this permission notice shall be included in all
+// copies or substantial portions of the Software.
+// 
+// THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+// IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+// FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT.IN NO EVENT SHALL THE
+// AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+// LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+// OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+// SOFTWARE.
 
+#include "Constants.h"
 #include "GameState.h"
 #include "Mob_Archer.h"
 #include "Mob_Swordsman.h"
-#include "Point.h"
+#include "Vec2.h"
 #include "SDL.h"
 #include "SDL_image.h"
 #include "SDL_ttf.h"
@@ -43,7 +65,7 @@ bool init()
 		}
 
 		//Create window
-		gWindow = SDL_CreateWindow("SDL Tutorial", SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED, SCREEN_WIDTH, SCREEN_HEIGHT, SDL_WINDOW_SHOWN);
+		gWindow = SDL_CreateWindow("SDL Tutorial", SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED, SCREEN_WIDTH_PIXELS, SCREEN_HEIGHT_PIXELS, SDL_WINDOW_SHOWN);
 		if (gWindow == NULL) {
 			printf("Window could not be created! SDL Error: %s\n", SDL_GetError());
 			success = false;
@@ -101,40 +123,44 @@ void drawSquare(float centerX, float centerY, float size) {
 	SDL_RenderFillRect(gRenderer, &rect);
 }
 
-void drawBuilding(std::shared_ptr<Building> b) {
-	switch (b->getType())
-	{
-	case BuildingType::NorthKing:
-	case BuildingType::NorthLeftTower:
-	case BuildingType::NorthRightTower:
-		SDL_SetRenderDrawColor(gRenderer, 0x00, 0x00, 0xFF, 0xFF);
-		break;
-	case BuildingType::SouthKing:
-	case BuildingType::SouthLeftTower:
-	case BuildingType::SouthRightTower:
-	default:
-		SDL_SetRenderDrawColor(gRenderer, 0xFF, 0x00, 0x00, 0xFF);
-		break;
-	}
-
-	drawSquare(b->getPoint().x * PIXELS_PER_METER, 
-			   b->getPoint().y * PIXELS_PER_METER,
-			   b->GetSize() * PIXELS_PER_METER);
+int healthToAlpha(const Entity* e)
+{
+	float health = std::max(0.f, (float)e->getHealth());
+	float maxHealth = (float)e->getMaxHealth();
+	return (int)(((health / maxHealth) * 200.f) + 55.f);
 }
 
-void drawMob(std::shared_ptr<Mob> m) {
-	int healthToAlpha = int(((float)m->GetHealth() / (float)m->GetMaxHealth()) * 155) + 100;
-	if (m->IsAttackingNorth()) { SDL_SetRenderDrawColor(gRenderer, 0xFF, 0x00, 0x00, healthToAlpha); }
-	else { SDL_SetRenderDrawColor(gRenderer, 0x00, 0x00, 0xFF, healthToAlpha); }
+void drawBuilding(Building* b) {
+	int alpha = healthToAlpha(b);
 
-	float centerX = m->pos.x * PIXELS_PER_METER;
-	float centerY = m->pos.y * PIXELS_PER_METER;
-	float squareSize = m->GetSize() * 2 * PIXELS_PER_METER;
+	if (b->isDead())
+		SDL_SetRenderDrawColor(gRenderer, 0x00, 0x00, 0x00, 100);
+	else if (b->isNorth())
+		SDL_SetRenderDrawColor(gRenderer, 0xFF, 0x00, 0x00, alpha);
+	else
+		SDL_SetRenderDrawColor(gRenderer, 0x00, 0x00, 0xFF, alpha);
+
+	drawSquare(b->getPosition().x * PIXELS_PER_METER,
+			   b->getPosition().y * PIXELS_PER_METER,
+			   b->getSize() * PIXELS_PER_METER);
+}
+
+void drawMob(Mob* m) {
+	int alpha = healthToAlpha(m);
+
+	if (m->isNorth()) 
+		SDL_SetRenderDrawColor(gRenderer, 0xFF, 0x00, 0x00, alpha);
+	else 
+		SDL_SetRenderDrawColor(gRenderer, 0x00, 0x00, 0xFF, alpha);
+
+	float centerX = m->getPosition().x * PIXELS_PER_METER;
+	float centerY = m->getPosition().y * PIXELS_PER_METER;
+	float squareSize = m->getSize() * 2 * PIXELS_PER_METER;
 
 	drawSquare(centerX, centerY, squareSize);
 
 	SDL_Color white = {0, 0, 0, 254};
-	SDL_Surface* surfaceMessage = TTF_RenderText_Solid(sans, m->GetDisplayLetter(), white); // TODO Make this print something other than m
+	SDL_Surface* surfaceMessage = TTF_RenderText_Solid(sans, m->getDisplayLetter(), white); // TODO Make this print something other than m
 	if (!surfaceMessage) { printf("TTF_OpenFont: %s\n", TTF_GetError()); }
 	SDL_Texture* message = SDL_CreateTextureFromSurface(gRenderer, surfaceMessage);
 	if (!message) { printf("Error 2\n"); }
@@ -151,17 +177,17 @@ void drawMob(std::shared_ptr<Mob> m) {
 
 
 
-Point pixelToGrid(int x, int y) {
+Vec2 pixelToGrid(int x, int y) {
 	// Given a pixel coordinate, this function returns the grid coordinate that contains the provided pixel
 	// As always, (0,0) is top left
 
-	Point result;
+	Vec2 result;
 	result.x = fmax(0.f, x / 10.0f);
 	result.y = fmax(0.f, y / 10.0f);
 	return result;
 }
 
-void drawGrid(Point grid) {
+void drawGrid(Vec2 grid) {
 	SDL_SetRenderDrawColor(gRenderer, 0xFF, 0x00, 0x00, 0xFF);
 	drawSquare(grid.x * PIXELS_PER_METER, grid.y * PIXELS_PER_METER, PIXELS_PER_METER);
 }
@@ -169,21 +195,22 @@ void drawGrid(Point grid) {
 void processClick(int x, int y, bool leftClick)
 {
 	static const Uint8* keyboardState = SDL_GetKeyboardState(NULL);
-	const Point pos(x / (float)PIXELS_PER_METER, y / (float)PIXELS_PER_METER);
-	std::shared_ptr<Mob> m =
-		keyboardState[SDL_SCANCODE_LSHIFT]			// if left-shift is down
-		? std::shared_ptr<Mob>(new Mob_Archer)
-		: std::shared_ptr<Mob>(new Mob_Swordsman);
+	const Vec2 pos(x / (float)PIXELS_PER_METER, y / (float)PIXELS_PER_METER);
+
+	Mob* m = keyboardState[SDL_SCANCODE_LSHIFT]			// if left-shift is down
+		? (Mob*)new Mob_Archer()
+		: (Mob*)new Mob_Swordsman();
 	m->Init(pos, leftClick);
-	GameState::mobs.push_back(m);
+
+	GameState::get().addMob(m);
 }
 
 void drawBG() {
 	SDL_Rect bgRect = {
 		0,
 		0,
-		SCREEN_WIDTH,
-		SCREEN_HEIGHT
+		SCREEN_WIDTH_PIXELS,
+		SCREEN_HEIGHT_PIXELS
 	};
 	SDL_SetRenderDrawColor(gRenderer, 79, 161, 0, 0xFF); // Dark green
 	SDL_RenderFillRect(gRenderer, &bgRect);
@@ -192,7 +219,7 @@ void drawBG() {
 	SDL_Rect riverRect = {
 		(int)(RIVER_LEFT_X * PIXELS_PER_METER),
 		(int)(RIVER_TOP_Y * PIXELS_PER_METER),
-		(int)(SCREEN_WIDTH * PIXELS_PER_METER),
+		(int)(SCREEN_WIDTH_PIXELS),
 		(int)((RIVER_BOT_Y - RIVER_TOP_Y) * PIXELS_PER_METER)
 	};
 	SDL_SetRenderDrawColor(gRenderer, 51, 119, 255, 0xFF); // Light blue
@@ -220,6 +247,8 @@ void drawBG() {
 }
 
 int main(int argc, char* args[]) {
+	GameState& gameState = GameState::get();
+
 	//Start up SDL and create window
 	if (!init()) {
 		printf("Failed to initialize!\n");
@@ -268,55 +297,37 @@ int main(int argc, char* args[]) {
 				}
 			}
 
+
 			// Draw waypoints
 			// TODO remove this
-			for (std::shared_ptr<Waypoint> wp : GameState::waypoints)
-			{
-				drawSquare(wp->pos.x * PIXELS_PER_METER, 
-						   wp->pos.y * PIXELS_PER_METER, 
-						   WAYPOINT_SIZE * PIXELS_PER_METER);
-			}
+			//for (const Waypoint* wp : gameState.getWaypoints())
+			//{
+			//	drawSquare(wp->pos.x * PIXELS_PER_METER, 
+			//			   wp->pos.y * PIXELS_PER_METER, 
+			//			   WAYPOINT_SIZE * PIXELS_PER_METER);
+			//}
 
+			// tick the game
+			previousTime = now;
 			now = std::chrono::high_resolution_clock::now();;
 			double deltaTSec = (std::chrono::duration_cast<std::chrono::duration<double>>(now - previousTime)).count() * 10;
-			previousTime = now;
+			gameState.tick(deltaTSec);
 
-			GameState::mobs;
-
-			// Draw and update Buildings
-			for (std::shared_ptr<Building> b : GameState::buildings) {
-				if (!b->isDead()) {
-					b->update(deltaTSec);
-					drawBuilding(b);
-				}
-			}
-
-			// Draw and update mobs
-			SDL_SetRenderDrawColor(gRenderer, 0xFF, 0x00, 0xFF, 0xFF);
-
-			for (std::shared_ptr<Mob> m : GameState::mobs) {
-				if (!(m == nullptr || m->isDead())) {
-					drawMob(m);
-					m->update(deltaTSec);
-				}
-			}
-
-			// Clean up dead mobs
-			// NOTE: remove_if moves all the dead ones to the end of the 
-			//	vector, but you still have to call erase() to change the 
-			//	size of the vector. 
-			GameState::mobs.erase(std::remove_if(GameState::mobs.begin(),
-				GameState::mobs.end(),
-				[](std::shared_ptr<Mob> m) {return m->isDead(); }),
-				GameState::mobs.end());
-
-			size_t numDead = 0;
-			for (int i = 0; i < (int)GameState::mobs.size(); ++i)
+			// render
+			for (size_t i = 0; i < BuildingType::NumBuildingTypes; ++i)
 			{
-
+				Building* pBuilding = gameState.getBuilding((BuildingType)i);
+				if (pBuilding)
+					drawBuilding(pBuilding);
 			}
 
-			// Push changes to the screen
+//			SDL_SetRenderDrawColor(gRenderer, 0xFF, 0x00, 0xFF, 0xFF);
+			for (Mob* m : gameState.getMobs()) {
+				if (!m->isDead()) {
+					drawMob(m);
+				}
+			}
+
 			SDL_RenderPresent(gRenderer);
 			frame++;
 		}

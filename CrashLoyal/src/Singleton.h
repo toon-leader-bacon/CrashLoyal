@@ -22,42 +22,37 @@
 
 #pragma once
 
-#include "Singleton.h"
+#include <assert.h>
 
-#include <vector>
-
-#include "Vec2.h"
-#include "Waypoint.h"
-
-class Mob;
-
-class Building;
-enum BuildingType;
-
-
-class GameState : public Singleton<GameState>
+// To make a class a singleton, you need to (a) have it inherit from this 
+// class, and (b) define its s_Obj in its .cpp file.  Then you can call the
+// static get() function from anywhere to get it.
+template<class T>
+class Singleton
 {
+protected:
+	explicit Singleton() { assert(!s_Obj); s_Obj = (T*)this; }
+	virtual ~Singleton() {}
+
 public:
-	explicit GameState();
-	virtual ~GameState();
-
-	void tick(double deltaTSec);
-
-	Building* getBuilding(BuildingType b) { return m_Buildings[(size_t)b]; }
-
-	const std::vector<Waypoint*>& getWaypoints() const { return m_Waypoints; }
-	const std::vector<Mob*>& getMobs() const { return m_Mobs; }
-
-	void addMob(Mob* mob) { m_Mobs.push_back(mob); }	// takes ownership
+	static T& get() 
+	{ 
+		if (!s_Obj) 
+		{ 
+			new T;
+		}; 
+		assert(!!s_Obj);  
+		return *s_Obj; 
+	}
 
 private:
-	// Helpers for the constructor
-	void buildWaypoints();
-	void buildBuildings();
+	static T* s_Obj;
 
 private:
-	std::vector<Waypoint*> m_Waypoints;			// owned
-	std::vector<Building*> m_Buildings;			// owned
-	std::vector<Mob*> m_Mobs;					// owned
+	// DELIBERATELY UNDEFINED
+	Singleton(const Singleton& rhs);
+	Singleton& operator=(const Singleton& rhs);
+	bool operator==(const Singleton& rhs) const;
+	bool operator<(const Singleton& rhs) const;
 };
 

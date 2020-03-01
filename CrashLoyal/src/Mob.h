@@ -1,109 +1,80 @@
+// MIT License
+// 
+// Copyright(c) 2020 Arthur Bacon and Kevin Dill
+// 
+// Permission is hereby granted, free of charge, to any person obtaining a copy
+// of this softwareand associated documentation files(the "Software"), to deal
+// in the Software without restriction, including without limitation the rights
+// to use, copy, modify, merge, publish, distribute, sublicense, and /or sell
+// copies of the Software, and to permit persons to whom the Software is
+// furnished to do so, subject to the following conditions :
+// 
+// The above copyright noticeand this permission notice shall be included in all
+// copies or substantial portions of the Software.
+// 
+// THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+// IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+// FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT.IN NO EVENT SHALL THE
+// AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+// LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+// OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+// SOFTWARE.
+
 #pragma once
 
 #include <memory>
-#include "Attackable.h"
+#include "Entity.h"
 #include "Building.h"
 #include "Waypoint.h"
-#include "Point.h"
+#include "Vec2.h"
 
-class Mob : public Attackable {
+class Mob : public Entity {
 
 public:
 	Mob();
 	virtual ~Mob() {}
 
-	virtual void Init(const Point& pos, bool attackingNorth);
+	bool operator==(const Mob& rhs) const { return m_Uid == rhs.m_Uid; }
 
-	bool IsAttackingNorth() const { return attackingNorth; }
+	virtual void Init(const Vec2& pos, bool attackingNorth);
 
-	// Unit-specific values, to be set in subclass
-	virtual int GetMaxHealth() const = 0;
-	virtual float GetSpeed() const = 0;
-	virtual float GetSize() const = 0;
-	virtual float GetMass() const = 0;
-	virtual int GetDamage() const = 0;
-	virtual float GetAttackTime() const = 0;
-	virtual const char* GetDisplayLetter() const = 0;
-
-	int GetHealth() const { return health; }
-
-	// Movement related
-	Point pos; // The position of this mob
-	std::shared_ptr<Waypoint> nextWaypoint; // The default movement target if there are no enemies nearby
-	std::shared_ptr<Point> targetPosition; // The actual place this mob is moving towards
+	virtual bool isNorth() const { return m_bIsNorth; }
 
 	// The main function that drives this mob. Should be called once every game tick.
 	void update(double elapsedTime);
 
-	bool isDead() { return health <= 0; }
+	// Unit-specific values, to be set in subclass
+	virtual float getSpeed() const = 0;
+	virtual float getSize() const = 0;
+	virtual float getMass() const = 0;
+	virtual int getDamage() const = 0;
+	virtual float getAttackTime() const = 0;
+	virtual const char* getDisplayLetter() const = 0;
 
-	int attack(int dmg); // deal dmg to this mob
+protected:
+	// pick the attack and move targets (we may have both).
+	void pickTargets();
 
-	bool sameMob(Mob* otherMob) { return this->uuid == otherMob->uuid; }
-	bool sameMob(std::shared_ptr<Mob> otherMob) { return this->uuid == otherMob->uuid; }
-
-	std::shared_ptr<Point> getPosition();
-
-protected: 
-	enum class MobState
-	{
-		Moving,
-		Attacking
-	};
-	MobState state;
-
-	static int previousUUID;
-	int uuid;
-
-	bool attackingNorth;
-
-	int health;
-
-	bool targetLocked;
-	std::shared_ptr<Attackable> target;
-
-	float lastAttackTime;           // How long ago was the last attack? 
-
-	bool findClosestWaypoint();
-
-	void findNewTarget();
-
-	// Have this mob start moving towards the provided target
-	void updateMoveTarget(std::shared_ptr<Point> target);
-
-	void updateMoveTarget(Point target);
-
-	void moveTowards(std::shared_ptr<Point> moveTarget, double elapsedTime);
-	// Movement related
-	//////////////////////////////////
-	// Combat related
-
-	bool findAndSetAttackableMob();
-
-	void setNewWaypoint(std::shared_ptr<Waypoint> newWaypoint) {
-		this->nextWaypoint = newWaypoint;
-		this->updateMoveTarget(newWaypoint->pos);
-	}
-
-	void setAttackTarget(std::shared_ptr<Attackable> b);
+	const Waypoint* findClosestWaypoint();
+	void moveTowards(const Vec2& moveTarget, double elapsedTime);
 
 	bool targetInRange();
 
-	// Combat related
-	////////////////////////////////////////////////////////////
-	// Collisions
 
-	std::shared_ptr<Mob> checkCollision();
-
-	void processCollision(std::shared_ptr<Mob> otherMob, double elapsedTime);
-
-	// Collisions
-	///////////////////////////////////////////////
-	// Procedures
+	Mob* checkCollision();
+	void processCollision(Mob* otherMob, double elapsedTime);
 
 	void attackProcedure(double elapsedTime);
-
 	void moveProcedure(double elapsedTime);
 
-};
+protected:
+	static int s_PreviousUID;
+	int m_Uid;
 
+	bool m_bIsNorth;
+
+	Entity* m_pAttackTarget;
+	const Waypoint* m_pMoveTarget;
+
+	float m_LastAttackTime;
+};

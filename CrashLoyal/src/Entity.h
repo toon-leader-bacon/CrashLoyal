@@ -22,42 +22,28 @@
 
 #pragma once
 
-#include "Singleton.h"
-
-#include <vector>
-
+#include <memory>
 #include "Vec2.h"
-#include "Waypoint.h"
 
-class Mob;
-
-class Building;
-enum BuildingType;
-
-
-class GameState : public Singleton<GameState>
+class Entity
 {
+
 public:
-	explicit GameState();
-	virtual ~GameState();
+	Entity() : m_Health(-1) {}
 
-	void tick(double deltaTSec);
+	virtual int getMaxHealth() const = 0;
+	virtual float getSize() const = 0;
+	virtual bool isNorth() const = 0;
 
-	Building* getBuilding(BuildingType b) { return m_Buildings[(size_t)b]; }
+	bool isDead() const { return m_Health <= 0; }
+	int getHealth() const { return m_Health; }
+	void takeDamage(int dmg) { m_Health -= dmg; }
 
-	const std::vector<Waypoint*>& getWaypoints() const { return m_Waypoints; }
-	const std::vector<Mob*>& getMobs() const { return m_Mobs; }
+	const Vec2& getPosition() const { return m_Pos; }
 
-	void addMob(Mob* mob) { m_Mobs.push_back(mob); }	// takes ownership
-
-private:
-	// Helpers for the constructor
-	void buildWaypoints();
-	void buildBuildings();
-
-private:
-	std::vector<Waypoint*> m_Waypoints;			// owned
-	std::vector<Building*> m_Buildings;			// owned
-	std::vector<Mob*> m_Mobs;					// owned
+protected:
+	int m_Health;
+	Vec2 m_Pos;
 };
+
 

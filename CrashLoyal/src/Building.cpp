@@ -1,43 +1,57 @@
+// MIT License
+// 
+// Copyright(c) 2020 Arthur Bacon and Kevin Dill
+// 
+// Permission is hereby granted, free of charge, to any person obtaining a copy
+// of this softwareand associated documentation files(the "Software"), to deal
+// in the Software without restriction, including without limitation the rights
+// to use, copy, modify, merge, publish, distribute, sublicense, and /or sell
+// copies of the Software, and to permit persons to whom the Software is
+// furnished to do so, subject to the following conditions :
+// 
+// The above copyright noticeand this permission notice shall be included in all
+// copies or substantial portions of the Software.
+// 
+// THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+// IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+// FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT.IN NO EVENT SHALL THE
+// AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+// LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+// OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+// SOFTWARE.
+
+#include "Building.h"
 
 #include "GameState.h"
-#include "Building.h"
+
+const float KingTowerSize = 5.0f;
+const int KingTowerHealth = 100;
+
+const float SmallTowerSize = 3.f;
+const int SmallTowerHealth = 50;
+
+const float KingTowerAttackRadius = 20.f;
+const float SmallTowerAttackRadius = 10.f;
 
 Building::Building(float x, float y, BuildingType type)
  : lastAttackTime(0)
- , state(BuildingState::Scaning)
-	  
+ , state(BuildingState::Scaning)  
 {
-	Point p = *(new Point(x, y));
-	this->pos = p;
+	Vec2 p = *(new Vec2(x, y));
+	this->m_Pos = p;
 	this->type = type;
 
 	if (this->type == BuildingType::NorthKing || this->type == BuildingType::SouthKing) {
 		this->size = KingTowerSize;
-		this->health = KingTowerHealth;
+		m_Health = KingTowerHealth;
 		this->attackRadius = KingTowerAttackRadius;
 	} else {
 		this->size = SmallTowerSize;
-		this->health = SmallTowerHealth;
+		m_Health = SmallTowerHealth;
 		this->attackRadius = SmallTowerAttackRadius;
 	}
 
-	this->isNorthBuilding = (this->type == BuildingType::NorthKing ||
-							 this->type == BuildingType::NorthLeftTower ||
-							 this->type == BuildingType::NorthRightTower);
-}
-
-int Building::attack(int dmg) {
-	health -= dmg;
-	if (this->isDead()) { GameState::removeBuilding(this); }
-	return health;
-}
-
-std::shared_ptr<Point> Building::getPosition() {
-	return std::make_shared<Point>(this->pos);
-}
-
-float Building::GetSize() const {
-	return this->size;
+	m_MaxHealth = m_Health;
 }
 
 void Building::attackProcedure(double elapsedTime) {
@@ -47,10 +61,14 @@ void Building::attackProcedure(double elapsedTime) {
 		return;
 	}
 
-	if (inAttackRange(*(this->target->getPosition()))) {
-		if (this->lastAttackTime >= this->GetAttackTime()) {
+	if (inAttackRange(this->target->getPosition())) {
+		if (this->lastAttackTime >= this->getAttackTime()) {
 			// If our last attack was longer ago than our cooldown
-			this->target->attack(this->GetDamage());
+
+			this->target->takeDamage(this->getDamage());
+			if (this->target->isDead())
+				this->target = NULL;
+
 			this->lastAttackTime = 0; // lastAttackTime is incremented in the main update function
 			return;
 		}
@@ -61,16 +79,16 @@ void Building::attackProcedure(double elapsedTime) {
 	}
 }
 
-bool Building::inAttackRange(Point p) {
-	float dist = this->pos.dist(p);
+bool Building::inAttackRange(Vec2 p) {
+	float dist = this->m_Pos.dist(p);
 	return dist < this->attackRadius;
 }
 
-std::shared_ptr<Attackable> Building::findTargetInRange() {
-	for (std::shared_ptr<Mob> mob : GameState::mobs) {
-		if (mob->IsAttackingNorth() == this->isNorthBuilding) {
-			if (inAttackRange(*(mob->getPosition()))) {
-				return std::static_pointer_cast<Attackable>(mob);
+Entity* Building::findTargetInRange() {
+	for (Mob* mob : GameState::get().getMobs()) {
+		if (mob->isNorth() != isNorth()) {
+			if (inAttackRange(mob->getPosition())) {
+				return mob;
 			}
 		}
 	}
@@ -79,8 +97,8 @@ std::shared_ptr<Attackable> Building::findTargetInRange() {
 
 void Building::scanProcedure(double elapsedTime) {
 	// Look for an enemy mob in range
-	std::shared_ptr<Attackable> possibleTarget = findTargetInRange();
-	if (possibleTarget != nullptr) {
+	Entity* possibleTarget = findTargetInRange();
+	if (possibleTarget != NULL) {
 		this->target = possibleTarget;
 		this->state = BuildingState::Attacking;
 	}

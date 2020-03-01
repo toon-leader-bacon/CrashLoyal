@@ -1,62 +1,92 @@
+// MIT License
+// 
+// Copyright(c) 2020 Arthur Bacon and Kevin Dill
+// 
+// Permission is hereby granted, free of charge, to any person obtaining a copy
+// of this softwareand associated documentation files(the "Software"), to deal
+// in the Software without restriction, including without limitation the rights
+// to use, copy, modify, merge, publish, distribute, sublicense, and /or sell
+// copies of the Software, and to permit persons to whom the Software is
+// furnished to do so, subject to the following conditions :
+// 
+// The above copyright noticeand this permission notice shall be included in all
+// copies or substantial portions of the Software.
+// 
+// THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+// IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+// FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT.IN NO EVENT SHALL THE
+// AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+// LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+// OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+// SOFTWARE.
+
 #include "GameState.h"
 
-#include <memory>
-#include <vector>
 #include <cmath>
 #include "Building.h"
+#include "Constants.h"
 #include "Mob.h"
-#include "Waypoint.h"
-#include "Point.h"
 
-std::vector<std::shared_ptr<Mob>> GameState::mobs;
+GameState* Singleton<GameState>::s_Obj = NULL;
 
-std::unordered_set<std::shared_ptr<Building>> GameState::buildBuildings() {
-	std::unordered_set<std::shared_ptr<Building>> result;
-	
-	// Kings
-	std::shared_ptr<Building> northKing = std::make_shared<Building>(
-		Building( Point(KingX, NorthKingY), BuildingType::NorthKing));
-	std::shared_ptr<Building> southKing = std::make_shared<Building>(
-		Building( Point(KingX, SouthKingY), BuildingType::SouthKing));
-	result.insert(northKing);
-	result.insert(southKing);
-
-	// Northern Princesses
-	std::shared_ptr<Building> northLeftPrincess = std::make_shared<Building>(
-		Building( Point(PrincessLeftX, NorthPrincessY), BuildingType::NorthLeftTower));
-	std::shared_ptr<Building> northRightPrincess = std::make_shared<Building>(
-		Building( Point(PrincessRightX, NorthPrincessY), BuildingType::NorthRightTower));
-	result.insert(northLeftPrincess);
-	result.insert(northRightPrincess);
-
-	// Southern Princesses
-	std::shared_ptr<Building> southLeftPrincess = std::make_shared<Building>(
-		Building( Point(PrincessLeftX, SouthPrincessY), BuildingType::SouthLeftTower));
-	std::shared_ptr<Building> southRightPrincess = std::make_shared<Building>(
-		Building( Point(PrincessRightX, SouthPrincessY), BuildingType::SouthRightTower));
-	result.insert(southLeftPrincess);
-	result.insert(southRightPrincess);
-
-
-	return result;
+GameState::GameState()
+{
+	buildWaypoints();
+	buildBuildings();
 }
 
-std::unordered_set<std::shared_ptr<Building>> GameState::buildings = GameState::buildBuildings();
+GameState::~GameState()
+{
+	for (Waypoint* pWaypoint : m_Waypoints) delete pWaypoint;
+	for (Building* pBuilding : m_Buildings) delete pBuilding;
+	for (Mob* pMob : m_Mobs) delete pMob;
+}
 
-bool GameState::removeBuilding(Building* buildingToRemove) {
-	for (std::shared_ptr<Building> b : GameState::buildings) {
-		if (buildingToRemove->getType() == b->getType()) {
-			GameState::buildings.erase(b);
-			return true;
+void GameState::tick(double deltaTSec)
+{
+	for (size_t i = 0; i < BuildingType::NumBuildingTypes; ++i)
+	{
+
+	}
+	// Draw and update Buildings
+	for (Building* pBuilding : m_Buildings) {
+		if (!pBuilding->isDead()) {
+			pBuilding->update(deltaTSec);
 		}
 	}
-	return false;
+
+	for (Mob* m : m_Mobs) {
+		if (!m->isDead()) {
+			m->update(deltaTSec);
+		}
+	}
+
+	// Clean up dead mobs
+	size_t newIndex = 0;
+	for (size_t oldIndex = 0; oldIndex < m_Mobs.size(); ++oldIndex)
+	{
+		Mob* pMob = m_Mobs[oldIndex];
+		if (!pMob->isDead())
+		{
+			Mob* pTemp = m_Mobs[newIndex];
+			m_Mobs[newIndex] = m_Mobs[oldIndex];
+			m_Mobs[oldIndex] = pTemp;
+			++newIndex;
+		}
+		else
+		{
+			delete m_Mobs[oldIndex];
+		}
+	}
+
+	assert(newIndex <= m_Mobs.size());
+	m_Mobs.resize(newIndex);
 }
 
-
-std::vector<std::shared_ptr<Waypoint>> GameState::buildWaypoints() {
+void GameState::buildWaypoints()
+{
 	/*
-	  The structure of the returned Waypoint array is as follows. The numbers indicate the position the 
+	  The structure of the returned Waypoint array is as follows. The numbers indicate the position the
 	  waypoint exists in the list. The location on the grid represents the position the waypoint exists
 	  in the game world.
 	 +----------------+
@@ -84,7 +114,7 @@ std::vector<std::shared_ptr<Waypoint>> GameState::buildWaypoints() {
 
 	 */
 
-	std::vector<std::shared_ptr<Waypoint>> waypoints(22);
+	m_Waypoints.resize(22);
 
 	float X_InitialPos = GAME_GRID_WIDTH / 4.0;
 
@@ -93,96 +123,113 @@ std::vector<std::shared_ptr<Waypoint>> GameState::buildWaypoints() {
 
 	// Build the waypoints for a lane
 	for (int i = 0; i < 6; i++) {
-		Point ptLeft;
+		Vec2 ptLeft;
 		ptLeft.x = X_InitialPos;
 		ptLeft.y = Y_InitialPos + (i * Y_Increment);
-		std::shared_ptr<Waypoint> wpLeft = std::shared_ptr<Waypoint>(new Waypoint());
-		wpLeft->pos = ptLeft;
-		waypoints[19 - i] = wpLeft;
+		Waypoint* wpLeft = new Waypoint();
+		wpLeft->m_Pos = ptLeft;
+		m_Waypoints[19 - i] = wpLeft;
 
-		Point ptRight;
+		Vec2 ptRight;
 		ptRight.x = GAME_GRID_WIDTH - X_InitialPos;
 		ptRight.y = Y_InitialPos + (i * Y_Increment);
-		std::shared_ptr<Waypoint> wpRight = std::shared_ptr<Waypoint>(new Waypoint());
-		wpRight->pos = ptRight;
-		waypoints[3 + i] = wpRight;
+		Waypoint* wpRight = new Waypoint();
+		wpRight->m_Pos = ptRight;
+		m_Waypoints[3 + i] = wpRight;
 	}
 
 	// Build the waypoints for the tower rows
 	// Top Row
-	Point princessTLpt;
+	Vec2 princessTLpt;
 	princessTLpt.x = PrincessLeftX;
 	princessTLpt.y = NorthPrincessY;
-	std::shared_ptr<Waypoint> princessTL = std::shared_ptr<Waypoint>(new Waypoint());
-	princessTL->pos = princessTLpt;
-	waypoints[20] = princessTL;
+	Waypoint* princessTL = new Waypoint();
+	princessTL->m_Pos = princessTLpt;
+	m_Waypoints[20] = princessTL;
 
-	Point princessTRpt;
+	Vec2 princessTRpt;
 	princessTRpt.x = PrincessRightX;
 	princessTRpt.y = NorthPrincessY;
-	std::shared_ptr<Waypoint> princessTR = std::shared_ptr<Waypoint>(new Waypoint());
-	princessTR->pos = princessTRpt;
-	waypoints[2] = princessTR;
+	Waypoint* princessTR = new Waypoint();
+	princessTR->m_Pos = princessTRpt;
+	m_Waypoints[2] = princessTR;
 
-	Point kingTopPt;
+	Vec2 kingTopPt;
 	kingTopPt.x = KingX;
 	kingTopPt.y = NorthKingY;
-	std::shared_ptr<Waypoint> kingTop = std::shared_ptr<Waypoint>(new Waypoint());
-	kingTop->pos = kingTopPt;
-	waypoints[0] = kingTop;
+	Waypoint* kingTop = new Waypoint();
+	kingTop->m_Pos = kingTopPt;
+	m_Waypoints[0] = kingTop;
 
-	std::shared_ptr<Waypoint> topLeftMid = std::shared_ptr<Waypoint>(new Waypoint());
-	topLeftMid->pos = Point::midpoint(kingTopPt, princessTLpt);
-	waypoints[21] = topLeftMid;
+	Waypoint* topLeftMid = new Waypoint();
+	topLeftMid->m_Pos = (kingTopPt + princessTLpt) / 2.f;
+	m_Waypoints[21] = topLeftMid;
 
-	std::shared_ptr<Waypoint> topRightMid = std::shared_ptr<Waypoint>(new Waypoint());
-	topRightMid->pos = Point::midpoint(kingTopPt, princessTRpt);
-	waypoints[1] = topRightMid;
+	Waypoint* topRightMid = new Waypoint();
+	topRightMid->m_Pos = (kingTopPt + princessTRpt) / 2.f;
+	m_Waypoints[1] = topRightMid;
 
 	// Bot Row
-	Point princessBLpt;
+	Vec2 princessBLpt;
 	princessBLpt.x = PrincessLeftX;
 	princessBLpt.y = SouthPrincessY;
-	std::shared_ptr<Waypoint> princessBL = std::shared_ptr<Waypoint>(new Waypoint());
-	princessBL->pos = princessBLpt;
-	waypoints[13] = princessBL;
+	Waypoint* princessBL = new Waypoint();
+	princessBL->m_Pos = princessBLpt;
+	m_Waypoints[13] = princessBL;
 
-	Point princessBRpt;
+	Vec2 princessBRpt;
 	princessBRpt.x = PrincessRightX;
 	princessBRpt.y = SouthPrincessY;
-	std::shared_ptr<Waypoint> princessBR = std::shared_ptr<Waypoint>(new Waypoint());
-	princessBR->pos = princessBRpt;
-	waypoints[9] = princessBR;
+	Waypoint* princessBR = new Waypoint();
+	princessBR->m_Pos = princessBRpt;
+	m_Waypoints[9] = princessBR;
 
-	Point kingBotPt;
+	Vec2 kingBotPt;
 	kingBotPt.x = KingX;
 	kingBotPt.y = SouthKingY;
-	std::shared_ptr<Waypoint> kingBot = std::shared_ptr<Waypoint>(new Waypoint());
-	kingBot->pos = kingBotPt;
-	waypoints[11] = kingBot;
+	Waypoint* kingBot = new Waypoint();
+	kingBot->m_Pos = kingBotPt;
+	m_Waypoints[11] = kingBot;
 
-	std::shared_ptr<Waypoint> botLeftMid = std::shared_ptr<Waypoint>(new Waypoint());
-	botLeftMid->pos = Point::midpoint(kingBotPt, princessBLpt);
-	waypoints[12] = botLeftMid;
+	Waypoint* botLeftMid = new Waypoint();
+	botLeftMid->m_Pos = (kingBotPt + princessBLpt) / 2.f;
+	m_Waypoints[12] = botLeftMid;
 
-	std::shared_ptr<Waypoint> botRightMid = std::shared_ptr<Waypoint>(new Waypoint());
-	botRightMid->pos = Point::midpoint(kingBotPt, princessBRpt);
-	waypoints[10] = botRightMid;
+	Waypoint* botRightMid = new Waypoint();
+	botRightMid->m_Pos = (kingBotPt + princessBRpt) / 2.f;
+	m_Waypoints[10] = botRightMid;
 
 
 	// Link the waypoints correctly
 	for (int i = 0; i < 11; i++) {
 		// Right side of the map
-		waypoints[i]->upNeighbor = waypoints[abs((i - 1) % 22)];
-		waypoints[i]->downNeighbor = waypoints[i + 1];
+		m_Waypoints[i]->m_UpNeighbor = m_Waypoints[abs((i - 1) % 22)];
+		m_Waypoints[i]->m_DownNeighbor = m_Waypoints[i + 1];
 		// Left side of the map
 		int mirroredIndex = 21 - i;
-		waypoints[mirroredIndex]->upNeighbor = waypoints[(mirroredIndex + 1) % 22];
-		waypoints[mirroredIndex]->downNeighbor = waypoints[mirroredIndex - 1];
+		m_Waypoints[mirroredIndex]->m_UpNeighbor = m_Waypoints[(mirroredIndex + 1) % 22];
+		m_Waypoints[mirroredIndex]->m_DownNeighbor = m_Waypoints[mirroredIndex - 1];
 	}
-
-	return waypoints;
 }
 
+void GameState::buildBuildings() 
+{
+	m_Buildings.resize(BuildingType::NumBuildingTypes, NULL);
 
-std::vector< std::shared_ptr<Waypoint>> GameState::waypoints = GameState::buildWaypoints();
+
+	m_Buildings[BuildingType::NorthKing] = new Building(Vec2(KingX, NorthKingY), BuildingType::NorthKing);
+	m_Buildings[BuildingType::SouthKing] = new Building(Vec2(KingX, SouthKingY), BuildingType::SouthKing);
+
+	m_Buildings[BuildingType::NorthLeftTower] = new Building(Vec2(PrincessLeftX, NorthPrincessY), BuildingType::NorthLeftTower);
+	m_Buildings[BuildingType::NorthRightTower] = new Building(Vec2(PrincessRightX, NorthPrincessY), BuildingType::NorthRightTower);
+
+	m_Buildings[BuildingType::SouthLeftTower] = new Building(Vec2(PrincessLeftX, SouthPrincessY), BuildingType::SouthLeftTower);
+	m_Buildings[BuildingType::SouthRightTower] = new Building(Vec2(PrincessRightX, SouthPrincessY), BuildingType::SouthRightTower);
+
+	// safety check
+	for (size_t i = 0; i < BuildingType::NumBuildingTypes; ++i)
+	{
+		assert(!!m_Buildings[i]);
+		assert(m_Buildings[i]->getType() == (BuildingType)i);
+	}
+}

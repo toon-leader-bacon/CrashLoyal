@@ -1,74 +1,80 @@
+// MIT License
+// 
+// Copyright(c) 2020 Arthur Bacon and Kevin Dill
+// 
+// Permission is hereby granted, free of charge, to any person obtaining a copy
+// of this softwareand associated documentation files(the "Software"), to deal
+// in the Software without restriction, including without limitation the rights
+// to use, copy, modify, merge, publish, distribute, sublicense, and /or sell
+// copies of the Software, and to permit persons to whom the Software is
+// furnished to do so, subject to the following conditions :
+// 
+// The above copyright noticeand this permission notice shall be included in all
+// copies or substantial portions of the Software.
+// 
+// THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+// IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+// FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT.IN NO EVENT SHALL THE
+// AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+// LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+// OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+// SOFTWARE.
+
 #pragma once
 
 #include "GameState.h"
-#include "Attackable.h"
-#include "Point.h"
+#include "Entity.h"
+#include "Vec2.h"
 #include "Mob.h"
 
-const float KingTowerSize = 5.0f;
-const int KingTowerHealth = 100;
+enum BuildingType {
+	FirstNorthTower = 0,
 
-const float SmallTowerSize = 3.f;
-const int SmallTowerHealth = 50.0f;
-
-const float KingTowerAttackRadius = 20.f;
-const float SmallTowerAttackRadius = 10.f;
-
-const float KingX = GAME_GRID_WIDTH / 2;
-const float PrincessLeftX = GAME_GRID_WIDTH / 4;
-const float PrincessRightX = GAME_GRID_WIDTH - PrincessLeftX;
-
-const float NorthPrincessY = GAME_GRID_HEIGHT * (3 / 20.0);
-const float NorthKingY = GAME_GRID_HEIGHT * (1 / 20.0);
-const float SouthPrincessY = GAME_GRID_HEIGHT - NorthPrincessY;
-const float SouthKingY = GAME_GRID_HEIGHT - NorthKingY;
-
-enum class BuildingType {
-	NorthKing,
+	NorthKing = FirstNorthTower,
 	NorthRightTower,
 	NorthLeftTower,
 
-	SouthKing,
+	LastNorthTower = NorthLeftTower,
+
+	FirstSouthTower,
+
+	SouthKing = FirstSouthTower,
 	SouthRightTower,
-	SouthLeftTower
+	SouthLeftTower,
+
+	LastSouthTower = SouthLeftTower,
+
+	NumBuildingTypes
 };
 
-class Building {
+
+class Building : public Entity {
 
 public:
 
-	bool isNorthBuilding;
-
-
 	Building(float x, float y,  BuildingType type);
 
-	Building(Point p, BuildingType type) : Building(p.x, p.y, type) { }
+	Building(Vec2 p, BuildingType type) : Building(p.x, p.y, type) { }
 
-	bool isDead() { return this->health <= 0; }
+	virtual bool isNorth() const { return type <= BuildingType::LastNorthTower; }
 
-	int attack(int dmg);
-
-	std::shared_ptr<Point> getPosition();
-
-	float GetSize() const;
-
-	Point getPoint() const { return this->pos; }
+	virtual float getSize() const { return size; }
 
 	BuildingType getType() { return this->type; }
 
 	void update(double elapsedTime);
 
+	virtual int getMaxHealth() const { return m_MaxHealth; }
+
 private:
-	int health;
-	Point pos;
+	int m_MaxHealth;
 	float size;
 	float attackRadius;
 
 	BuildingType type;
 
-	std::shared_ptr<Attackable> target;  // May be null => no current target
+	Entity* target;  // Not owned, NULL => no current target
 	float lastAttackTime;
-
 
 	enum class BuildingState {
 		Attacking,
@@ -78,15 +84,13 @@ private:
 
 	void attackProcedure(double elapsedTime);
 
-	virtual int GetDamage() const { return 2; }
-	virtual float GetAttackTime() const { return 2.f; }
+	virtual int getDamage() const { return 2; }
+	virtual float getAttackTime() const { return 2.f; }
 
-	std::shared_ptr<Attackable> findTargetInRange();
+	Entity* findTargetInRange();
 
 	void scanProcedure(double elapsedTime);
 
-	bool inAttackRange(Point p);
-
-
+	bool inAttackRange(Vec2 p);
 };
 

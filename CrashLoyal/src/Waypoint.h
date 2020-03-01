@@ -1,7 +1,30 @@
+// MIT License
+// 
+// Copyright(c) 2020 Arthur Bacon and Kevin Dill
+// 
+// Permission is hereby granted, free of charge, to any person obtaining a copy
+// of this softwareand associated documentation files(the "Software"), to deal
+// in the Software without restriction, including without limitation the rights
+// to use, copy, modify, merge, publish, distribute, sublicense, and /or sell
+// copies of the Software, and to permit persons to whom the Software is
+// furnished to do so, subject to the following conditions :
+// 
+// The above copyright noticeand this permission notice shall be included in all
+// copies or substantial portions of the Software.
+// 
+// THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+// IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+// FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT.IN NO EVENT SHALL THE
+// AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+// LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+// OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+// SOFTWARE.
+
 #pragma once
 
 #include <memory>
-#include "Point.h"
+#include "Constants.h"
+#include "Vec2.h"
 
 /*
 The structure of the returned Waypoint array is as follows. The numbers indicate the position the
@@ -32,18 +55,9 @@ Waypoints 20, 2, 10 and 12 represent Princess towers.
 
 */
 
-const int NORTH_KING_WAYPOINT_INDEX = 0;
-const int NORTH_RIGHT_TOWER_WAYPOINT_INDEX = 2;
-const int NORTH_LEFT_TOWER_WAYPOINT_INDEX = 20;
-
-const int SOUTH_KING_WAYPOINT_INDEX = 11;
-const int SOUTH_RIGHT_TOWER_WAYPOINT_INDEX = 9;
-const int SOUTH_LEFT_TOWER_WAYPOINT_INDEX = 13;
-
-const float WAYPOINT_SIZE = 1;
 struct Waypoint {
-	Point pos;  // The coordinates (in pixels) this waypoint represents
-	std::shared_ptr<Waypoint> upNeighbor;
-	std::shared_ptr<Waypoint> downNeighbor;
+	Vec2 m_Pos;  // The coordinates (in pixels) this waypoint represents
+	const Waypoint* m_UpNeighbor;
+	const Waypoint* m_DownNeighbor;
 };
 

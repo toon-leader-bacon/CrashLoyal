@@ -21,17 +21,20 @@
   <ItemGroup>
     <ClCompile Include="src\Building.cpp" />
     <ClCompile Include="src\CrashLoyal.cpp" />
+    <ClCompile Include="src\Entity.cpp" />
     <ClCompile Include="src\GameState.cpp" />
     <ClCompile Include="src\Mob.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="src\Attackable.h" />
+    <ClInclude Include="src\Entity.h" />
     <ClInclude Include="src\Building.h" />
+    <ClInclude Include="src\Constants.h" />
     <ClInclude Include="src\GameState.h" />
     <ClInclude Include="src\Mob.h" />
     <ClInclude Include="src\Mob_Archer.h" />
-    <ClInclude Include="src\Point.h" />
+    <ClInclude Include="src\Vec2.h" />
     <ClInclude Include="src\Mob_Swordsman.h" />
+    <ClInclude Include="src\Singleton.h" />
     <ClInclude Include="src\Waypoint.h" />
   </ItemGroup>
   <PropertyGroup Label="Globals">
