@@ -37,6 +37,11 @@
     <ClInclude Include="src\Singleton.h" />
     <ClInclude Include="src\Waypoint.h" />
   </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\Interface\Interface.vcxproj">
+      <Project>{1a602732-ed7a-4970-a4e8-7b42c5b21604}</Project>
+    </ProjectReference>
+  </ItemGroup>
   <PropertyGroup Label="Globals">
     <VCProjectVersion>16.0</VCProjectVersion>
     <ProjectGuid>{1A1480EA-A3EB-4231-899C-D23AAC10E216}</ProjectGuid>
@@ -109,7 +114,7 @@
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>WIN32;_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
-      <AdditionalIncludeDirectories>./src;..\external\SDL2\include;../external/SDL2_image\include;../external/SDL2_ttf/include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>./src;../Interface/src;..\external\SDL2\include;../external/SDL2_image\include;../external/SDL2_ttf/include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
@@ -121,7 +126,7 @@
       <Command>xcopy /y /d  "$(SolutionDir)external\SDL2\lib\x86\*.dll" "$(OutDir)"
 xcopy /y /d  "$(SolutionDir)external\SDL2_image\lib\x86\*.dll" "$(OutDir)"
 xcopy /y /d  "$(SolutionDir)external\SDL2_ttf\lib\x86\*.dll" "$(OutDir)"
-xcopy /y /d  "$(SolutionDir)CrashLoyal\fonts\abelregular.ttf" "$(OutDir)"</Command>
+xcopy /y /d  "$(ProjectDir)\fonts\abelregular.ttf" "$(OutDir)"</Command>
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">

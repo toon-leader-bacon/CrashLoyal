@@ -53,43 +53,21 @@ public:
 	Vec2 operator/(const float f) const { return Vec2(x / f, y / f); }
 	Vec2& operator/=(const float f) { x /= f; y /= f; return *this; }
 
-	static float distSqr(Vec2 a, Vec2 b) {
-		const float xDist = b.x - a.x;
-		const float yDist = b.y - a.y;
-		return xDist * xDist + yDist * yDist;
-	}
+	static float distSqr(Vec2 a, Vec2 b);
 
-	static float dist(Vec2 a, Vec2 b) {
-		return sqrt(distSqr(a, b));
-	}
+	static float dist(Vec2 a, Vec2 b);
 
-	float distSqr(Vec2 other) const {
-		return Vec2::distSqr(*this, other);
-	}
+	float distSqr(Vec2 other) const;
 
-	float dist(Vec2 other) const {
-		return Vec2::dist(*this, other);
-	}
+	float dist(Vec2 other) const;
 
-	void normalize() {
-		float mag = sqrt((x * x) + (y * y));
+	void normalize();
 
-		float nearZero = 0.00001f;
-		if (mag <= nearZero) { return; }
+	// Returns true if the distance between a and b is less than aRadius
+	// In other words, true => point b is inside of point a+raidus.
+	static bool insideOf(const Vec2& a, float aRadius, Vec2 b);
 
-		this->x = this->x / mag;
-		this->y = this->y / mag;
-	}
-
-	static bool insideOf(const Vec2& a, float aRadius, Vec2 b) {
-		// Returns true if the distance between a and b is less than aRadius
-		// In other words, true => point b is inside of point a+raidus.
-		return dist(a, b) < aRadius;
-	}
-
-	bool insideOf(const Vec2& other, float radius) const {
-		return insideOf(*this, radius, other);
-	}
+	bool insideOf(const Vec2& other, float radius) const;
 
 private:
 	// DELIBERATELY UNDEFINED
