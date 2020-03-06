@@ -20,18 +20,55 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 
-#pragma once
+#include "Player.h"
 
-#include "Mob.h"
+#include "Constants.h"
+#include "iController.h"
+#include "Mob_Archer.h"
+#include "Mob_Swordsman.h"
+#include "UnitTypes.h"
 
-class Mob_Archer : public Mob
+Player::Player(iController* pControl, bool bNorth) 
+    : m_pControl(pControl)
+    , m_bNorth(bNorth)
+    , m_Elixir(capElixir(STARTING_ELIXIR))
 {
-public:
-    virtual int getMaxHealth() const { return 4; }
-    virtual float getSpeed() const { return 5.0f; }
-    virtual float getSize() const { return 0.5f; }
-    virtual float getMass() const { return 3.f; }
-    virtual int getDamage() const { return 1; }
-    virtual float getAttackTime() const { return 1.0f; }
-    const char* getDisplayLetter() const { return "A"; }
-};
+    if (m_pControl) 
+        m_pControl->setPlayer(*this);
+}
+
+Player::~Player()
+{
+    delete m_pControl;      // it's safe to delete NULL
+}
+
+iPlayer::PlacementResult Player::placeUnit(UnitTypes type, const Vec2& pos)
+{
+    Mob* pMob = NULL;
+    switch (type)
+    {
+        case Archer:
+            pMob = new Mob_Archer();
+            break;
+        case Swordsman:
+            pMob = new Mob_Swordsman();
+            break;
+        default:
+            return InvalidUnitType;
+    }
+
+    assert(!!pMob);
+
+    pMob->Init(pos, m_bNorth);
+    Game::get().addMob(pMob);
+
+    return Success;
+}
+
+void Player::tick(float deltaTSec)
+{
+    m_Elixir += deltaTSec * ELIXIR_PER_SECOND;
+
+    if (m_pControl) 
+        m_pControl->tick(deltaTSec);
+}

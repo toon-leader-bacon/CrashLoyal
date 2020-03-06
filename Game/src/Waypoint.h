@@ -32,17 +32,17 @@ waypoint exists in the list. The location on the grid represents the position th
 in the game world.
  +---------------+
 |     21  0  1    |
-|	20         2  |
-|	              |
+|    20         2  |
+|                  |
 |   19         3  |
-|	18         4  |
-|	17         5  |
-|	16         6  |
-|	15         7  |
-|	14         8  |
-|	              |
-|	13         9  |
-|	 12  11  10   |
+|    18         4  |
+|    17         5  |
+|    16         6  |
+|    15         7  |
+|    14         8  |
+|                  |
+|    13         9  |
+|     12  11  10   |
  +---------------+
 
 Each waypoint is linked such that the upNeighbor always points towards waypoint 0 (the enemy king)
@@ -56,8 +56,8 @@ Waypoints 20, 2, 10 and 12 represent Princess towers.
 */
 
 struct Waypoint {
-	Vec2 m_Pos;  // The coordinates (in pixels) this waypoint represents
-	const Waypoint* m_UpNeighbor;
-	const Waypoint* m_DownNeighbor;
+    Vec2 m_Pos;  // The coordinates (in pixels) this waypoint represents
+    const Waypoint* m_UpNeighbor;
+    const Waypoint* m_DownNeighbor;
 };
 

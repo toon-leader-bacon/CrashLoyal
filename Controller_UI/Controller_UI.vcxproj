@@ -19,21 +19,21 @@
     </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="src\Constants.h" />
-    <ClInclude Include="src\iController.h" />
-    <ClInclude Include="src\iPlayer.h" />
-    <ClInclude Include="src\Singleton.h" />
-    <ClInclude Include="src\UnitTypes.h" />
-    <ClInclude Include="src\Vec2.h" />
+    <ClInclude Include="src\Controller_UI.h" />
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="src\Vec2.cpp" />
+    <ClCompile Include="src\Controller_UI.cpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\Interface\Interface.vcxproj">
+      <Project>{1a602732-ed7a-4970-a4e8-7b42c5b21604}</Project>
+    </ProjectReference>
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <VCProjectVersion>16.0</VCProjectVersion>
-    <ProjectGuid>{1A602732-ED7A-4970-A4E8-7B42C5B21604}</ProjectGuid>
+    <ProjectGuid>{7225CD9E-322B-46E1-B1CD-68F78B6F474F}</ProjectGuid>
     <Keyword>Win32Proj</Keyword>
-    <RootNamespace>Interface</RootNamespace>
+    <RootNamespace>ControllerUI</RootNamespace>
     <WindowsTargetPlatformVersion>10.0</WindowsTargetPlatformVersion>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
@@ -102,8 +102,7 @@
       <ConformanceMode>true</ConformanceMode>
       <PrecompiledHeaderFile>
       </PrecompiledHeaderFile>
-      <AdditionalIncludeDirectories>
-      </AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>../Interface/src;../external/SDL2/include</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>

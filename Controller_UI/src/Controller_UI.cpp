@@ -20,18 +20,36 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 
-#pragma once
+#include "Controller_UI.h"
 
-#include "Mob.h"
+#include "Constants.h"
+#include "iPlayer.h"
+#include "UnitTypes.h"
+#include "Vec2.h"
 
-class Mob_Archer : public Mob
+#include "SDL.h"
+
+Controller_UI* Singleton<Controller_UI>::s_Obj = NULL;
+
+Controller_UI::~Controller_UI()
 {
-public:
-    virtual int getMaxHealth() const { return 4; }
-    virtual float getSpeed() const { return 5.0f; }
-    virtual float getSize() const { return 0.5f; }
-    virtual float getMass() const { return 3.f; }
-    virtual int getDamage() const { return 1; }
-    virtual float getAttackTime() const { return 1.0f; }
-    const char* getDisplayLetter() const { return "A"; }
-};
+    std::cout << "Controller_UI is being deleted... this probably means that "
+        << "you made more than one..." << std::endl;
+}
+
+void Controller_UI::onClick(const SDL_MouseButtonEvent& mouseEvent)
+{
+    if (mouseEvent.button == SDL_BUTTON_LEFT)
+    {
+        int pixelX = -1;
+        int pixelY = -1;
+        SDL_GetMouseState(&pixelX, &pixelY);
+        const Vec2 mousePos((float)(pixelX / PIXELS_PER_METER), (float)(pixelY / PIXELS_PER_METER));
+
+        UnitTypes unitType = SDL_GetKeyboardState(NULL)[SDL_SCANCODE_LSHIFT] ? Archer : Swordsman;
+
+        assert(m_pPlayer);
+        m_pPlayer->placeUnit(unitType, mousePos);
+    }
+}
+

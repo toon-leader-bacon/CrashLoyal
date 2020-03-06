@@ -1,7 +1,6 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <ItemGroup>
-    <ClCompile Include="src\GameState.cpp" />
     <ClCompile Include="src\CrashLoyal.cpp" />
     <ClCompile Include="src\Mob.cpp">
       <Filter>Entities</Filter>
@@ -12,9 +11,10 @@
     <ClCompile Include="src\Entity.cpp">
       <Filter>Entities</Filter>
     </ClCompile>
+    <ClCompile Include="src\Player.cpp" />
+    <ClCompile Include="src\Game.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="src\GameState.h" />
     <ClInclude Include="src\Mob.h">
       <Filter>Entities</Filter>
     </ClInclude>
@@ -24,27 +24,17 @@
     <ClInclude Include="src\Mob_Archer.h">
       <Filter>Entities</Filter>
     </ClInclude>
-    <ClInclude Include="src\Singleton.h">
-      <Filter>Infrastructure</Filter>
-    </ClInclude>
-    <ClInclude Include="src\Constants.h" />
     <ClInclude Include="src\Building.h">
       <Filter>Entities</Filter>
     </ClInclude>
     <ClInclude Include="src\Entity.h">
       <Filter>Entities</Filter>
     </ClInclude>
-    <ClInclude Include="src\Vec2.h">
-      <Filter>Infrastructure</Filter>
-    </ClInclude>
-    <ClInclude Include="src\Waypoint.h">
-      <Filter>Infrastructure</Filter>
-    </ClInclude>
+    <ClInclude Include="src\Waypoint.h" />
+    <ClInclude Include="src\Player.h" />
+    <ClInclude Include="src\Game.h" />
   </ItemGroup>
   <ItemGroup>
-    <Filter Include="Infrastructure">
-      <UniqueIdentifier>{291c579b-61c3-41cb-b5b1-6b16281627f3}</UniqueIdentifier>
-    </Filter>
     <Filter Include="Entities">
       <UniqueIdentifier>{7a953e00-6a20-49d7-b381-b0d82cbdcb20}</UniqueIdentifier>
     </Filter>

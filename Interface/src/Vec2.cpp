@@ -23,37 +23,37 @@
 #include "Vec2.h"
 
 float Vec2::distSqr(Vec2 a, Vec2 b) {
-	const float xDist = b.x - a.x;
-	const float yDist = b.y - a.y;
-	return xDist * xDist + yDist * yDist;
+    const float xDist = b.x - a.x;
+    const float yDist = b.y - a.y;
+    return xDist * xDist + yDist * yDist;
 }
 
 float Vec2::dist(Vec2 a, Vec2 b) {
-	return sqrt(distSqr(a, b));
+    return sqrt(distSqr(a, b));
 }
 
 float Vec2::distSqr(Vec2 other) const {
-	return Vec2::distSqr(*this, other);
+    return Vec2::distSqr(*this, other);
 }
 
 float Vec2::dist(Vec2 other) const {
-	return Vec2::dist(*this, other);
+    return Vec2::dist(*this, other);
 }
 
 void Vec2::normalize() {
-	float mag = sqrt((x * x) + (y * y));
+    float mag = sqrt((x * x) + (y * y));
 
-	float nearZero = 0.00001f;
-	if (mag <= nearZero) { return; }
+    float nearZero = 0.00001f;
+    if (mag <= nearZero) { return; }
 
-	this->x = this->x / mag;
-	this->y = this->y / mag;
+    this->x = this->x / mag;
+    this->y = this->y / mag;
 }
 
 bool Vec2::insideOf(const Vec2& a, float aRadius, Vec2 b) {
-	return dist(a, b) < aRadius;
+    return dist(a, b) < aRadius;
 }
 
 bool Vec2::insideOf(const Vec2& other, float radius) const {
-	return insideOf(*this, radius, other);
+    return insideOf(*this, radius, other);
 }

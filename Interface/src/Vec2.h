@@ -28,49 +28,51 @@
 
 class Vec2 {
 public:
-	float x;
-	float y;
+    float x;
+    float y;
 
-	Vec2() : x(-FLT_MAX), y(-FLT_MAX) {}
-	Vec2(int inX, int inY) : x((float)inX), y((float)inY) {}
-	Vec2(float inX, float inY) : x(inX), y(inY) {}
-	Vec2(const Vec2& rhs) : x(rhs.x), y(rhs.y) {}
+    Vec2() : x(-FLT_MAX), y(-FLT_MAX) {}
+    Vec2(int inX, int inY) : x((float)inX), y((float)inY) {}
+    Vec2(float inX, float inY) : x(inX), y(inY) {}
+    Vec2(const Vec2& rhs) : x(rhs.x), y(rhs.y) {}
 
-	bool operator==(const Vec2& rhs) const { return (x == rhs.x) && (y == rhs.y); }
-	bool operator!=(const Vec2& rhs) const { return (x != rhs.x) || (y != rhs.y); }
+    bool operator==(const Vec2& rhs) const { return (x == rhs.x) && (y == rhs.y); }
+    bool operator!=(const Vec2& rhs) const { return (x != rhs.x) || (y != rhs.y); }
 
-	Vec2& operator=(const Vec2& rhs) { x = rhs.x; y = rhs.y; return *this; }
+    Vec2& operator=(const Vec2& rhs) { x = rhs.x; y = rhs.y; return *this; }
 
-	Vec2 operator+(const Vec2& rhs) const { return Vec2(x + rhs.x, y + rhs.y); }
-	Vec2& operator+=(const Vec2& rhs) { x += rhs.x; y += rhs.y; return *this; }
+    Vec2 operator+(const Vec2& rhs) const { return Vec2(x + rhs.x, y + rhs.y); }
+    Vec2& operator+=(const Vec2& rhs) { x += rhs.x; y += rhs.y; return *this; }
 
-	Vec2 operator-(const Vec2& rhs) const { return Vec2(x - rhs.x, y - rhs.y); }
-	Vec2& operator-=(const Vec2& rhs) { x -= rhs.x; y -= rhs.y; return *this; }
+    Vec2 operator-(const Vec2& rhs) const { return Vec2(x - rhs.x, y - rhs.y); }
+    Vec2& operator-=(const Vec2& rhs) { x -= rhs.x; y -= rhs.y; return *this; }
 
-	Vec2 operator*(const float f) const { return Vec2(x * f, y * f); }
-	Vec2& operator*=(const float f) { x *= f; y *= f; return *this; }
+    Vec2 operator*(const float f) const { return Vec2(x * f, y * f); }
+    Vec2& operator*=(const float f) { x *= f; y *= f; return *this; }
 
-	Vec2 operator/(const float f) const { return Vec2(x / f, y / f); }
-	Vec2& operator/=(const float f) { x /= f; y /= f; return *this; }
+    Vec2 operator/(const float f) const { return Vec2(x / f, y / f); }
+    Vec2& operator/=(const float f) { x /= f; y /= f; return *this; }
 
-	static float distSqr(Vec2 a, Vec2 b);
+    static float distSqr(Vec2 a, Vec2 b);
 
-	static float dist(Vec2 a, Vec2 b);
+    static float dist(Vec2 a, Vec2 b);
 
-	float distSqr(Vec2 other) const;
+    float length() const { return sqrt(x * x + y * y); }
 
-	float dist(Vec2 other) const;
+    float distSqr(Vec2 other) const;
 
-	void normalize();
+    float dist(Vec2 other) const;
 
-	// Returns true if the distance between a and b is less than aRadius
-	// In other words, true => point b is inside of point a+raidus.
-	static bool insideOf(const Vec2& a, float aRadius, Vec2 b);
+    void normalize();
 
-	bool insideOf(const Vec2& other, float radius) const;
+    // Returns true if the distance between a and b is less than aRadius
+    // In other words, true => point b is inside of point a+raidus.
+    static bool insideOf(const Vec2& a, float aRadius, Vec2 b);
+
+    bool insideOf(const Vec2& other, float radius) const;
 
 private:
-	// DELIBERATELY UNDEFINED
-	bool operator<(const Vec2& rhs) const;
+    // DELIBERATELY UNDEFINED
+    bool operator<(const Vec2& rhs) const;
 };
 

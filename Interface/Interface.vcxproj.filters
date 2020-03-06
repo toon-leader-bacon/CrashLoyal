@@ -4,6 +4,9 @@
     <ClInclude Include="src\Singleton.h" />
     <ClInclude Include="src\Vec2.h" />
     <ClInclude Include="src\Constants.h" />
+    <ClInclude Include="src\iPlayer.h" />
+    <ClInclude Include="src\UnitTypes.h" />
+    <ClInclude Include="src\iController.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\Vec2.cpp" />

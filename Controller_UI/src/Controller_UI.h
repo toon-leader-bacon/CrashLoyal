@@ -22,16 +22,22 @@
 
 #pragma once
 
-#include "Mob.h"
+#include "iController.h"
+#include <Singleton.h>
 
-class Mob_Archer : public Mob
+struct SDL_MouseButtonEvent;
+
+class Controller_UI : public iController, public Singleton<Controller_UI>
 {
 public:
-    virtual int getMaxHealth() const { return 4; }
-    virtual float getSpeed() const { return 5.0f; }
-    virtual float getSize() const { return 0.5f; }
-    virtual float getMass() const { return 3.f; }
-    virtual int getDamage() const { return 1; }
-    virtual float getAttackTime() const { return 1.0f; }
-    const char* getDisplayLetter() const { return "A"; }
+    Controller_UI() {}
+    virtual ~Controller_UI();
+
+    // For now, the UI doesn't do it's work in tick().  Instead, it does it
+    // when the mouse event is handled.
+    // TODO: move all the UI event handling out of the main function, and in 
+    // to here.
+    virtual void tick(float) {}
+
+    void onClick(const SDL_MouseButtonEvent& mouseEvent);
 };

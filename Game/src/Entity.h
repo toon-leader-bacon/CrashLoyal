@@ -29,21 +29,21 @@ class Entity
 {
 
 public:
-	Entity() : m_Health(-1) {}
+    Entity() : m_Health(-1) {}
 
-	virtual int getMaxHealth() const = 0;
-	virtual float getSize() const = 0;
-	virtual bool isNorth() const = 0;
+    virtual int getMaxHealth() const = 0;
+    virtual float getSize() const = 0;
+    virtual bool isNorth() const = 0;
 
-	bool isDead() const { return m_Health <= 0; }
-	int getHealth() const { return m_Health; }
-	void takeDamage(int dmg) { m_Health -= dmg; }
+    bool isDead() const { return m_Health <= 0; }
+    int getHealth() const { return m_Health; }
+    void takeDamage(int dmg) { m_Health -= dmg; }
 
-	const Vec2& getPosition() const { return m_Pos; }
+    const Vec2& getPosition() const { return m_Pos; }
 
 protected:
-	int m_Health;
-	Vec2 m_Pos;
+    int m_Health;
+    Vec2 m_Pos;
 };
 
 

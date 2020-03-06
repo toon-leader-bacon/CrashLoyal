@@ -27,11 +27,11 @@
 class Mob_Swordsman : public Mob
 {
 public:
-	virtual int getMaxHealth() const { return 10; }
-	virtual float getSpeed() const { return 0.6f; }
-	virtual float getSize() const { return 1.f; }
-	virtual float getMass() const { return 5.f; }
-	virtual int getDamage() const { return 2; }
-	virtual float getAttackTime() const { return 2.5f; }
-	const char* getDisplayLetter() const { return "S"; }
+    virtual int getMaxHealth() const { return 10; }
+    virtual float getSpeed() const { return 3.f; }
+    virtual float getSize() const { return 1.f; }
+    virtual float getMass() const { return 5.f; }
+    virtual int getDamage() const { return 2; }
+    virtual float getAttackTime() const { return 1.5f; }
+    const char* getDisplayLetter() const { return "S"; }
 };

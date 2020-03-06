@@ -22,29 +22,29 @@
 
 #pragma once
 
-#include "GameState.h"
+#include "Game.h"
 #include "Entity.h"
 #include "Vec2.h"
 #include "Mob.h"
 
 enum BuildingType {
-	FirstNorthTower = 0,
+    FirstNorthTower = 0,
 
-	NorthKing = FirstNorthTower,
-	NorthRightTower,
-	NorthLeftTower,
+    NorthKing = FirstNorthTower,
+    NorthRightTower,
+    NorthLeftTower,
 
-	LastNorthTower = NorthLeftTower,
+    LastNorthTower = NorthLeftTower,
 
-	FirstSouthTower,
+    FirstSouthTower,
 
-	SouthKing = FirstSouthTower,
-	SouthRightTower,
-	SouthLeftTower,
+    SouthKing = FirstSouthTower,
+    SouthRightTower,
+    SouthLeftTower,
 
-	LastSouthTower = SouthLeftTower,
+    LastSouthTower = SouthLeftTower,
 
-	NumBuildingTypes
+    NumBuildingTypes
 };
 
 
@@ -52,45 +52,45 @@ class Building : public Entity {
 
 public:
 
-	Building(float x, float y,  BuildingType type);
+    Building(float x, float y,  BuildingType type);
 
-	Building(Vec2 p, BuildingType type) : Building(p.x, p.y, type) { }
+    Building(Vec2 p, BuildingType type) : Building(p.x, p.y, type) { }
 
-	virtual bool isNorth() const { return type <= BuildingType::LastNorthTower; }
+    virtual bool isNorth() const { return type <= BuildingType::LastNorthTower; }
 
-	virtual float getSize() const { return size; }
+    virtual float getSize() const { return size; }
 
-	BuildingType getType() { return this->type; }
+    BuildingType getType() { return this->type; }
 
-	void update(double elapsedTime);
+    void update(float elapsedTime);
 
-	virtual int getMaxHealth() const { return m_MaxHealth; }
+    virtual int getMaxHealth() const { return m_MaxHealth; }
 
 private:
-	int m_MaxHealth;
-	float size;
-	float attackRadius;
+    int m_MaxHealth;
+    float size;
+    float attackRadius;
 
-	BuildingType type;
+    BuildingType type;
 
-	Entity* target;  // Not owned, NULL => no current target
-	float lastAttackTime;
+    Entity* target;  // Not owned, NULL => no current target
+    float lastAttackTime;
 
-	enum class BuildingState {
-		Attacking,
-		Scaning
-	};
-	BuildingState state;
+    enum class BuildingState {
+        Attacking,
+        Scaning
+    };
+    BuildingState state;
 
-	void attackProcedure(double elapsedTime);
+    void attackProcedure(float elapsedTime);
 
-	virtual int getDamage() const { return 2; }
-	virtual float getAttackTime() const { return 2.f; }
+    virtual int getDamage() const { return 2; }
+    virtual float getAttackTime() const { return 2.f; }
 
-	Entity* findTargetInRange();
+    Entity* findTargetInRange();
 
-	void scanProcedure(double elapsedTime);
+    void scanProcedure(float elapsedTime);
 
-	bool inAttackRange(Vec2 p);
+    bool inAttackRange(Vec2 p);
 };
 

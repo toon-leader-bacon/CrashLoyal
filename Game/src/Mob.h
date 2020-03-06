@@ -31,50 +31,50 @@
 class Mob : public Entity {
 
 public:
-	Mob();
-	virtual ~Mob() {}
+    Mob();
+    virtual ~Mob() {}
 
-	bool operator==(const Mob& rhs) const { return m_Uid == rhs.m_Uid; }
+    bool operator==(const Mob& rhs) const { return m_Uid == rhs.m_Uid; }
 
-	virtual void Init(const Vec2& pos, bool attackingNorth);
+    virtual void Init(const Vec2& pos, bool isNorth);
 
-	virtual bool isNorth() const { return m_bIsNorth; }
+    virtual bool isNorth() const { return m_bIsNorth; }
 
-	// The main function that drives this mob. Should be called once every game tick.
-	void update(double elapsedTime);
+    // The main function that drives this mob. Should be called once every game tick.
+    void update(float elapsedTime);
 
-	// Unit-specific values, to be set in subclass
-	virtual float getSpeed() const = 0;
-	virtual float getSize() const = 0;
-	virtual float getMass() const = 0;
-	virtual int getDamage() const = 0;
-	virtual float getAttackTime() const = 0;
-	virtual const char* getDisplayLetter() const = 0;
-
-protected:
-	// pick the attack and move targets (we may have both).
-	void pickTargets();
-
-	const Waypoint* findClosestWaypoint();
-	void moveTowards(const Vec2& moveTarget, double elapsedTime);
-
-	bool targetInRange();
-
-
-	Mob* checkCollision();
-	void processCollision(Mob* otherMob, double elapsedTime);
-
-	void attackProcedure(double elapsedTime);
-	void moveProcedure(double elapsedTime);
+    // Unit-specific values, to be set in subclass
+    virtual float getSpeed() const = 0;
+    virtual float getSize() const = 0;
+    virtual float getMass() const = 0;
+    virtual int getDamage() const = 0;
+    virtual float getAttackTime() const = 0;
+    virtual const char* getDisplayLetter() const = 0;
 
 protected:
-	static int s_PreviousUID;
-	int m_Uid;
+    // pick the attack and move targets (we may have both).
+    void pickTargets();
 
-	bool m_bIsNorth;
+    const Waypoint* findClosestWaypoint();
+    void moveTowards(const Vec2& moveTarget, float elapsedTime);
 
-	Entity* m_pAttackTarget;
-	const Waypoint* m_pMoveTarget;
+    bool targetInRange();
 
-	float m_LastAttackTime;
+
+    Mob* checkCollision();
+    void processCollision(Mob* otherMob, float elapsedTime);
+
+    void attackProcedure(float elapsedTime);
+    void moveProcedure(float elapsedTime);
+
+protected:
+    static int s_PreviousUID;
+    int m_Uid;
+
+    bool m_bIsNorth;
+
+    Entity* m_pAttackTarget;
+    const Waypoint* m_pMoveTarget;
+
+    float m_LastAttackTime;
 };

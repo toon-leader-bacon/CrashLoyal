@@ -22,42 +22,30 @@
 
 #pragma once
 
-#include "Singleton.h"
+#include "iPlayer.h"
 
-#include <vector>
+#include "Constants.h"
+#include <algorithm>
+#include <assert.h>
 
-#include "Vec2.h"
-#include "Waypoint.h"
+class iController;
 
-class Mob;
-
-class Building;
-enum BuildingType;
-
-
-class GameState : public Singleton<GameState>
-{
+class Player : public iPlayer {
 public:
-	explicit GameState();
-	virtual ~GameState();
+    // NOTE: we take ownership of the controller
+    explicit Player(iController* pControl, bool bNorth);
+    virtual ~Player();
 
-	void tick(double deltaTSec);
+    virtual float getElixir() const { return (float)m_Elixir; }
+    virtual PlacementResult placeUnit(UnitTypes type, const Vec2& pos);
 
-	Building* getBuilding(BuildingType b) { return m_Buildings[(size_t)b]; }
-
-	const std::vector<Waypoint*>& getWaypoints() const { return m_Waypoints; }
-	const std::vector<Mob*>& getMobs() const { return m_Mobs; }
-
-	void addMob(Mob* mob) { m_Mobs.push_back(mob); }	// takes ownership
+    void tick(float deltaTSec);
 
 private:
-	// Helpers for the constructor
-	void buildWaypoints();
-	void buildBuildings();
+    float capElixir(float e) const { return std::max(e, MAX_ELIXIR); }
 
 private:
-	std::vector<Waypoint*> m_Waypoints;			// owned
-	std::vector<Building*> m_Buildings;			// owned
-	std::vector<Mob*> m_Mobs;					// owned
+    iController* m_pControl;    // owned, may be NULL
+    bool m_bNorth;
+    float m_Elixir;
 };
-

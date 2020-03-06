@@ -20,18 +20,38 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 
+// Final Project: A controller is a thing that controls a player - i.e. either
+// a UI or an AI.  Your controller will be in its own project (instructions
+// for that are in the assignment), but will inherit from this and implement
+// all of the pure virtual functions.  The game will call those functions when
+// it is time for the controler to do its work.
+
 #pragma once
 
-#include "Mob.h"
+#include <assert.h>
 
-class Mob_Archer : public Mob
+class iPlayer;
+
+class iController
 {
 public:
-    virtual int getMaxHealth() const { return 4; }
-    virtual float getSpeed() const { return 5.0f; }
-    virtual float getSize() const { return 0.5f; }
-    virtual float getMass() const { return 3.f; }
-    virtual int getDamage() const { return 1; }
-    virtual float getAttackTime() const { return 1.0f; }
-    const char* getDisplayLetter() const { return "A"; }
+    iController() : m_pPlayer(NULL) {}
+    virtual ~iController() {}
+
+    void setPlayer(iPlayer& player) { assert(!m_pPlayer); m_pPlayer = &player; }
+
+    // Final Project: This is where you will do most of your work.  This is 
+    // called as part of the game loop.  deltaTSec is the elapsed time (in
+    // seconds, and in game time) since the last tick.
+    virtual void tick(float deltaTSec) = 0;
+
+protected:
+    iPlayer* m_pPlayer; // NOT owned, guaranteed to exist when tick() is called
+
+private:
+    // DELIBERATELY UNDEFINED
+    iController(const iController& rhs);
+    iController& operator=(const iController& rhs);
+    bool operator==(const iController& rhs) const;
+    bool operator<(const iController& rhs) const;
 };

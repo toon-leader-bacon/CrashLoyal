@@ -22,16 +22,48 @@
 
 #pragma once
 
-#include "Mob.h"
+#include "Singleton.h"
 
-class Mob_Archer : public Mob
+#include <vector>
+
+#include "Vec2.h"
+#include "Waypoint.h"
+
+class Building;
+enum BuildingType;
+class iController;
+class Mob;
+class Player;
+
+class Game : public Singleton<Game>
 {
 public:
-    virtual int getMaxHealth() const { return 4; }
-    virtual float getSpeed() const { return 5.0f; }
-    virtual float getSize() const { return 0.5f; }
-    virtual float getMass() const { return 3.f; }
-    virtual int getDamage() const { return 1; }
-    virtual float getAttackTime() const { return 1.0f; }
-    const char* getDisplayLetter() const { return "A"; }
+    explicit Game();
+    virtual ~Game();
+
+    void tick(float deltaTSec);
+
+    Player& getPlayer(bool bNorth) { return bNorth ? *m_pNorthPlayer : *m_pSouthPlayer; }
+
+    Building* getBuilding(BuildingType b) { return m_Buildings[(size_t)b]; }
+
+    const std::vector<Waypoint*>& getWaypoints() const { return m_Waypoints; }
+    const std::vector<Mob*>& getMobs() const { return m_Mobs; }
+
+    void addMob(Mob* mob) { m_Mobs.push_back(mob); }    // takes ownership
+
+private:
+    // Helpers for the constructor
+    void buildPlayers(iController* pNorthControl, iController* pSouthControl);
+    void buildWaypoints();
+    void buildBuildings();
+
+private:
+    Player* m_pNorthPlayer;
+    Player* m_pSouthPlayer;
+
+    std::vector<Waypoint*> m_Waypoints;         // owned
+    std::vector<Building*> m_Buildings;         // owned
+    std::vector<Mob*> m_Mobs;                   // owned
 };
+
