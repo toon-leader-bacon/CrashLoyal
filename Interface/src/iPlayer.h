@@ -45,7 +45,8 @@ public:
     {
         Success = 0,
         InsufficientElixir,
-        InvalidLocation,
+        InvalidX,
+        InvalidY,
     };
 
     // Final Project: Your AI will call this function to place its mobs.  The
