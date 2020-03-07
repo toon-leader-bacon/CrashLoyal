@@ -30,20 +30,16 @@
 
 int Mob::s_PreviousUID = 0;
 
-Mob::Mob()
+Mob::Mob(const iMobStats& stats, const Vec2& pos, bool isNorth)
     : m_Uid(++s_PreviousUID)
-    , m_bIsNorth(true)
+    , m_bIsNorth(isNorth)
+    , m_Stats(stats)
     , m_pAttackTarget(NULL)
     , m_pMoveTarget(NULL)
     , m_LastAttackTime(0)
 {
-}
-
-void Mob::Init(const Vec2& pos, bool isNorth)
-{
-    m_Health = getMaxHealth();
     m_Pos = pos;
-    m_bIsNorth = isNorth;
+    m_Health = stats.getMaxHealth();
 }
 
 const Waypoint* Mob::findClosestWaypoint() {
@@ -72,7 +68,7 @@ const Waypoint* Mob::findClosestWaypoint() {
 void Mob::moveTowards(const Vec2& moveTarget, float elapsedTime) {
     Vec2 movementVector = moveTarget - m_Pos;
     movementVector.normalize();
-    movementVector *= (float)getSpeed();
+    movementVector *= (float)m_Stats.getSpeed();
     movementVector *= (float)elapsedTime;
     
     m_Pos += movementVector;
@@ -186,12 +182,12 @@ void Mob::attackProcedure(float elapsedTime) {
     assert(m_pAttackTarget && !m_pAttackTarget->isDead());
 
     if (targetInRange()) {
-        if (m_LastAttackTime >= getAttackTime()) {
+        if (m_LastAttackTime >= m_Stats.getAttackTime()) {
             m_LastAttackTime = 0; // lastAttackTime is incremented in the main update function
 
             std::cout << "Attack!" << std::endl;
 
-            m_pAttackTarget->takeDamage(getDamage());
+            m_pAttackTarget->takeDamage(m_Stats.getDamage());
 
             if (m_pAttackTarget->isDead())
             {

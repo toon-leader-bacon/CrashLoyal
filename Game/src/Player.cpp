@@ -25,8 +25,7 @@
 #include "Constants.h"
 #include "iController.h"
 #include "Game.h"
-#include "Mob_Archer.h"
-#include "Mob_Swordsman.h"
+#include "Mob.h"
 
 Player::Player(iController* pControl, bool bNorth) 
     : m_pControl(pControl)
@@ -44,22 +43,9 @@ Player::~Player()
 
 iPlayer::PlacementResult Player::placeMob(MobType type, const Vec2& pos)
 {
-    Mob* pMob = NULL;
-    switch (type)
-    {
-        case Archer:
-            pMob = new Mob_Archer();
-            break;
-        case Swordsman:
-            pMob = new Mob_Swordsman();
-            break;
-        default:
-            return InvalidMobType;
-    }
-
+    Mob* pMob = new Mob(iMobStats::getStats(type), pos, m_bNorth);
     assert(!!pMob);
 
-    pMob->Init(pos, m_bNorth);
     Game::get().addMob(pMob);
 
     return Success;
