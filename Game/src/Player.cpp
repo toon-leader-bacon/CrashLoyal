@@ -43,15 +43,58 @@ Player::~Player()
 
 iPlayer::PlacementResult Player::placeMob(MobType type, const Vec2& pos)
 {
-    const iMobStats& stats = iMobStats::getStats(type);
-    if (stats.getElixirCost() > m_Elixir)
+    // Adjust the position to be a tile center.  Tiles are 1 unit wide.
+    // TODO: move the code for converting to tile position somewhere shared
+    const int iTileX = (int)pos.x;
+    const int iTileY = (int)pos.y;
+    const float fTileX = (float)iTileX + 0.5f;
+    const float fTileY = (float)iTileY + 0.5f;
+    Vec2 tilePos(fTileX, fTileY);
+
+    // Validate the position
+    // TODO: move this functionality somewhere shared.
+    if ((tilePos.x <= 0) || (tilePos.x >= GAME_GRID_WIDTH))
     {
+        std::cout << "Invalid Location (X): (" << tilePos.x << ", " <<
+            tilePos.y << ")\n";
+        return InvalidX;
+    }
+
+    if (m_bNorth)
+    {
+        if (tilePos.y >= RIVER_TOP_Y)
+        {
+            std::cout << "Invalid Location (Y): (" << tilePos.x << ", " <<
+                tilePos.y << ")\n";
+
+            return InvalidY;
+        }
+    }
+    else
+    {
+        if (tilePos.y <= RIVER_BOT_Y)
+        {
+            std::cout << "Invalid Location (Y): (" << tilePos.x << ", " << 
+                tilePos.y << ")\n";
+
+            return InvalidY;
+        }
+    }
+
+    // Validate that we have enough elixir
+    const iMobStats& stats = iMobStats::getStats(type);
+    const float cost = stats.getElixirCost();
+    if (cost > m_Elixir)
+    {
+        std::cout << "Insufficient Elixir: " << cost << " > " << m_Elixir << 
+            std::endl;
+
         return InsufficientElixir;
     }
 
-
-
-    Mob* pMob = new Mob(stats, pos, m_bNorth);
+    // Checks are done - make the mob.
+    m_Elixir -= cost;
+    Mob* pMob = new Mob(stats, tilePos, m_bNorth);
     Game::get().addMob(pMob);
 
     return Success;
