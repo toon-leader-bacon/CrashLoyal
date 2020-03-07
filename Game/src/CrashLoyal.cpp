@@ -26,7 +26,6 @@
 #include "Game.h"
 #include "Mob.h"
 #include "Player.h"
-#include "MobManager.h"
 #include "Vec2.h"
 #include "Waypoint.h"
 
@@ -285,8 +284,7 @@ int main(int argc, char* args[]) {
             // TODO: Move the rendering into a separate singleton (like the 
             // Game singleton)
 
-            // Draw waypoints
-            // TODO remove this
+            // Debug draw waypoints
             //for (const Waypoint* wp : game.getWaypoints())
             //{
             //    drawSquare(wp->pos.x * PIXELS_PER_METER, 

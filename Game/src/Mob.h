@@ -24,7 +24,7 @@
 
 #include "Entity.h"
 
-#include "MobType.h"
+#include "MobStats.h"
 
 class Vec2;
 struct Waypoint;
