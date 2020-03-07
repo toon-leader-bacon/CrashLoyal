@@ -273,10 +273,10 @@ void drawWinScreen(int winningSide) {
     if (winningSide == 0) { return; }
 
     const char* msg = (winningSide > 0) ? "Game Over. North Wins!" : "Game Over. South Wins!" ;
-    int topY = (int)(SCREEN_HEIGHT_PIXELS / 5);
-    int leftX = (int)(SCREEN_WIDTH_PIXELS / 15);
-    int height = (int)(SCREEN_HEIGHT_PIXELS / 3);
-    int width = (int)(SCREEN_WIDTH_PIXELS * (14.f / 15));
+    int topY = SCREEN_HEIGHT_PIXELS / 5;
+    int leftX = SCREEN_WIDTH_PIXELS / 15;
+    int height = SCREEN_HEIGHT_PIXELS / 3;
+    int width = (SCREEN_WIDTH_PIXELS * 14) / 15;
 
     SDL_Rect stringRect = { leftX, topY, width, height};
     SDL_Color color = { 0, 0, 0, 255 };
