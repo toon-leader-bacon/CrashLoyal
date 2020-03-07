@@ -141,10 +141,10 @@ void Game::buildWaypoints()
 
     m_Waypoints.resize(22);
 
-    float X_InitialPos = GAME_GRID_WIDTH / 4.0;
+    float X_InitialPos = (float)GAME_GRID_WIDTH / 4.0f;
 
-    float Y_InitialPos = GAME_GRID_HEIGHT / 4.0;
-    float Y_Increment = GAME_GRID_HEIGHT / 10.0; // Split the middle 50% into 5 equal sections, waypoint before+after each slice
+    float Y_InitialPos = (float)GAME_GRID_HEIGHT / 4.0f;
+    float Y_Increment = (float)GAME_GRID_HEIGHT / 10.0f; // Split the middle 50% into 5 equal sections, waypoint before+after each slice
 
     // Build the waypoints for a lane
     for (int i = 0; i < 6; i++) {
