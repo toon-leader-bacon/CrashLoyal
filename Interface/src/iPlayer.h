@@ -44,7 +44,6 @@ public:
     enum PlacementResult
     {
         Success = 0,
-        InvalidMobType,
         InsufficientElixir,
         InvalidLocation,
     };

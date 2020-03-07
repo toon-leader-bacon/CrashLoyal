@@ -39,6 +39,7 @@ public:
 
     virtual MobType getType() const = 0;
     virtual float getElixirCost() const = 0;
+    virtual int getMaxHealth() const = 0;
     virtual float getSpeed() const = 0;
     virtual float getSize() const = 0;
     virtual float getMass() const = 0;

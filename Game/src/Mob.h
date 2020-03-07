@@ -32,28 +32,19 @@ struct Waypoint;
 class Mob : public Entity {
 
 public:
-    Mob();
+    Mob(const iMobStats& stats, const Vec2& pos, bool isNorth);
     virtual ~Mob() {}
 
     bool operator==(const Mob& rhs) const { return m_Uid == rhs.m_Uid; }
 
-    virtual void Init(const Vec2& pos, bool isNorth);
-
     virtual bool isNorth() const { return m_bIsNorth; }
+    
+    const iMobStats& getStats() const { return m_Stats; }
+    virtual int getMaxHealth() const { return m_Stats.getMaxHealth(); }
+    virtual float getSize() const  { return m_Stats.getSize(); }
 
     // The main function that drives this mob. Should be called once every game tick.
     void update(float elapsedTime);
-
-    // Mob-specific values, to be set in subclass
-    virtual MobType getType() const = 0;
-    virtual float getElixirCost() const = 0;
-    virtual float getSpeed() const = 0;
-    virtual float getSize() const = 0;
-    virtual float getMass() const = 0;
-    virtual int getDamage() const = 0;
-    virtual float getAttackRange() const = 0;
-    virtual float getAttackTime() const = 0;
-    virtual const char* getDisplayLetter() const = 0;
 
 protected:
     // pick the attack and move targets (we may have both).
@@ -76,6 +67,7 @@ protected:
     int m_Uid;
 
     bool m_bIsNorth;
+    const iMobStats& m_Stats;
 
     Entity* m_pAttackTarget;
     const Waypoint* m_pMoveTarget;

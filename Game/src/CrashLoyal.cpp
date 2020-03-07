@@ -191,7 +191,7 @@ void drawMob(Mob* m) {
         (int)squareSize
     };
     SDL_Color stringColor = { 0, 0, 0, 255 };
-    drawText(m->getDisplayLetter(), stringRect, stringColor);
+    drawText(m->getStats().getDisplayLetter(), stringRect, stringColor);
 }
 
 
