@@ -148,24 +148,23 @@ void drawBuilding(Building* b) {
                b->getSize() * PIXELS_PER_METER);
 }
 
-void drawText(const char* textToDraw, int topLeftXPix, int topLeftYPix, int boxWidth, int boxHeight) {
+void drawText(const char* textToDraw, SDL_Rect messageRect, SDL_Color color) {
     // Draws the given text in a box with the specified position and dimention
 
-    SDL_Color white = { 0, 0, 0, 254 };
-    SDL_Surface* surfaceMessage = TTF_RenderText_Solid(sans, textToDraw, white); // TODO Make this print something other than m
+    SDL_Surface* surfaceMessage = TTF_RenderText_Solid(sans, textToDraw, color); // TODO Make this print something other than m
     if (!surfaceMessage) { printf("TTF_OpenFont: %s\n", TTF_GetError()); }
     SDL_Texture* message = SDL_CreateTextureFromSurface(gRenderer, surfaceMessage);
     if (!message) { printf("Error 2\n"); }
-    SDL_Rect messageRect = {
-        topLeftXPix,
-        topLeftYPix,
-        boxWidth,
-        boxHeight
-        //(int)(centerX - (squareSize / 2.f)),
-        //(int)(centerY - (squareSize / 2.f)),
-        //(int)squareSize,
-        //(int)squareSize
-    };
+    //SDL_Rect messageRect = {
+    //    topLeftXPix,
+    //    topLeftYPix,
+    //    boxWidth,
+    //    boxHeight
+    //    //(int)(centerX - (squareSize / 2.f)),
+    //    //(int)(centerY - (squareSize / 2.f)),
+    //    //(int)squareSize,
+    //    //(int)squareSize
+    //};
     SDL_RenderCopy(gRenderer, message, NULL, &messageRect);
     SDL_FreeSurface(surfaceMessage);
     SDL_DestroyTexture(message);
@@ -185,11 +184,14 @@ void drawMob(Mob* m) {
 
     drawSquare(centerX, centerY, squareSize);
 
-    drawText(m->getDisplayLetter, 
-             (int)(centerX - (squareSize / 2.f)),
-             (int)(centerY - (squareSize / 2.f)),
-             (int)squareSize,
-             (int)squareSize);
+    SDL_Rect stringRect = {
+        (int)(centerX - (squareSize / 2.f)),
+        (int)(centerY - (squareSize / 2.f)),
+        (int)squareSize,
+        (int)squareSize
+    };
+    SDL_Color stringColor = { 0, 0, 0, 255 };
+    drawText(m->getDisplayLetter(), stringRect, stringColor);
 }
 
 
@@ -250,24 +252,22 @@ void drawBG() {
     SDL_RenderFillRect(gRenderer, &bridgeRight);
 }
 
-int checkGameOver() {
-    // If a King Tower is destroyed, then the game is over and a number is returned.
-    // Positive return values means the North Team won
-    // Negative return value means the South Team won
-    // Return value of 0 means no team has won yet
-    return 1;
-}
-
 void drawWinScreen(int winningSide) {
     if (winningSide == 0) { return; }
 
     const char* msg = (winningSide > 0) ? "Game Over. North Wins!" : "Game Over. South Wins!" ;
-    drawText(msg, 0, 0, 500, 500);
+    int topY = SCREEN_HEIGHT_PIXELS * (1.f / 5);
+    int leftX = SCREEN_WIDTH_PIXELS * (1.f / 15);
+
+    int height = SCREEN_HEIGHT_PIXELS * (1.f / 3);
+    int width = SCREEN_WIDTH_PIXELS * (14.f / 15);
+    SDL_Rect stringRect = { leftX, topY, width, height};
+    SDL_Color color = { 0, 0, 0, 255 };
+    drawText(msg, stringRect, color);
 }
 
 int main(int argc, char* args[]) {
     Game& game = Game::get();
-
     //Start up SDL and create window
     if (!init()) {
         printf("Failed to initialize!\n");
@@ -333,13 +333,9 @@ int main(int argc, char* args[]) {
                     drawMob(m);
                 }
             }
-
-            int gameWinner = checkGameOver();
-            if (gameWinner != 0) {
-                drawWinScreen(gameWinner);
-                SDL_RenderPresent(gRenderer);
-                break;
-            }
+            
+            // If there is a winner, draw the message to the screen
+            drawWinScreen(game.checkGameOver());
 
             SDL_RenderPresent(gRenderer);
         }

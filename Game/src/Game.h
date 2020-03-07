@@ -52,6 +52,8 @@ public:
 
     void addMob(Mob* mob) { m_Mobs.push_back(mob); }    // takes ownership
 
+    int checkGameOver();
+
 private:
     // Helpers for the constructor
     void buildPlayers(iController* pNorthControl, iController* pSouthControl);
@@ -65,5 +67,7 @@ private:
     std::vector<Waypoint*> m_Waypoints;         // owned
     std::vector<Building*> m_Buildings;         // owned
     std::vector<Mob*> m_Mobs;                   // owned
+
+    int gameOverState; // Negative => South won, Positive => North won, 0 => no winner yet
 };
 

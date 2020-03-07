@@ -22,14 +22,22 @@
 
 #include "MobStats.h"
 
+#include <assert.h>
 #include <unordered_map>
 
 const iMobStats& iMobStats::getStats(MobType t)
 {
-    //static std::vector<const iMobStats*> = { 
-    //    MobStats_Swordsman(),
-    //    MobStats_Archer() }
-    //    }
-    //);
+    static std::vector<const iMobStats*> sStats = { 
+        new MobStats_Swordsman, 
+        new MobStats_Archer 
+    };
+
+    // If any of these fail, then your vector (above) is out of synch with the 
+    //  MobType enum (in the .h)... and bad things may ensue!
+    assert(sStats.size() == numMobTypes);
+    assert(!!sStats[t]);
+    assert(sStats[t]->getType() == t);
+
+    return *sStats[t];
 }
 

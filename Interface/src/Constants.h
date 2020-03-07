@@ -25,7 +25,7 @@
 #include <float.h>
 
 //Screen dimension constants
-const int PIXELS_PER_METER = 10; // There are 10 pixels per meter in this game
+const int PIXELS_PER_METER = 5; // There are 10 pixels per meter in this game
 
 const int GAME_GRID_WIDTH = 60; // How many tiles wide the game grid is. Should be an even number
 const int GAME_GRID_HEIGHT = 100; // How many tiles tall the game grid is. 

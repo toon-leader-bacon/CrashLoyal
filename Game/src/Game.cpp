@@ -32,6 +32,7 @@
 Game* Singleton<Game>::s_Obj = NULL;
 
 Game::Game()
+    : gameOverState(0) // No winner at start of game
 {
     // FinalProject: This is where you specify which controllers to use - for 
     // instance, if you make two instances of your AI then it will play 
@@ -90,6 +91,15 @@ void Game::tick(float deltaTSec)
 
     assert(newIndex <= m_Mobs.size());
     m_Mobs.resize(newIndex);
+}
+
+int Game::checkGameOver() {
+    if (gameOverState == 0) {
+        // If no winner yet, check to see if there is a winner
+        if (getBuilding(SouthKing)->isDead()) { gameOverState = 1; }
+        if (getBuilding(NorthKing)->isDead()) { gameOverState = -1; }
+    }
+    return gameOverState;
 }
 
 void Game::buildPlayers(iController* pNorthControl, iController* pSouthControl)

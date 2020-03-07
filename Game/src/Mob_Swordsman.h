@@ -23,7 +23,6 @@
 #pragma once
 
 #include "Mob.h"
-#include "iMobManager.h"
 
 class Mob_Swordsman : public Mob
 {
