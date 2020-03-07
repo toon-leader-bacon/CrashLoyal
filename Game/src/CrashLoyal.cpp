@@ -206,17 +206,23 @@ Vec2 pixelToGrid(int x, int y) {
     return result;
 }
 
-void drawGrid(Vec2 grid) {
-
-
-
-
-
+void drawGrid() {
     SDL_SetRenderDrawColor(gRenderer, 0x00, 0x00, 0x00, 0xFF);
+    // Draw Vert lines
+    for (int xIndex = 0; xIndex < GAME_GRID_WIDTH; xIndex++) {
+        int xIndexPix = xIndex * PIXELS_PER_METER;
+        SDL_RenderDrawLine(gRenderer,
+            xIndexPix, 0,
+            xIndexPix, SCREEN_HEIGHT_PIXELS);
+    }
 
-
-
-    drawSquare(grid.x * PIXELS_PER_METER, grid.y * PIXELS_PER_METER, PIXELS_PER_METER);
+    // Draw Horiz lines
+    for (int yIndex = 0; yIndex < GAME_GRID_HEIGHT; yIndex++) {
+        int yIndexPix = yIndex * PIXELS_PER_METER;
+        SDL_RenderDrawLine(gRenderer,
+            0, yIndexPix,
+            GAME_GRID_WIDTH * PIXELS_PER_METER, yIndexPix);
+    }
 }
 
 void drawBG() {
@@ -258,15 +264,18 @@ void drawBG() {
     };
     SDL_SetRenderDrawColor(gRenderer, 179, 59, 0, 0xFF); // Brown
     SDL_RenderFillRect(gRenderer, &bridgeRight);
+
+    
+    drawGrid();
 }
 
 void drawWinScreen(int winningSide) {
     if (winningSide == 0) { return; }
 
     const char* msg = (winningSide > 0) ? "Game Over. North Wins!" : "Game Over. South Wins!" ;
-    int topY = (int)(SCREEN_HEIGHT_PIXELS * (1.f / 5));
-    int leftX = (int)(SCREEN_WIDTH_PIXELS * (1.f / 15));
-    int height = (int)(SCREEN_HEIGHT_PIXELS * (1.f / 3));
+    int topY = (int)(SCREEN_HEIGHT_PIXELS / 5);
+    int leftX = (int)(SCREEN_WIDTH_PIXELS / 15);
+    int height = (int)(SCREEN_HEIGHT_PIXELS / 3);
     int width = (int)(SCREEN_WIDTH_PIXELS * (14.f / 15));
 
     SDL_Rect stringRect = { leftX, topY, width, height};
