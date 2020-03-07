@@ -15,8 +15,6 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Controller_UI", "Controller
 		{1A602732-ED7A-4970-A4E8-7B42C5B21604} = {1A602732-ED7A-4970-A4E8-7B42C5B21604}
 	EndProjectSection
 EndProject
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Controller_KevinDill", "Controller_KevinDill\Controller_KevinDill.vcxproj", "{C490EFFC-F057-433F-A29D-0EC935E1FCED}"
-EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|x64 = Debug|x64
@@ -49,14 +47,6 @@ Global
 		{7225CD9E-322B-46E1-B1CD-68F78B6F474F}.Release|x64.Build.0 = Release|x64
 		{7225CD9E-322B-46E1-B1CD-68F78B6F474F}.Release|x86.ActiveCfg = Release|Win32
 		{7225CD9E-322B-46E1-B1CD-68F78B6F474F}.Release|x86.Build.0 = Release|Win32
-		{C490EFFC-F057-433F-A29D-0EC935E1FCED}.Debug|x64.ActiveCfg = Debug|x64
-		{C490EFFC-F057-433F-A29D-0EC935E1FCED}.Debug|x64.Build.0 = Debug|x64
-		{C490EFFC-F057-433F-A29D-0EC935E1FCED}.Debug|x86.ActiveCfg = Debug|Win32
-		{C490EFFC-F057-433F-A29D-0EC935E1FCED}.Debug|x86.Build.0 = Debug|Win32
-		{C490EFFC-F057-433F-A29D-0EC935E1FCED}.Release|x64.ActiveCfg = Release|x64
-		{C490EFFC-F057-433F-A29D-0EC935E1FCED}.Release|x64.Build.0 = Release|x64
-		{C490EFFC-F057-433F-A29D-0EC935E1FCED}.Release|x86.ActiveCfg = Release|Win32
-		{C490EFFC-F057-433F-A29D-0EC935E1FCED}.Release|x86.Build.0 = Release|Win32
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

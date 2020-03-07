@@ -24,9 +24,9 @@
 
 #include "Constants.h"
 #include "iController.h"
+#include "Game.h"
 #include "Mob_Archer.h"
 #include "Mob_Swordsman.h"
-#include "iMobManager.h"
 
 Player::Player(iController* pControl, bool bNorth) 
     : m_pControl(pControl)
