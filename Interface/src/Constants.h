@@ -30,7 +30,10 @@ const int PIXELS_PER_METER = 10; // There are 10 pixels per meter in this game
 const int GAME_GRID_WIDTH = 60; // How many tiles wide the game grid is. Should be an even number
 const int GAME_GRID_HEIGHT = 100; // How many tiles tall the game grid is. 
 
-const int SCREEN_WIDTH_PIXELS = PIXELS_PER_METER * GAME_GRID_WIDTH;   // The total number of pixels wide the window is
+const int UI_WIDTH = 10; // The width of the UI section to the right of the play area in meters
+const int UI_HEIGHT = GAME_GRID_HEIGHT; // The height of the UI Section is the height of the play area
+
+const int SCREEN_WIDTH_PIXELS = PIXELS_PER_METER * (GAME_GRID_WIDTH + UI_WIDTH); // The total number of pixels wide the window is
 const int SCREEN_HEIGHT_PIXELS = PIXELS_PER_METER * GAME_GRID_HEIGHT; // The total number of pixels tall the window is
 
 // Definig sizes of the river rectangle

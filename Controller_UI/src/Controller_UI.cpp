@@ -55,3 +55,18 @@ void Controller_UI::tick(float deltaTSec)
     }
 }
 
+
+//void drawUI() {
+//    // Draws the rectangle to the right of the play area that contains the UI
+//
+//    SDL_Rect uiRect = {
+//        (int)(GAME_GRID_WIDTH * PIXELS_PER_METER),
+//        (int)0,
+//        (int)(UI_WIDTH * PIXELS_PER_METER),
+//        (int)(UI_HEIGHT * PIXELS_PER_METER),
+//    };
+//    SDL_SetRenderDrawColor(gRenderer, 0x50, 0x50, 0x50, 100);
+//    SDL_SDL_RenderFillRect(gRenderer, &uiRect);
+//
+//
+//}

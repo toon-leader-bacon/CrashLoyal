@@ -26,10 +26,10 @@
 
 const iMobStats& iMobStats::getStats(MobType t)
 {
-    static std::vector<const iMobStats*> = { 
-        MobStats_Swordsman(),
-        MobStats_Archer() }
-        }
-    );
+    //static std::vector<const iMobStats*> = { 
+    //    MobStats_Swordsman(),
+    //    MobStats_Archer() }
+    //    }
+    //);
 }
 
