@@ -43,9 +43,15 @@ Player::~Player()
 
 iPlayer::PlacementResult Player::placeMob(MobType type, const Vec2& pos)
 {
-    Mob* pMob = new Mob(iMobStats::getStats(type), pos, m_bNorth);
-    assert(!!pMob);
+    const iMobStats& stats = iMobStats::getStats(type);
+    if (stats.getElixirCost() > m_Elixir)
+    {
+        return InsufficientElixir;
+    }
 
+
+
+    Mob* pMob = new Mob(stats, pos, m_bNorth);
     Game::get().addMob(pMob);
 
     return Success;
