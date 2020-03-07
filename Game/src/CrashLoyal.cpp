@@ -207,7 +207,15 @@ Vec2 pixelToGrid(int x, int y) {
 }
 
 void drawGrid(Vec2 grid) {
-    SDL_SetRenderDrawColor(gRenderer, 0xFF, 0x00, 0x00, 0xFF);
+
+
+
+
+
+    SDL_SetRenderDrawColor(gRenderer, 0x00, 0x00, 0x00, 0xFF);
+
+
+
     drawSquare(grid.x * PIXELS_PER_METER, grid.y * PIXELS_PER_METER, PIXELS_PER_METER);
 }
 
@@ -256,11 +264,11 @@ void drawWinScreen(int winningSide) {
     if (winningSide == 0) { return; }
 
     const char* msg = (winningSide > 0) ? "Game Over. North Wins!" : "Game Over. South Wins!" ;
-    int topY = SCREEN_HEIGHT_PIXELS * (1.f / 5);
-    int leftX = SCREEN_WIDTH_PIXELS * (1.f / 15);
+    int topY = (int)SCREEN_HEIGHT_PIXELS * (1.f / 5);
+    int leftX = (int)SCREEN_WIDTH_PIXELS * (1.f / 15);
+    int height = (int)SCREEN_HEIGHT_PIXELS * (1.f / 3);
+    int width = (int)SCREEN_WIDTH_PIXELS * (14.f / 15);
 
-    int height = SCREEN_HEIGHT_PIXELS * (1.f / 3);
-    int width = SCREEN_WIDTH_PIXELS * (14.f / 15);
     SDL_Rect stringRect = { leftX, topY, width, height};
     SDL_Color color = { 0, 0, 0, 255 };
     drawText(msg, stringRect, color);
