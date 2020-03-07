@@ -23,6 +23,7 @@
 #pragma once
 
 #include "iController.h"
+#include "SDL.h"
 #include <Singleton.h>
 
 struct SDL_MouseButtonEvent;
@@ -50,5 +51,5 @@ public:
     Controller_UI() {}
     virtual ~Controller_UI();
 
-    virtual void tick(float deltaTSec);
+    void tick(float deltaTSec);
 };

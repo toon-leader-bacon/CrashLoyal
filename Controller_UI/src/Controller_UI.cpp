@@ -37,7 +37,7 @@ Controller_UI::~Controller_UI()
         << "you made more than one..." << std::endl;
 }
 
-void Controller_UI::tick(float deltaTSec)
+void Controller_UI::tick(float deltaTSec) 
 {
     SDL_Event e;
     while (SDL_PollEvent(&e) != 0) {
@@ -53,7 +53,11 @@ void Controller_UI::tick(float deltaTSec)
             m_pPlayer->placeMob(mobType, mousePos);
         }
     }
+
+    //SDL_RenderDrawLine(gRenderer, 0, 0, 10, 10);
+
 }
+
 
 
 //void drawUI() {
