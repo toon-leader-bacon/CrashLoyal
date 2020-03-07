@@ -1,0 +1,15 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <ClInclude Include="src\Singleton.h" />
+    <ClInclude Include="src\Vec2.h" />
+    <ClInclude Include="src\Constants.h" />
+    <ClInclude Include="src\iPlayer.h" />
+    <ClInclude Include="src\MobStats.h" />
+    <ClInclude Include="src\iController.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="src\Vec2.cpp" />
+    <ClCompile Include="src\MobStats.cpp" />
+  </ItemGroup>
+</Project>

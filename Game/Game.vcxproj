@@ -21,18 +21,26 @@
   <ItemGroup>
     <ClCompile Include="src\Building.cpp" />
     <ClCompile Include="src\CrashLoyal.cpp" />
-    <ClCompile Include="src\GameState.cpp" />
+    <ClCompile Include="src\Entity.cpp" />
+    <ClCompile Include="src\Game.cpp" />
     <ClCompile Include="src\Mob.cpp" />
+    <ClCompile Include="src\Player.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="src\Attackable.h" />
+    <ClInclude Include="src\Entity.h" />
     <ClInclude Include="src\Building.h" />
-    <ClInclude Include="src\GameState.h" />
+    <ClInclude Include="src\Game.h" />
     <ClInclude Include="src\Mob.h" />
-    <ClInclude Include="src\Mob_Archer.h" />
-    <ClInclude Include="src\Point.h" />
-    <ClInclude Include="src\Mob_Swordsman.h" />
+    <ClInclude Include="src\Player.h" />
     <ClInclude Include="src\Waypoint.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\Controller_UI\Controller_UI.vcxproj">
+      <Project>{7225cd9e-322b-46e1-b1cd-68f78b6f474f}</Project>
+    </ProjectReference>
+    <ProjectReference Include="..\Interface\Interface.vcxproj">
+      <Project>{1a602732-ed7a-4970-a4e8-7b42c5b21604}</Project>
+    </ProjectReference>
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <VCProjectVersion>16.0</VCProjectVersion>
@@ -106,7 +114,9 @@
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>WIN32;_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
-      <AdditionalIncludeDirectories>./src;..\external\SDL2\include;../external/SDL2_image\include;../external/SDL2_ttf/include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>./src;../Interface/src;../external/SDL2/include;../external/SDL2_image\include;../external/SDL2_ttf/include;../Controller_UI/src;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <TreatWarningAsError>true</TreatWarningAsError>
+      <DisableSpecificWarnings>26812</DisableSpecificWarnings>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
@@ -118,7 +128,7 @@
       <Command>xcopy /y /d  "$(SolutionDir)external\SDL2\lib\x86\*.dll" "$(OutDir)"
 xcopy /y /d  "$(SolutionDir)external\SDL2_image\lib\x86\*.dll" "$(OutDir)"
 xcopy /y /d  "$(SolutionDir)external\SDL2_ttf\lib\x86\*.dll" "$(OutDir)"
-xcopy /y /d  "$(SolutionDir)CrashLoyal\fonts\abelregular.ttf" "$(OutDir)"</Command>
+xcopy /y /d  "$(ProjectDir)\fonts\abelregular.ttf" "$(OutDir)"</Command>
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
