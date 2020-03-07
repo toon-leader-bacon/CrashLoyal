@@ -245,8 +245,6 @@ int main(int argc, char* args[]) {
         printf("Failed to initialize!\n");
     }
     else {
-        SDL_Event e;
-
         using namespace std::chrono;
         high_resolution_clock::time_point prevTime = high_resolution_clock::now();
 
@@ -272,29 +270,13 @@ int main(int argc, char* args[]) {
             SDL_RenderClear(gRenderer);
 
             drawBG();
-            
-            // USER INPUT
 
-            //Handle events on queue
-            while (SDL_PollEvent(&e) != 0) {
-                //User requests quit
-                if (e.type == SDL_QUIT) {
-                    quit = true;
-                }
-                else if (e.type == SDL_MOUSEBUTTONUP) {
-                    if (Controller_UI::exists())
-                    {
-                        Controller_UI::get().onClick(e.button);
-                    }
-                }
-                else if (e.type == SDL_MOUSEBUTTONDOWN) {
-                    int pixelX, pixelY;
-                    SDL_GetMouseState(&pixelX, &pixelY);
-                    drawGrid(pixelToGrid(pixelX, pixelY));
-                }
+            // TICK 
+
+            if (Controller_UI::exists())
+            {
+                Controller_UI::get().tick((float)deltaTSec);
             }
-
-            // TICK THE GAME
 
             game.tick((float)deltaTSec);
 

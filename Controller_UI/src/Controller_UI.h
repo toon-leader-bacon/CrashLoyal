@@ -50,11 +50,5 @@ public:
     Controller_UI() {}
     virtual ~Controller_UI();
 
-    // For now, the UI doesn't do it's work in tick().  Instead, it does it
-    // when the mouse event is handled.
-    // TODO: move all the UI event handling out of the main function, and in 
-    // to here.
-    virtual void tick(float) {}
-
-    void onClick(const SDL_MouseButtonEvent& mouseEvent);
+    virtual void tick(float deltaTSec);
 };

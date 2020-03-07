@@ -37,19 +37,32 @@ Controller_UI::~Controller_UI()
         << "you made more than one..." << std::endl;
 }
 
+void Controller_UI::tick(float deltaTSec)
+{
+    SDL_Event e;
+    while (SDL_PollEvent(&e) != 0) {
+        if (e.type == SDL_MOUSEBUTTONUP) {
+            if (Controller_UI::exists())
+            {
+                if (e.button == SDL_BUTTON_LEFT)
+                {
+                    int pixelX = -1;
+                    int pixelY = -1;
+                    SDL_GetMouseState(&pixelX, &pixelY);
+                    const Vec2 mousePos((float)(pixelX / PIXELS_PER_METER), (float)(pixelY / PIXELS_PER_METER));
+
+                    MobType mobType = SDL_GetKeyboardState(NULL)[SDL_SCANCODE_LSHIFT] ? Archer : Swordsman;
+
+                    assert(m_pPlayer);
+                    m_pPlayer->placeMob(mobType, mousePos);
+                }
+            }
+        }
+    }
+
+}
+
 void Controller_UI::onClick(const SDL_MouseButtonEvent& mouseEvent)
 {
-    if (mouseEvent.button == SDL_BUTTON_LEFT)
-    {
-        int pixelX = -1;
-        int pixelY = -1;
-        SDL_GetMouseState(&pixelX, &pixelY);
-        const Vec2 mousePos((float)(pixelX / PIXELS_PER_METER), (float)(pixelY / PIXELS_PER_METER));
-
-        MobType mobType = SDL_GetKeyboardState(NULL)[SDL_SCANCODE_LSHIFT] ? Archer : Swordsman;
-
-        assert(m_pPlayer);
-        m_pPlayer->placeMob(mobType, mousePos);
-    }
 }
 
