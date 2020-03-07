@@ -26,7 +26,7 @@
 #include "Game.h"
 #include "Mob.h"
 #include "Player.h"
-#include "UnitTypes.h"
+#include "MobManager.h"
 #include "Vec2.h"
 #include "Waypoint.h"
 
@@ -245,20 +245,12 @@ int main(int argc, char* args[]) {
         printf("Failed to initialize!\n");
     }
     else {
-        //Main loop flag
-        bool quit = false;
-
-        //Event handler
         SDL_Event e;
 
-        // Number of frames since start of application
-        int frame = 0;
-
-        // Time at the start of the world, used to calculate the time between update cycles
         using namespace std::chrono;
         high_resolution_clock::time_point prevTime = high_resolution_clock::now();
 
-        //While application is running
+        bool quit = false;
         while (!quit) {
             // Get the elapsed time, and ensure it's at between TICK_MIN and TICK_MAX
             high_resolution_clock::time_point now = high_resolution_clock::now();
@@ -275,7 +267,7 @@ int main(int argc, char* args[]) {
 
             prevTime = now;
 
-            //Clear screen
+            //Clear rendering
             SDL_SetRenderDrawColor(gRenderer, 0xFF, 0xFF, 0xFF, 0xFF);
             SDL_RenderClear(gRenderer);
 
@@ -334,7 +326,6 @@ int main(int argc, char* args[]) {
             }
 
             SDL_RenderPresent(gRenderer);
-            frame++;
         }
 
     }

@@ -22,20 +22,20 @@
 
 #pragma once
 
-#include "Mob.h"
-#include "iMobManager.h"
+#include "iController.h"
+#include <Singleton.h>
 
-class Mob_Swordsman : public Mob
+struct SDL_MouseButtonEvent;
+
+class Controller_KevinDill : public iController, 
 {
 public:
-    virtual MobType getType() const { return Swordsman; }
-    virtual float getElixirCost() const { return 5.f; }
-    virtual int getMaxHealth() const { return 10; }
-    virtual float getSpeed() const { return 3.f; }
-    virtual float getSize() const { return 1.f; }
-    virtual float getMass() const { return 3.f; }
-    virtual int getDamage() const { return 3; }
-    virtual float getAttackRange() const { return 1.f; }
-    virtual float getAttackTime() const { return 2.f; }
-    const char* getDisplayLetter() const { return "S"; }
+    Controller_KevinDill() {}
+    virtual ~Controller_KevinDill();
+
+    // For now, the UI doesn't do it's work in tick().  Instead, it does it
+    // when the mouse event is handled.
+    // TODO: move all the UI event handling out of the main function, and in 
+    // to here.
+    virtual void tick(float) {}
 };

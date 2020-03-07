@@ -106,17 +106,17 @@ void Game::buildWaypoints()
       in the game world.
      +----------------+
      |    21  0  1    |
-     |    20         2  |
-     |                  |
+     |  20         2  |
+     |                |
      |  19         3  |
-     |    18         4  |
-     |    17         5  |
-     |    16         6  |
-     |    15         7  |
-     |    14         8  |
-     |                  |
-     |    13         9  |
-     |     12  11  10   |
+     |  18         4  |
+     |  17         5  |
+     |  16         6  |
+     |  15         7  |
+     |  14         8  |
+     |                |
+     |  13         9  |
+     |   12  11  10   |
      +----------------+
 
      Each waypoint is linked such that the upNeighbor always points towards waypoint 0 (the enemy king)

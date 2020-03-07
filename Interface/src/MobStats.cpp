@@ -20,10 +20,16 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 
-#pragma once
+#include "MobStats.h"
 
-enum UnitTypes
+#include <unordered_map>
+
+const iMobStats& iMobStats::getStats(MobType t)
 {
-    Swordsman,
-    Archer
-};
+    static std::vector<const iMobStats*> = { 
+        MobStats_Swordsman(),
+        MobStats_Archer() }
+        }
+    );
+}
+

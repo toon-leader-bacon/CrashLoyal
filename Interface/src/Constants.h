@@ -79,3 +79,6 @@ const float TICK_MAX = 0.2f;
 const float STARTING_ELIXIR = 8.f;
 const float ELIXIR_PER_SECOND = 0.33333f;
 const float MAX_ELIXIR = 10.01f; // a little bit more than 10, to avoid float error
+
+
+

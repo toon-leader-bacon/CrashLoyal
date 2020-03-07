@@ -27,6 +27,23 @@
 
 struct SDL_MouseButtonEvent;
 
+// TODO List:
+// - Get the list of units (and stats) from MobStats.h
+// - Display elixir on the side of screen (get it from m_pPlayer->getElixir()
+// - Buttons on the side of screen for spawning mobs
+//    - left click on button to select mob, left click on screen to drop
+//    - display reason when spawn fails (and maybe play a sound?)
+// - Split out rendering:
+//    - Make a rendering singleton that has a preTick, a tick, and some functions to add other stuff to draw (e.g. attack visualization)
+//    - Move the rest of the code from main() into here, so all event handling is here.
+
+// Rendering TODO
+
+// Extra Bonus Stuff:
+// - Stats for each mob displayed in mouse-over
+// - health bars on mobs & towers
+// - sound
+
 class Controller_UI : public iController, public Singleton<Controller_UI>
 {
 public:

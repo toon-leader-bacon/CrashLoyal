@@ -28,11 +28,6 @@
 #include "Vec2.h"
 #include "Waypoint.h"
 
-#include <memory>
-#include <limits>
-#include <stdlib.h>
-#include <stdio.h>
-
 int Mob::s_PreviousUID = 0;
 
 Mob::Mob()
@@ -156,7 +151,7 @@ void Mob::pickTargets() {
 
 // TODO: unify with similar functionality in the buildings
 bool Mob::targetInRange() {
-    float range = getSize(); // TODO: change this for ranged units
+    float range = getSize(); // TODO: change this for ranged mobs
     float totalSize = range + m_pAttackTarget->getSize();
     return m_Pos.insideOf(m_pAttackTarget->getPosition(), totalSize);
 }

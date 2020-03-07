@@ -2,9 +2,6 @@
 <Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <ItemGroup>
     <ClCompile Include="src\CrashLoyal.cpp" />
-    <ClCompile Include="src\Mob.cpp">
-      <Filter>Entities</Filter>
-    </ClCompile>
     <ClCompile Include="src\Building.cpp">
       <Filter>Entities</Filter>
     </ClCompile>
@@ -13,11 +10,11 @@
     </ClCompile>
     <ClCompile Include="src\Player.cpp" />
     <ClCompile Include="src\Game.cpp" />
+    <ClCompile Include="src\Mob.cpp">
+      <Filter>Entities</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="src\Mob.h">
-      <Filter>Entities</Filter>
-    </ClInclude>
     <ClInclude Include="src\Mob_Swordsman.h">
       <Filter>Entities</Filter>
     </ClInclude>
@@ -33,6 +30,9 @@
     <ClInclude Include="src\Waypoint.h" />
     <ClInclude Include="src\Player.h" />
     <ClInclude Include="src\Game.h" />
+    <ClInclude Include="src\Mob.h">
+      <Filter>Entities</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Filter Include="Entities">

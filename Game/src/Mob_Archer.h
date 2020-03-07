@@ -27,11 +27,14 @@
 class Mob_Archer : public Mob
 {
 public:
+    virtual MobType getType() const { return Archer; }
+    virtual float getElixirCost() const { return 3.f; }
     virtual int getMaxHealth() const { return 4; }
     virtual float getSpeed() const { return 5.0f; }
     virtual float getSize() const { return 0.5f; }
-    virtual float getMass() const { return 3.f; }
+    virtual float getMass() const { return 1.f; }
     virtual int getDamage() const { return 1; }
+    virtual float getAttackRange() const { return 5.f; }
     virtual float getAttackTime() const { return 1.0f; }
     const char* getDisplayLetter() const { return "A"; }
 };

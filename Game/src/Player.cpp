@@ -26,7 +26,7 @@
 #include "iController.h"
 #include "Mob_Archer.h"
 #include "Mob_Swordsman.h"
-#include "UnitTypes.h"
+#include "iMobManager.h"
 
 Player::Player(iController* pControl, bool bNorth) 
     : m_pControl(pControl)
@@ -42,7 +42,7 @@ Player::~Player()
     delete m_pControl;      // it's safe to delete NULL
 }
 
-iPlayer::PlacementResult Player::placeUnit(UnitTypes type, const Vec2& pos)
+iPlayer::PlacementResult Player::placeMob(MobType type, const Vec2& pos)
 {
     Mob* pMob = NULL;
     switch (type)
@@ -54,7 +54,7 @@ iPlayer::PlacementResult Player::placeUnit(UnitTypes type, const Vec2& pos)
             pMob = new Mob_Swordsman();
             break;
         default:
-            return InvalidUnitType;
+            return InvalidMobType;
     }
 
     assert(!!pMob);

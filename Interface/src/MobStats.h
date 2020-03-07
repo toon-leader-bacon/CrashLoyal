@@ -22,29 +22,21 @@
 
 #pragma once
 
-#include "Entity.h"
+enum MobType
+{
+    Swordsman,
+    Archer,
 
-#include "MobType.h"
+    numMobTypes
+};
 
-class Vec2;
-struct Waypoint;
-
-class Mob : public Entity {
-
+// Stats that each mob needs to have.  
+class iMobStats
+{
 public:
-    Mob();
-    virtual ~Mob() {}
+    // Final Project: call this function to get the stats for any type of mob.
+    static const iMobStats& getStats(MobType t);
 
-    bool operator==(const Mob& rhs) const { return m_Uid == rhs.m_Uid; }
-
-    virtual void Init(const Vec2& pos, bool isNorth);
-
-    virtual bool isNorth() const { return m_bIsNorth; }
-
-    // The main function that drives this mob. Should be called once every game tick.
-    void update(float elapsedTime);
-
-    // Mob-specific values, to be set in subclass
     virtual MobType getType() const = 0;
     virtual float getElixirCost() const = 0;
     virtual float getSpeed() const = 0;
@@ -54,31 +46,35 @@ public:
     virtual float getAttackRange() const = 0;
     virtual float getAttackTime() const = 0;
     virtual const char* getDisplayLetter() const = 0;
+};
 
-protected:
-    // pick the attack and move targets (we may have both).
-    void pickTargets();
+class MobStats_Swordsman : public iMobStats
+{
+public:
+    virtual MobType getType() const { return Swordsman; }
+    virtual float getElixirCost() const { return 5.f; }
+    virtual int getMaxHealth() const { return 10; }
+    virtual float getSpeed() const { return 3.f; }
+    virtual float getSize() const { return 1.f; }
+    virtual float getMass() const { return 3.f; }
+    virtual int getDamage() const { return 3; }
+    virtual float getAttackRange() const { return 1.f; }
+    virtual float getAttackTime() const { return 2.f; }
+    const char* getDisplayLetter() const { return "S"; }
+};
 
-    const Waypoint* findClosestWaypoint();
-    void moveTowards(const Vec2& moveTarget, float elapsedTime);
 
-    bool targetInRange();
-
-
-    Mob* checkCollision();
-    void processCollision(Mob* otherMob, float elapsedTime);
-
-    void attackProcedure(float elapsedTime);
-    void moveProcedure(float elapsedTime);
-
-protected:
-    static int s_PreviousUID;
-    int m_Uid;
-
-    bool m_bIsNorth;
-
-    Entity* m_pAttackTarget;
-    const Waypoint* m_pMoveTarget;
-
-    float m_LastAttackTime;
+class MobStats_Archer : public iMobStats
+{
+public:
+    virtual MobType getType() const { return Archer; }
+    virtual float getElixirCost() const { return 3.f; }
+    virtual int getMaxHealth() const { return 4; }
+    virtual float getSpeed() const { return 5.0f; }
+    virtual float getSize() const { return 0.5f; }
+    virtual float getMass() const { return 1.f; }
+    virtual int getDamage() const { return 1; }
+    virtual float getAttackRange() const { return 5.f; }
+    virtual float getAttackTime() const { return 1.0f; }
+    const char* getDisplayLetter() const { return "A"; }
 };
