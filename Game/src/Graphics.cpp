@@ -49,6 +49,7 @@ void Graphics::render() {
 
 void Graphics::resetFrame() {
     drawBG();
+    drawUI();
 }
 
 void Graphics::drawMob(Mob* m) {
@@ -134,7 +135,7 @@ void Graphics::drawText(const char* textToDraw, SDL_Rect messageRect, SDL_Color 
 void Graphics::drawGrid() {
     SDL_SetRenderDrawColor(gRenderer, 0x00, 0x00, 0x00, 0xFF);
     // Draw Vert lines
-    for (int xIndex = 0; xIndex < GAME_GRID_WIDTH; xIndex++) {
+    for (int xIndex = 0; xIndex < GAME_GRID_WIDTH + 1; xIndex++) {
         int xIndexPix = xIndex * PIXELS_PER_METER;
         SDL_RenderDrawLine(gRenderer,
             xIndexPix, 0,
@@ -206,4 +207,19 @@ void Graphics::drawWinScreen(int winningSide) {
     SDL_Rect stringRect = { leftX, topY, width, height };
     SDL_Color color = { 0, 0, 0, 255 };
     drawText(msg, stringRect, color);
+}
+
+void Graphics::drawUI() {
+    // Draws the rectangle to the right of the play area that contains the UI
+
+    SDL_Rect uiRect = {
+        (int)(GAME_GRID_WIDTH * PIXELS_PER_METER),
+        (int)0,
+        (int)(UI_WIDTH * PIXELS_PER_METER),
+        (int)(UI_HEIGHT * PIXELS_PER_METER),
+    };
+    SDL_SetRenderDrawColor(gRenderer, 0x50, 0x50, 0x50, 100);
+    SDL_RenderFillRect(gRenderer, &uiRect);
+
+
 }

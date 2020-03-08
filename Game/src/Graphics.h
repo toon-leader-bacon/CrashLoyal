@@ -34,7 +34,7 @@ private:
 
 	void drawGrid();
 	void drawBG();
-
+	void drawUI();
 
 	SDL_Renderer* gRenderer;
 	SDL_Window* gWindow;

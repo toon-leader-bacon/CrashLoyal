@@ -60,9 +60,6 @@ void close() {
     SDL_Quit();
 }
 
-
-
-
 int main(int argc, char* args[]) {
     Game& game = Game::get();
     //Start up SDL and create window
@@ -74,6 +71,7 @@ int main(int argc, char* args[]) {
         high_resolution_clock::time_point prevTime = high_resolution_clock::now();
 
         bool quit = false;
+        SDL_Event e;
         while (!quit) {
             // Get the elapsed time, and ensure it's at between TICK_MIN and TICK_MAX
             high_resolution_clock::time_point now = high_resolution_clock::now();
@@ -94,10 +92,17 @@ int main(int argc, char* args[]) {
 
             // TICK 
 
-            if (Controller_UI::exists())
-            {
+            while (SDL_PollEvent(&e) != 0) {
+                if (e.type == SDL_QUIT) { quit = true; }
+                if (Controller_UI::exists()) {
+                    Controller_UI::get().loadEvent(e);
+                }
+            }
+
+            if (Controller_UI::exists()) {
                 Controller_UI::get().tick((float)deltaTSec);
             }
+            
 
             game.tick((float)deltaTSec);
 
