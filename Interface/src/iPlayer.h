@@ -27,6 +27,7 @@
 
 #pragma once
 
+#include "EntityStats.h"
 #include "Vec2.h"
 
 enum MobType;
@@ -51,7 +52,7 @@ public:
 
     // Final Project: Your AI will call this function to place its mobs.  The
     // return value will tell you whether it succeeded and why it failed.
-    virtual PlacementResult placeMob(MobType type, const Vec2& pos) = 0;
+    virtual PlacementResult placeMob(iEntityStats::MobType type, const Vec2& pos) = 0;
 
 private:
     // DELIBERATELY UNDEFINED

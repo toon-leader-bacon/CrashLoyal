@@ -28,7 +28,7 @@
 struct SDL_MouseButtonEvent;
 
 // TODO List:
-// - Get the list of units (and stats) from MobStats.h
+// - Get the list of units (and stats) from EntityStats.h
 // - Display elixir on the side of screen (get it from m_pPlayer->getElixir()
 // - Buttons on the side of screen for spawning mobs
 //    - left click on button to select mob, left click on screen to drop

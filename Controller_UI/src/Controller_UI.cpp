@@ -23,7 +23,7 @@
 #include "Controller_UI.h"
 
 #include "Constants.h"
-#include "MobStats.h"
+#include "EntityStats.h"
 #include "iPlayer.h"
 #include "Vec2.h"
 
@@ -47,7 +47,9 @@ void Controller_UI::tick(float deltaTSec)
             SDL_GetMouseState(&pixelX, &pixelY);
             const Vec2 mousePos((float)(pixelX / PIXELS_PER_METER), (float)(pixelY / PIXELS_PER_METER));
 
-            MobType mobType = SDL_GetKeyboardState(NULL)[SDL_SCANCODE_LSHIFT] ? Archer : Swordsman;
+            iEntityStats::MobType mobType = SDL_GetKeyboardState(NULL)[SDL_SCANCODE_LSHIFT] 
+                ? iEntityStats::Archer 
+                : iEntityStats::Swordsman;
 
             assert(m_pPlayer);
             m_pPlayer->placeMob(mobType, mousePos);

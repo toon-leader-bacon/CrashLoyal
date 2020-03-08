@@ -41,7 +41,7 @@ Player::~Player()
     delete m_pControl;      // it's safe to delete NULL
 }
 
-iPlayer::PlacementResult Player::placeMob(MobType type, const Vec2& pos)
+iPlayer::PlacementResult Player::placeMob(iEntityStats::MobType type, const Vec2& pos)
 {
     // Adjust the position to be a tile center.  Tiles are 1 unit wide.
     // TODO: move the code for converting to tile position somewhere shared
@@ -82,7 +82,7 @@ iPlayer::PlacementResult Player::placeMob(MobType type, const Vec2& pos)
     }
 
     // Validate that we have enough elixir
-    const iMobStats& stats = iMobStats::getStats(type);
+    const iEntityStats& stats = iEntityStats::getStats(type);
     const float cost = stats.getElixirCost();
     if (cost > m_Elixir)
     {

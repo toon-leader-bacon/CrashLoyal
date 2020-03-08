@@ -5,11 +5,11 @@
     <ClInclude Include="src\Vec2.h" />
     <ClInclude Include="src\Constants.h" />
     <ClInclude Include="src\iPlayer.h" />
-    <ClInclude Include="src\MobStats.h" />
     <ClInclude Include="src\iController.h" />
+    <ClInclude Include="src\EntityStats.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\Vec2.cpp" />
-    <ClCompile Include="src\MobStats.cpp" />
+    <ClCompile Include="src\EntityStats.cpp" />
   </ItemGroup>
 </Project>

@@ -37,7 +37,7 @@ public:
     virtual ~Player();
 
     virtual float getElixir() const { return (float)m_Elixir; }
-    virtual PlacementResult placeMob(MobType type, const Vec2& pos);
+    virtual PlacementResult placeMob(iEntityStats::MobType type, const Vec2& pos);
 
     void tick(float deltaTSec);
 

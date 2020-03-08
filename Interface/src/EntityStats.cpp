@@ -20,23 +20,43 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 
-#include "MobStats.h"
+#include "EntityStats.h"
 
 #include <assert.h>
 #include <unordered_map>
 
-const iMobStats& iMobStats::getStats(MobType t)
+const iEntityStats& iEntityStats::getStats(MobType t)
 {
-    static std::vector<const iMobStats*> sStats = { 
-        new MobStats_Swordsman, 
-        new MobStats_Archer 
+    // NOTE: This vector must be in synch with the MobType enum (in the .h)
+    static std::vector<const iEntityStats*> sStats = { 
+        new EntityStats_Swordsman, 
+        new EntityStats_Archer,
+        new EntityStats_Giant
     };
 
     // If any of these fail, then your vector (above) is out of synch with the 
     //  MobType enum (in the .h)... and bad things may ensue!
     assert(sStats.size() == numMobTypes);
     assert(!!sStats[t]);
-    assert(sStats[t]->getType() == t);
+    assert(sStats[t]->getMobType() == t);
+
+    return *sStats[t];
+}
+
+
+const iEntityStats& iEntityStats::getBuildingStats(BuildingType t)
+{
+    // NOTE: This vector must be in synch with the MobType enum (in the .h)
+    static std::vector<const iEntityStats*> sStats = {
+        new EntityStats_Princess,
+        new EntityStats_King
+    };
+
+    // If any of these fail, then your vector (above) is out of synch with the 
+    //  MobType enum (in the .h)... and bad things may ensue!
+    assert(sStats.size() == numBuildingTypes);
+    assert(!!sStats[t]);
+    assert(sStats[t]->getBuildingType() == t);
 
     return *sStats[t];
 }

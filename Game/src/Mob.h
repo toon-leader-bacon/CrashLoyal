@@ -24,7 +24,7 @@
 
 #include "Entity.h"
 
-#include "MobStats.h"
+#include "EntityStats.h"
 
 class Vec2;
 struct Waypoint;
@@ -32,14 +32,14 @@ struct Waypoint;
 class Mob : public Entity {
 
 public:
-    Mob(const iMobStats& stats, const Vec2& pos, bool isNorth);
+    Mob(const iEntityStats& stats, const Vec2& pos, bool isNorth);
     virtual ~Mob() {}
 
     bool operator==(const Mob& rhs) const { return m_Uid == rhs.m_Uid; }
 
     virtual bool isNorth() const { return m_bIsNorth; }
     
-    const iMobStats& getStats() const { return m_Stats; }
+    const iEntityStats& getStats() const { return m_Stats; }
     virtual int getMaxHealth() const { return m_Stats.getMaxHealth(); }
     virtual float getSize() const  { return m_Stats.getSize(); }
 
@@ -67,7 +67,7 @@ protected:
     int m_Uid;
 
     bool m_bIsNorth;
-    const iMobStats& m_Stats;
+    const iEntityStats& m_Stats;
 
     Entity* m_pAttackTarget;
     const Waypoint* m_pMoveTarget;
