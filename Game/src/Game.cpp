@@ -61,7 +61,7 @@ void Game::tick(float deltaTSec)
 
     for (Building* pBuilding : m_Buildings) {
         if (!pBuilding->isDead()) {
-            pBuilding->update(deltaTSec);
+            pBuilding->tick(deltaTSec);
         }
     }
 
@@ -95,10 +95,14 @@ void Game::tick(float deltaTSec)
 
 int Game::checkGameOver() {
     if (gameOverState == 0) {
-        // If no winner yet, check to see if there is a winner
-        if (getBuilding(SouthKing)->isDead()) { gameOverState = 1; }
-        if (getBuilding(NorthKing)->isDead()) { gameOverState = -1; }
+
+        for (Building* pBuilding : Game::get().getBuildings()) {
+            if ((pBuilding->getStats().getBuildingType() == iEntityStats::King) && pBuilding->isDead()) {
+                gameOverState = pBuilding->isNorth() ? -1 : 1;
+            }
+        }
     }
+
     return gameOverState;
 }
 
@@ -237,24 +241,16 @@ void Game::buildWaypoints()
     }
 }
 
-void Game::buildBuildings() 
+void Game::buildBuildings()
 {
-    m_Buildings.resize(BuildingType::NumBuildingTypes, NULL);
+    const iEntityStats& kingStats = iEntityStats::getBuildingStats(iEntityStats::King);
+    const iEntityStats& princessStats = iEntityStats::getBuildingStats(iEntityStats::Princess);
 
+    m_Buildings.push_back(new Building(kingStats, Vec2(KingX, NorthKingY), true));
+    m_Buildings.push_back(new Building(princessStats, Vec2(PrincessLeftX, NorthPrincessY), true));
+    m_Buildings.push_back(new Building(princessStats, Vec2(PrincessRightX, NorthPrincessY), true));
 
-    m_Buildings[BuildingType::NorthKing] = new Building(Vec2(KingX, NorthKingY), BuildingType::NorthKing);
-    m_Buildings[BuildingType::SouthKing] = new Building(Vec2(KingX, SouthKingY), BuildingType::SouthKing);
-
-    m_Buildings[BuildingType::NorthLeftTower] = new Building(Vec2(PrincessLeftX, NorthPrincessY), BuildingType::NorthLeftTower);
-    m_Buildings[BuildingType::NorthRightTower] = new Building(Vec2(PrincessRightX, NorthPrincessY), BuildingType::NorthRightTower);
-
-    m_Buildings[BuildingType::SouthLeftTower] = new Building(Vec2(PrincessLeftX, SouthPrincessY), BuildingType::SouthLeftTower);
-    m_Buildings[BuildingType::SouthRightTower] = new Building(Vec2(PrincessRightX, SouthPrincessY), BuildingType::SouthRightTower);
-
-    // safety check
-    for (size_t i = 0; i < BuildingType::NumBuildingTypes; ++i)
-    {
-        assert(!!m_Buildings[i]);
-        assert(m_Buildings[i]->getType() == (BuildingType)i);
-    }
+    m_Buildings.push_back(new Building(kingStats, Vec2(KingX, SouthKingY), false));
+    m_Buildings.push_back(new Building(princessStats, Vec2(PrincessLeftX, SouthPrincessY), false));
+    m_Buildings.push_back(new Building(princessStats, Vec2(PrincessRightX, SouthPrincessY), false));
 }

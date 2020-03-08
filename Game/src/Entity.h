@@ -22,18 +22,19 @@
 
 #pragma once
 
-#include <memory>
+#include "EntityStats.h"
+
 #include "Vec2.h"
 
 class Entity
 {
 
 public:
-    Entity() : m_Health(-1) {}
+    Entity(const iEntityStats& stats, const Vec2& pos, bool isNorth);
 
-    virtual int getMaxHealth() const = 0;
-    virtual float getSize() const = 0;
-    virtual bool isNorth() const = 0;
+    const iEntityStats& getStats() const { return m_Stats; }
+
+    bool isNorth() const { return m_bIsNorth; }
 
     bool isDead() const { return m_Health <= 0; }
     int getHealth() const { return m_Health; }
@@ -42,8 +43,12 @@ public:
     const Vec2& getPosition() const { return m_Pos; }
 
 protected:
+    const iEntityStats& m_Stats;
+    bool m_bIsNorth;
     int m_Health;
     Vec2 m_Pos;
 };
+
+
 
 

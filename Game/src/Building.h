@@ -27,51 +27,15 @@
 #include "Vec2.h"
 #include "Mob.h"
 
-enum BuildingType {
-    FirstNorthTower = 0,
-
-    NorthKing = FirstNorthTower,
-    NorthRightTower,
-    NorthLeftTower,
-
-    LastNorthTower = NorthLeftTower,
-
-    FirstSouthTower,
-
-    SouthKing = FirstSouthTower,
-    SouthRightTower,
-    SouthLeftTower,
-
-    LastSouthTower = SouthLeftTower,
-
-    NumBuildingTypes
-};
-
-
 class Building : public Entity {
 
 public:
 
-    Building(float x, float y,  BuildingType type);
+    Building(const iEntityStats& stats, const Vec2& pos, bool isNorth);
 
-    Building(Vec2 p, BuildingType type) : Building(p.x, p.y, type) { }
-
-    virtual bool isNorth() const { return type <= BuildingType::LastNorthTower; }
-
-    virtual float getSize() const { return size; }
-
-    BuildingType getType() { return this->type; }
-
-    void update(float elapsedTime);
-
-    virtual int getMaxHealth() const { return m_MaxHealth; }
+    void tick(float elapsedTime);
 
 private:
-    int m_MaxHealth;
-    float size;
-    float attackRadius;
-
-    BuildingType type;
 
     Entity* target;  // Not owned, NULL => no current target
     float lastAttackTime;
@@ -84,12 +48,9 @@ private:
 
     void attackProcedure(float elapsedTime);
 
-    virtual int getDamage() const { return 2; }
-    virtual float getAttackTime() const { return 2.f; }
-
     Entity* findTargetInRange();
 
-    void scanProcedure(float elapsedTime);
+    void scanProcedure(float deltaTSec);
 
     bool inAttackRange(Vec2 p);
 };

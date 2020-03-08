@@ -24,9 +24,6 @@
 
 #include "Entity.h"
 
-#include "EntityStats.h"
-
-class Vec2;
 struct Waypoint;
 
 class Mob : public Entity {
@@ -36,12 +33,6 @@ public:
     virtual ~Mob() {}
 
     bool operator==(const Mob& rhs) const { return m_Uid == rhs.m_Uid; }
-
-    virtual bool isNorth() const { return m_bIsNorth; }
-    
-    const iEntityStats& getStats() const { return m_Stats; }
-    virtual int getMaxHealth() const { return m_Stats.getMaxHealth(); }
-    virtual float getSize() const  { return m_Stats.getSize(); }
 
     // The main function that drives this mob. Should be called once every game tick.
     void update(float elapsedTime);
@@ -55,7 +46,6 @@ protected:
 
     bool targetInRange();
 
-
     Mob* checkCollision();
     void processCollision(Mob* otherMob, float elapsedTime);
 
@@ -65,9 +55,6 @@ protected:
 protected:
     static int s_PreviousUID;
     int m_Uid;
-
-    bool m_bIsNorth;
-    const iEntityStats& m_Stats;
 
     Entity* m_pAttackTarget;
     const Waypoint* m_pMoveTarget;

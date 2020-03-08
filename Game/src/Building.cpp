@@ -24,37 +24,15 @@
 
 #include "Game.h"
 
-const float KingTowerSize = 5.0f;
-const int KingTowerHealth = 100;
-
-const float SmallTowerSize = 3.f;
-const int SmallTowerHealth = 50;
-
-const float KingTowerAttackRadius = 20.f;
-const float SmallTowerAttackRadius = 10.f;
-
-Building::Building(float x, float y, BuildingType type)
- : lastAttackTime(0)
- , state(BuildingState::Scaning)  
+Building::Building(const iEntityStats& stats, const Vec2& pos, bool isNorth)
+    : Entity(stats, pos, isNorth)
+    , lastAttackTime(0)
+    , state(BuildingState::Scaning)
 {
-    Vec2 p = *(new Vec2(x, y));
-    this->m_Pos = p;
-    this->type = type;
-
-    if (this->type == BuildingType::NorthKing || this->type == BuildingType::SouthKing) {
-        this->size = KingTowerSize;
-        m_Health = KingTowerHealth;
-        this->attackRadius = KingTowerAttackRadius;
-    } else {
-        this->size = SmallTowerSize;
-        m_Health = SmallTowerHealth;
-        this->attackRadius = SmallTowerAttackRadius;
-    }
-
-    m_MaxHealth = m_Health;
+    assert(dynamic_cast<const iEntityStats_Building*>(&stats) != NULL);
 }
 
-void Building::attackProcedure(float elapsedTime) {
+void Building::attackProcedure(float deltaTSec) {
     if (this->target == nullptr || this->target->isDead()) {
         this->target = nullptr;
         this->state = BuildingState::Scaning;
@@ -62,10 +40,10 @@ void Building::attackProcedure(float elapsedTime) {
     }
 
     if (inAttackRange(this->target->getPosition())) {
-        if (this->lastAttackTime >= this->getAttackTime()) {
+        if (this->lastAttackTime >= m_Stats.getAttackTime()) {
             // If our last attack was longer ago than our cooldown
 
-            this->target->takeDamage(this->getDamage());
+            this->target->takeDamage(m_Stats.getDamage());
             if (this->target->isDead())
                 this->target = NULL;
 
@@ -81,7 +59,7 @@ void Building::attackProcedure(float elapsedTime) {
 
 bool Building::inAttackRange(Vec2 p) {
     float dist = this->m_Pos.dist(p);
-    return dist < this->attackRadius;
+    return dist < m_Stats.getAttackRange();
 }
 
 Entity* Building::findTargetInRange() {
@@ -95,7 +73,7 @@ Entity* Building::findTargetInRange() {
     return nullptr;
 }
 
-void Building::scanProcedure(float elapsedTime) {
+void Building::scanProcedure(float deltaTSec) {
     // Look for an enemy mob in range
     Entity* possibleTarget = findTargetInRange();
     if (possibleTarget != NULL) {
@@ -104,16 +82,16 @@ void Building::scanProcedure(float elapsedTime) {
     }
 }
 
-void Building::update(float elapsedTime) {
+void Building::tick(float deltaTSec) {
     switch (this->state) {
-    case BuildingState::Scaning:
-        this->scanProcedure(elapsedTime);
-        break;
-    case BuildingState::Attacking:
-    default:
-        this->attackProcedure(elapsedTime);
-        break;
+        case BuildingState::Scaning:
+            this->scanProcedure(deltaTSec);
+            break;
+        case BuildingState::Attacking:
+        default:
+            this->attackProcedure(deltaTSec);
+            break;
     }
 
-    this->lastAttackTime += (float)elapsedTime;
+    this->lastAttackTime += (float)deltaTSec;
 }
