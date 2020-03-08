@@ -39,6 +39,11 @@ public:
     iPlayer() {}
     virtual ~iPlayer() {}
 
+    // Final Project: What side are you playing?  If true, you're the top
+    // player (i.e. red).  You'll need to account for this when doing things
+    // like placing units, so that you place them on the right side.
+    virtual bool isNorth() const = 0;
+
     // Final Project: Call this to find out how much elixir you currently have.
     // You can look in Constants.h to see how much you start with, what the 
     // maximum is and how fast it accumulates.

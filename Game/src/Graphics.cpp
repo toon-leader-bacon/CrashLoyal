@@ -1,6 +1,7 @@
-#include <algorithm>
 #include "Graphics.h"
 
+#include "Constants.h"
+#include <algorithm>
 
 Graphics* Singleton<Graphics>::s_Obj = NULL;
 
@@ -173,8 +174,8 @@ void Graphics::drawBG() {
 
     // Draw bridges
     SDL_Rect bridgeLeft = {
-        (int)(LEFT_BRIDGE_CENTER_X - (BRIDGE_WIDTH / 2.0)) * PIXELS_PER_METER,
-        (int)(LEFT_BRIDGE_CENTER_Y - (BRIDGE_HEIGHT / 2.0)) * PIXELS_PER_METER,
+        (int)((LEFT_BRIDGE_CENTER_X - (BRIDGE_WIDTH / 2.f)) * PIXELS_PER_METER),
+        (int)((BRIDGE_CENTER_Y - (BRIDGE_HEIGHT / 2.0)) * PIXELS_PER_METER),
         (int)(BRIDGE_WIDTH * PIXELS_PER_METER),
         (int)(BRIDGE_HEIGHT * PIXELS_PER_METER)
     };
@@ -183,8 +184,8 @@ void Graphics::drawBG() {
 
 
     SDL_Rect bridgeRight = {
-        (int)(RIGHT_BRIDGE_CENTER_X - (BRIDGE_WIDTH / 2.0)) * PIXELS_PER_METER,
-        (int)(RIGHT_BRIDGE_CENTER_Y - (BRIDGE_HEIGHT / 2.0)) * PIXELS_PER_METER,
+        (int)((RIGHT_BRIDGE_CENTER_X - (BRIDGE_WIDTH / 2.0)) * PIXELS_PER_METER),
+        (int)((BRIDGE_CENTER_Y - (BRIDGE_HEIGHT / 2.0)) * PIXELS_PER_METER),
         (int)(BRIDGE_WIDTH * PIXELS_PER_METER),
         (int)(BRIDGE_HEIGHT * PIXELS_PER_METER)
     };

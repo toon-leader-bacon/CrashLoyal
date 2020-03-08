@@ -36,6 +36,8 @@ public:
     explicit Player(iController* pControl, bool bNorth);
     virtual ~Player();
 
+    virtual bool isNorth() const { return m_bNorth; }
+
     virtual float getElixir() const { return (float)m_Elixir; }
     virtual const std::vector<iEntityStats::MobType>& GetAvailableMobTypes() const { return m_AvailableMobs; }
     virtual PlacementResult placeMob(iEntityStats::MobType type, const Vec2& pos);

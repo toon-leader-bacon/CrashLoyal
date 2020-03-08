@@ -22,10 +22,100 @@
 
 #include "Entity.h"
 
+#include "Building.h"
+#include "Game.h"
+#include "Mob.h"
+
 Entity::Entity(const iEntityStats& stats, const Vec2& pos, bool isNorth)
     : m_Stats(stats)
     , m_bIsNorth(isNorth)
     , m_Health(stats.getMaxHealth())
     , m_Pos(pos)
+    , m_pTarget(NULL)
+    , m_bTargetLock(NULL)
+    , m_TimeSinceAttack(0.f)
 {
+}
+
+void Entity::tick(float deltaTSec)
+{
+    pickTarget();
+    m_TimeSinceAttack += deltaTSec;
+    if (targetInRange() && (m_TimeSinceAttack > m_Stats.getAttackTime()))
+    {
+        char buff[200];
+        snprintf(buff, 200, "%s %s attacks %s %s for %d damage.\n",
+                 m_bIsNorth ? "North" : "South",
+                 m_Stats.getName(),
+                 m_pTarget->isNorth() ? "North" : "South",
+                 m_pTarget->getStats().getName(),
+                 m_Stats.getDamage());
+        std::cout << buff;
+
+        m_bTargetLock = true;
+        m_pTarget->takeDamage(m_Stats.getDamage());
+        m_TimeSinceAttack = 0.f;
+    }
+}
+
+void Entity::pickTarget()
+{
+    assert(!m_bTargetLock || !!m_pTarget);
+    if (m_bTargetLock && !m_pTarget->isDead())
+    {
+        return;
+    }
+
+    m_pTarget = NULL;
+    m_bTargetLock = false;
+
+    Game& game = Game::get();
+
+    float closestDistSq = FLT_MAX;
+
+    for (Building* pBuilding : Game::get().getBuildings()) 
+    {
+        if ((pBuilding->isNorth() != isNorth()) && !pBuilding->isDead())
+        {
+            float distSq = m_Pos.distSqr(pBuilding->getPosition());
+            if (distSq < closestDistSq)
+            {
+                closestDistSq = distSq;
+                m_pTarget = pBuilding;
+            }
+        }
+    }
+
+    if (m_Stats.getTargetType() != iEntityStats::Building)
+    {
+        for (Mob* pOtherMob : Game::get().getMobs()) 
+        {
+            if ((pOtherMob->isNorth() != isNorth()) && !pOtherMob->isDead())
+            {
+                float distSq = m_Pos.distSqr(pOtherMob->getPosition());
+                if (distSq < closestDistSq)
+                {
+                    closestDistSq = distSq;
+                    m_pTarget = pOtherMob;
+                }
+            }
+        }
+    }
+}
+
+bool Entity::targetInRange()
+{
+    if (!!m_pTarget)
+    {
+        float range = m_Stats.getAttackRange();
+
+        if (m_Stats.getDamageType() == iEntityStats::Melee)
+        {
+            range += ((m_Stats.getSize() + m_pTarget->getStats().getSize()) / 2.f);
+        }
+
+        return m_Pos.distSqr(m_pTarget->getPosition()) <= (range * range);
+    }
+
+    return false;
 }

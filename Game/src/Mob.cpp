@@ -22,208 +22,147 @@
 
 #include "Mob.h"
 
-#include "Building.h"
-#include "Constants.h"
 #include "Game.h"
-#include "Vec2.h"
 #include "Waypoint.h"
 
-int Mob::s_PreviousUID = 0;
+#include <algorithm>
+#include <vector>
+
 
 Mob::Mob(const iEntityStats& stats, const Vec2& pos, bool isNorth)
     : Entity(stats, pos, isNorth)
-    , m_Uid(++s_PreviousUID)
-    , m_pAttackTarget(NULL)
-    , m_pMoveTarget(NULL)
-    , m_LastAttackTime(0)
+    , m_pWaypoint(NULL)
 {
     assert(dynamic_cast<const iEntityStats_Mob*>(&stats) != NULL);
 }
 
-const Waypoint* Mob::findClosestWaypoint() {
-    const std::vector<Waypoint*>& waypoints = Game::get().getWaypoints();
+void Mob::tick(float deltaTSec)
+{
+    // Tick the entity first.  This will pick our target, and attack it if it's in range.
+    Entity::tick(deltaTSec);
 
-    const Waypoint* pClosest = NULL;
+    // if our target isn't in range, move towards it.
+    if (!targetInRange())
+    {
+        move(deltaTSec);
+    }
+}
 
-    float smallestDist = std::numeric_limits<float>::max();
-    for (const Waypoint* wp : waypoints) {
-        // Filter out any waypoints that are "behind" us (behind is relative to attack dir
-        // Remember y=0 is in the top left
-        if (m_bIsNorth == (wp->m_Pos.y < m_Pos.y)) {
+void Mob::move(float deltaTSec)
+{
+    // If we have a target and it's on the same side of the river, we move towards it.
+    //  Otherwise, we move toward the bridge.
+    bool bMoveToTarget = false;
+    if (!!m_pTarget)
+    {    
+        bool imTop = m_Pos.y < (GAME_GRID_HEIGHT / 2);
+        bool otherTop = m_pTarget->getPosition().y < (GAME_GRID_HEIGHT / 2);
+
+        if (imTop == otherTop)
+        {
+            bMoveToTarget = true;
+        }
+    }
+
+    Vec2 destPos;
+    if (bMoveToTarget)
+    { 
+        m_pWaypoint = NULL;
+        destPos = m_pTarget->getPosition();
+    }
+    else
+    {
+        if (!m_pWaypoint)
+        {
+            m_pWaypoint = pickWaypoint();
+        }
+        destPos = m_pWaypoint ? *m_pWaypoint : m_Pos;
+    }
+
+    // Actually do the moving
+    Vec2 moveVec = destPos - m_Pos;
+    float distRemaining = moveVec.normalize();
+    float moveDist = m_Stats.getSpeed() * deltaTSec;
+
+    // if we're moving to m_pTarget, don't move into it
+    if (bMoveToTarget)
+    {
+        assert(m_pTarget);
+        distRemaining -= (m_Stats.getSize() + m_pTarget->getStats().getSize()) / 2.f;
+        distRemaining = std::max(0.f, distRemaining);
+    }
+
+    if (moveDist <= distRemaining)
+    {
+        m_Pos += moveVec * moveDist;
+    }
+    else
+    {
+        m_Pos += moveVec * distRemaining;
+
+        // if the destination was a waypoint, find the next one and continue movement
+        if (m_pWaypoint)
+        {
+            m_pWaypoint = pickWaypoint();
+            destPos = m_pWaypoint ? *m_pWaypoint : m_Pos;
+            moveVec = destPos - m_Pos;
+            moveVec.normalize();
+            m_Pos += moveVec * distRemaining;
+        }
+    }
+
+    // PROJECT 3: This is where your collision code will be called from
+    Mob* otherMob = checkCollision();
+    if (otherMob) {
+        processCollision(otherMob, deltaTSec);
+    }
+}
+
+const Vec2* Mob::pickWaypoint()
+{
+    float smallestDistSq = FLT_MAX;
+    const Vec2* pClosest = NULL;
+
+    for (const Vec2& pt : Game::get().getWaypoints())
+    {
+        // Filter out any waypoints that are behind (or barely in front of) us.
+        // NOTE: (0, 0) is the top left corner of the screen
+        float yOffset = pt.y - m_Pos.y;
+        if ((m_bIsNorth && (yOffset < 1.f)) ||
+            (!m_bIsNorth && (yOffset > -1.f)))
+        {
             continue;
         }
 
-        float dist = m_Pos.dist(wp->m_Pos);
-        if (dist < smallestDist) {
-            smallestDist = dist;
-            pClosest = wp;
+        float distSq = m_Pos.distSqr(pt);
+        if (distSq < smallestDistSq) {
+            smallestDistSq = distSq;
+            pClosest = &pt;
         }
     }
 
     return pClosest;
 }
 
-void Mob::moveTowards(const Vec2& moveTarget, float elapsedTime) {
-    Vec2 movementVector = moveTarget - m_Pos;
-    movementVector.normalize();
-    movementVector *= (float)m_Stats.getSpeed();
-    movementVector *= (float)elapsedTime;
-    
-    m_Pos += movementVector;
-}
-
-void Mob::pickTargets() {
-    // if we already have an attack target, make sure that it's not dead.
-    if (m_pAttackTarget && m_pAttackTarget->isDead())
-    {
-        m_pAttackTarget = NULL;
-    }
-
-    // If we don't have a target, look for something to attack
-    if (!m_pAttackTarget)
-    {
-        Game& game = Game::get();
-
-        float closestDistSq = FLT_MAX;
-
-        for (Building* pBuilding : Game::get().getBuildings()) {
-            if ((pBuilding->isNorth() != isNorth()) && !pBuilding->isDead())
-            {
-                float distSq = Vec2::distSqr(m_Pos, pBuilding->getPosition());
-                if (distSq < closestDistSq)
-                {
-                    closestDistSq = distSq;
-                    m_pAttackTarget = pBuilding;
-                }
-            }
-        }
-
-        for (Mob* pOtherMob : Game::get().getMobs()) {
-            if ((pOtherMob->isNorth() != isNorth()) && !pOtherMob->isDead())
-            {
-                float distSq = Vec2::distSqr(m_Pos, pOtherMob->getPosition());
-                if (distSq < closestDistSq)
-                {
-                    closestDistSq = distSq;
-                    m_pAttackTarget = pOtherMob;
-                }
-            }
-        }
-    }
-
-    // If we have an attack target but it's on the other side of the river, we 
-    // also pick a move target (to move towards the bridge).  Otherwise, we 
-    // need to clear the move target.
-    // TODO: Handle logic for ranged shooting across river
-    if (m_pAttackTarget)
-    {
-        bool imTop = m_Pos.y < (GAME_GRID_HEIGHT / 2);
-        bool otherTop = m_pAttackTarget->getPosition().y < (GAME_GRID_HEIGHT / 2);
-        m_pMoveTarget = (imTop == otherTop)
-            ? NULL
-            : findClosestWaypoint();
-    }
-    // Otherwise, if we don't currently have a move target we need to pick one
-    else if (!m_pMoveTarget)
-    {
-        m_pMoveTarget = findClosestWaypoint();
-    }
-}
-
-// Movement related
-//////////////////////////////////
-// Combat related
-
-// TODO: unify with similar functionality in the buildings
-bool Mob::targetInRange() {
-    float range = getStats().getSize(); // TODO: change this for ranged mobs
-    float totalSize = range + m_pAttackTarget->getStats().getSize();
-    return m_Pos.insideOf(m_pAttackTarget->getPosition(), totalSize);
-}
-
-// Combat related
-////////////////////////////////////////////////////////////
-// Collisions
-
 // PROJECT 3: 
 //  1) return a vector of mobs that we're colliding with
 //  2) handle collision with towers & river 
-Mob* Mob::checkCollision() {
-    for (const Mob* pOtherMob : Game::get().getMobs()) {
-        // don't collide with yourself
-        if (*this == *pOtherMob) continue;
+Mob* Mob::checkCollision() 
+{
+    for (const Mob* pOtherMob : Game::get().getMobs())
+    {
+        if (this == pOtherMob) 
+        {
+            continue;
+        }
 
         // PROJECT 3: YOUR CODE CHECKING FOR A COLLISION GOES HERE
     }
     return NULL;
 }
 
-void Mob::processCollision(Mob* otherMob, float elapsedTime) {
+void Mob::processCollision(Mob* otherMob, float deltaTSec) 
+{
     // PROJECT 3: YOUR COLLISION HANDLING CODE GOES HERE
 }
 
-// Collisions
-///////////////////////////////////////////////
-// Procedures
-
-// TODO: unify with building
-void Mob::attackProcedure(float elapsedTime) {
-    assert(m_pAttackTarget && !m_pAttackTarget->isDead());
-
-    if (targetInRange()) {
-        if (m_LastAttackTime >= m_Stats.getAttackTime()) {
-            m_LastAttackTime = 0; // lastAttackTime is incremented in the main update function
-
-            std::cout << "Attack!" << std::endl;
-
-            m_pAttackTarget->takeDamage(m_Stats.getDamage());
-
-            if (m_pAttackTarget->isDead())
-            {
-                m_pAttackTarget = NULL;
-
-            }
-            return;
-        }
-    }
-    else {
-        // If the target is not in range
-        moveTowards(m_pAttackTarget->getPosition(), elapsedTime);
-    }
-}
-
-void Mob::moveProcedure(float elapsedTime) {
-    assert(!!m_pMoveTarget);
-    const Vec2& targetPos = m_pMoveTarget->m_Pos;
-
-    moveTowards(targetPos, elapsedTime);
-
-    // Check for collisions
-    if (targetPos.insideOf(m_Pos, (getStats().getSize() + WAYPOINT_SIZE))) {
-        m_pMoveTarget = m_bIsNorth
-            ? m_pMoveTarget->m_DownNeighbor
-            : m_pMoveTarget->m_UpNeighbor;
-    }
-
-    // PROJECT 3: You should not change this code very much, but this is where your 
-    // collision code will be called from
-    Mob* otherMob = checkCollision();
-    if (otherMob) {
-        processCollision(otherMob, elapsedTime);
-    }
-}
-
-void Mob::update(float elapsedTime) {
-    m_LastAttackTime += (float)elapsedTime;
-
-    pickTargets();
-    assert(!!m_pMoveTarget || !!m_pAttackTarget);
-
-    // If we have a move target, move to it (if there's also an attack target, 
-    // it's on the far side of the bridge).
-
-    if (m_pMoveTarget)
-        moveProcedure(elapsedTime);
-    else if (m_pAttackTarget)
-        attackProcedure(elapsedTime);
-}

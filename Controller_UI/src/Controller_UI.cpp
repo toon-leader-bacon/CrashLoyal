@@ -48,9 +48,23 @@ void Controller_UI::tick(float deltaTSec) {
             SDL_GetMouseState(&pixelX, &pixelY);
             const Vec2 mousePos((float)(pixelX / PIXELS_PER_METER), (float)(pixelY / PIXELS_PER_METER));
 
-            iEntityStats::MobType mobType = SDL_GetKeyboardState(NULL)[SDL_SCANCODE_LSHIFT] 
-                ? iEntityStats::Archer 
-                : iEntityStats::Swordsman;
+            iEntityStats::MobType mobType;
+            if (SDL_GetKeyboardState(NULL)[SDL_SCANCODE_A])
+            {
+                mobType = iEntityStats::Archer;
+            }
+            else if (SDL_GetKeyboardState(NULL)[SDL_SCANCODE_S])
+            {
+                mobType = iEntityStats::Swordsman;
+            }
+            else if (SDL_GetKeyboardState(NULL)[SDL_SCANCODE_G])
+            {
+                mobType = iEntityStats::Giant;
+            }
+            else
+            {
+                continue;
+            }
 
             assert(m_pPlayer);
             m_pPlayer->placeMob(mobType, mousePos);
