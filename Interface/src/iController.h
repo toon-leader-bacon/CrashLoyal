@@ -20,13 +20,13 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 
+#pragma once
+
 // Final Project: A controller is a thing that controls a player - i.e. either
 // a UI or an AI.  Your controller will be in its own project (instructions
 // for that are in the assignment), but will inherit from this and implement
 // all of the pure virtual functions.  The game will call those functions when
 // it is time for the controler to do its work.
-
-#pragma once
 
 #include <assert.h>
 #include "SDL.h"

@@ -22,7 +22,6 @@
     <ClInclude Include="src\Entity.h">
       <Filter>Entities</Filter>
     </ClInclude>
-    <ClInclude Include="src\Waypoint.h" />
     <ClInclude Include="src\Player.h" />
     <ClInclude Include="src\Game.h" />
     <ClInclude Include="src\Mob.h">

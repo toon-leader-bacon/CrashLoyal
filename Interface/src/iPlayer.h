@@ -20,12 +20,12 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 
-// Final Project:  A player is one of the two players in the game - either the 
-// north or the south player.  This API defines the interface which controllers 
-// (e.g. the UI, a student's AI, etc.) use to query the state of the player
-// and to control what that player does (i.e. place mobs).
-
 #pragma once
+
+// Final Project:  A player is one of the two players in the game - either the 
+// north or the south player.  We have two APIs - iPlayer, which is what you'll
+// be able to access for your own player, and iOpposingPlayer which is what 
+// you'll be able to access for the opposing player.
 
 #include "EntityStats.h"
 #include "Vec2.h"
@@ -75,24 +75,3 @@ private:
     bool operator<(const iPlayer& rhs) const;
 };
 
-//class iOpposingPlayer {
-//public:
-//    iOpposingPlayer() {}
-//    virtual ~iOpposingPlayer() {}
-//
-//    // Final Project: Call this to find out how much elixir you currently have.
-//    // You can look in Constants.h to see how much you start with, what the 
-//    // maximum is and how fast it accumulates.
-//    virtual float getElixir() const = 0;
-//
-//    size_t getNumMobs() const;
-//    const iMob* getMob(size_t index) const;
-//    const iBuilding* getBuilding(size_t index) const;
-//
-//private:
-//    // DELIBERATELY UNDEFINED
-//    iOpposingPlayer(const iOpposingPlayer& rhs);
-//    iOpposingPlayer& operator=(const iOpposingPlayer& rhs);
-//    bool operator==(const iOpposingPlayer& rhs) const;
-//    bool operator<(const iOpposingPlayer& rhs) const;
-//};

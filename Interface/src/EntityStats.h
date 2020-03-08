@@ -22,6 +22,10 @@
 
 #pragma once
 
+// Final Project: The interfaces in this file let your AI determine what types 
+// of units exist, and what the characteristics are for each one.  The actual
+// values are in EntityStats.cpp. 
+
 #include <assert.h>
 #include <limits>
 
