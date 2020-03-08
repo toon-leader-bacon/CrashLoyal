@@ -143,8 +143,6 @@ public:
     virtual float getElixirCost() const { assert(false); return FLT_MAX; }
     virtual float getSpeed() const { assert(false); return FLT_MAX; }
     virtual float getMass() const { assert(false); return FLT_MAX; }
-    const char* getDisplayLetter() const { assert(false); return ""; }
-
 };
 
 class EntityStats_Princess : public iEntityStats_Building
@@ -157,6 +155,7 @@ public:
     virtual int getDamage() const { return 2; }
     virtual float getAttackRange() const { return 1.5f; }
     virtual float getAttackTime() const { return 2.4f; }
+    const char* getDisplayLetter() const { return "P"; }
 };
 
 class EntityStats_King : public iEntityStats_Building
@@ -169,4 +168,5 @@ public:
     virtual int getDamage() const { return 2; }
     virtual float getAttackRange() const { return 10.f; }
     virtual float getAttackTime() const { return 1.4f; }
+    const char* getDisplayLetter() const { return "K"; }
 };

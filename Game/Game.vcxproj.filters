@@ -13,6 +13,7 @@
     <ClCompile Include="src\Mob.cpp">
       <Filter>Entities</Filter>
     </ClCompile>
+    <ClCompile Include="src\Graphics.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\Building.h">
@@ -27,6 +28,7 @@
     <ClInclude Include="src\Mob.h">
       <Filter>Entities</Filter>
     </ClInclude>
+    <ClInclude Include="src\Graphics.h" />
   </ItemGroup>
   <ItemGroup>
     <Filter Include="Entities">

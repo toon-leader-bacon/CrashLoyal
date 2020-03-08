@@ -22,11 +22,13 @@
     <ClInclude Include="src\Constants.h" />
     <ClInclude Include="src\iController.h" />
     <ClInclude Include="src\iPlayer.h" />
+
     <ClInclude Include="src\EntityStats.h" />
     <ClInclude Include="src\Singleton.h" />
     <ClInclude Include="src\Vec2.h" />
   </ItemGroup>
   <ItemGroup>
+
     <ClCompile Include="src\EntityStats.cpp" />
     <ClCompile Include="src\Vec2.cpp" />
   </ItemGroup>
