@@ -22,36 +22,11 @@
 
 #pragma once
 
-#include "Game.h"
 #include "Entity.h"
-#include "Vec2.h"
-#include "Mob.h"
 
-class Building : public Entity {
-
+class Building : public Entity 
+{
 public:
-
     Building(const iEntityStats& stats, const Vec2& pos, bool isNorth);
-
-    void tick(float elapsedTime);
-
-private:
-
-    Entity* target;  // Not owned, NULL => no current target
-    float lastAttackTime;
-
-    enum class BuildingState {
-        Attacking,
-        Scaning
-    };
-    BuildingState state;
-
-    void attackProcedure(float elapsedTime);
-
-    Entity* findTargetInRange();
-
-    void scanProcedure(float deltaTSec);
-
-    bool inAttackRange(Vec2 p);
 };
 

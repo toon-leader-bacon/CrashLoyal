@@ -32,7 +32,13 @@ Player::Player(iController* pControl, bool bNorth)
     , m_bNorth(bNorth)
     , m_Elixir(capElixir(STARTING_ELIXIR))
 {
-    if (m_pControl) 
+    // for now, all mob types are available.
+    for (size_t i = 0; i < iEntityStats::numMobTypes; ++i)
+    {
+        m_AvailableMobs.push_back((iEntityStats::MobType)i);
+    }
+
+    if (m_pControl)
         m_pControl->setPlayer(*this);
 }
 
@@ -90,6 +96,14 @@ iPlayer::PlacementResult Player::placeMob(iEntityStats::MobType type, const Vec2
             std::endl;
 
         return InsufficientElixir;
+    }
+
+    // Make sure that the mob type is one that's currently available
+    if (std::find(m_AvailableMobs.begin(), m_AvailableMobs.end(), type) == m_AvailableMobs.end())
+    {
+        std::cout << "Mob type not available\n";
+
+        return MobTypeUnavailable;
     }
 
     // Checks are done - make the mob.

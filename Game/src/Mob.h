@@ -30,34 +30,16 @@ class Mob : public Entity {
 
 public:
     Mob(const iEntityStats& stats, const Vec2& pos, bool isNorth);
-    virtual ~Mob() {}
 
-    bool operator==(const Mob& rhs) const { return m_Uid == rhs.m_Uid; }
-
-    // The main function that drives this mob. Should be called once every game tick.
-    void update(float elapsedTime);
+    virtual void tick(float deltaTSec);
 
 protected:
-    // pick the attack and move targets (we may have both).
-    void pickTargets();
-
-    const Waypoint* findClosestWaypoint();
-    void moveTowards(const Vec2& moveTarget, float elapsedTime);
-
-    bool targetInRange();
-
+    void move(float deltaTSec);
+    const Vec2* pickWaypoint();
     Mob* checkCollision();
-    void processCollision(Mob* otherMob, float elapsedTime);
+    void processCollision(Mob* otherMob, float deltaTSec);
 
-    void attackProcedure(float elapsedTime);
-    void moveProcedure(float elapsedTime);
 
-protected:
-    static int s_PreviousUID;
-    int m_Uid;
-
-    Entity* m_pAttackTarget;
-    const Waypoint* m_pMoveTarget;
-
-    float m_LastAttackTime;
+private:
+    const Vec2* m_pWaypoint;
 };

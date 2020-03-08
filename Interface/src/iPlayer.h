@@ -30,6 +30,8 @@
 #include "EntityStats.h"
 #include "Vec2.h"
 
+#include <vector>
+
 enum MobType;
 
 class iPlayer {
@@ -37,10 +39,20 @@ public:
     iPlayer() {}
     virtual ~iPlayer() {}
 
+    // Final Project: What side are you playing?  If true, you're the top
+    // player (i.e. red).  You'll need to account for this when doing things
+    // like placing units, so that you place them on the right side.
+    virtual bool isNorth() const = 0;
+
     // Final Project: Call this to find out how much elixir you currently have.
     // You can look in Constants.h to see how much you start with, what the 
     // maximum is and how fast it accumulates.
     virtual float getElixir() const = 0;
+
+    // Final Project: This vector tells you what types of mobs are currently 
+    // available to be placed.
+    // TODO: Implement this feature - right now it's all of them!
+    virtual const std::vector<iEntityStats::MobType>& GetAvailableMobTypes() const = 0;
 
     enum PlacementResult
     {
@@ -48,6 +60,7 @@ public:
         InsufficientElixir,
         InvalidX,
         InvalidY,
+        MobTypeUnavailable,
     };
 
     // Final Project: Your AI will call this function to place its mobs.  The

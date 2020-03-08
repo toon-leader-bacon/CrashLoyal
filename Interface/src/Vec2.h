@@ -53,23 +53,15 @@ public:
     Vec2 operator/(const float f) const { return Vec2(x / f, y / f); }
     Vec2& operator/=(const float f) { x /= f; y /= f; return *this; }
 
-    static float distSqr(Vec2 a, Vec2 b);
+    float lengthSqr() const { return x * x + y * y; }
+    float length() const { return sqrt(lengthSqr()); }
 
-    static float dist(Vec2 a, Vec2 b);
+    float distSqr(Vec2 other) const { return (other - *this).lengthSqr(); }
+    float dist(Vec2 other) const { return (other - *this).length(); }
 
-    float length() const { return sqrt(x * x + y * y); }
-
-    float distSqr(Vec2 other) const;
-
-    float dist(Vec2 other) const;
-
-    void normalize();
-
-    // Returns true if the distance between a and b is less than aRadius
-    // In other words, true => point b is inside of point a+raidus.
-    static bool insideOf(const Vec2& a, float aRadius, Vec2 b);
-
-    bool insideOf(const Vec2& other, float radius) const;
+    // Returns the previous length.  If the length is too short to normalize,
+    //  sets the vector to (0,0) and returns 0.
+    float normalize();
 
 private:
     // DELIBERATELY UNDEFINED

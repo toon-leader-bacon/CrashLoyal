@@ -23,7 +23,6 @@
 #pragma once
 
 #include "EntityStats.h"
-
 #include "Vec2.h"
 
 class Entity
@@ -31,8 +30,11 @@ class Entity
 
 public:
     Entity(const iEntityStats& stats, const Vec2& pos, bool isNorth);
+    virtual ~Entity() {}
 
     const iEntityStats& getStats() const { return m_Stats; }
+
+    virtual void tick(float deltaTSec);
 
     bool isNorth() const { return m_bIsNorth; }
 
@@ -43,12 +45,19 @@ public:
     const Vec2& getPosition() const { return m_Pos; }
 
 protected:
+    void pickTarget();
+    bool targetInRange();
+
+protected:
     const iEntityStats& m_Stats;
     bool m_bIsNorth;
     int m_Health;
     Vec2 m_Pos;
+
+    // Our target will be the closest target (may change every tick) until
+    //  we attack it.  Once we attack a target, we stay locked on it until
+    //  it dies
+    Entity* m_pTarget;
+    bool m_bTargetLock;
+    float m_TimeSinceAttack;
 };
-
-
-
-

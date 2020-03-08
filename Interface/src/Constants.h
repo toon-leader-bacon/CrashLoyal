@@ -21,13 +21,13 @@
 // SOFTWARE.
 
 #pragma once
-#include <float.h>
+#include "Vec2.h"
 
 //Screen dimension constants
-const int PIXELS_PER_METER = 20; // The width of a game grid tile
+const int PIXELS_PER_METER = 30; // The width of a game grid tile
 
 const int GAME_GRID_WIDTH = 18; // How many tiles wide the game grid is. Should be an even number
-const int GAME_GRID_HEIGHT = 31; // How many tiles tall the game grid is. 
+const int GAME_GRID_HEIGHT = 32; // How many tiles tall the game grid is. 
 
 const int UI_WIDTH = 10; // The width of the UI section to the right of the play area in meters
 const int UI_HEIGHT = GAME_GRID_HEIGHT; // The height of the UI Section is the height of the play area
@@ -38,39 +38,30 @@ const int SCREEN_HEIGHT_PIXELS = PIXELS_PER_METER * GAME_GRID_HEIGHT; // The tot
 // Definig sizes of the river rectangle
 const float RIVER_LEFT_X = 0;
 const float RIVER_RIGHT_X = GAME_GRID_WIDTH;
-const float RIVER_TOP_Y = ((float)GAME_GRID_HEIGHT / 2.f) - 1.5f;
-const float RIVER_BOT_Y = ((float)GAME_GRID_HEIGHT / 2.f) + 1.5f;
+const float RIVER_TOP_Y = ((float)GAME_GRID_HEIGHT / 2.f) - 1.f;
+const float RIVER_BOT_Y = ((float)GAME_GRID_HEIGHT / 2.f) + 1.f;
 
 // Defining sizes of the bridges
-const float BRIDGE_WIDTH = 3.f;
-const float BRIDGE_HEIGHT = 3.5f;
-
-const float LEFT_BRIDGE_CENTER_X = (float)GAME_GRID_WIDTH / 4.0f;
-const float LEFT_BRIDGE_CENTER_Y = (float)GAME_GRID_HEIGHT / 2.0f;
-
+const float BRIDGE_WIDTH = 2.f;
+const float BRIDGE_HEIGHT = 4.f;
+const float LEFT_BRIDGE_CENTER_X = 3.5f;
 const float RIGHT_BRIDGE_CENTER_X = (float)GAME_GRID_WIDTH - LEFT_BRIDGE_CENTER_X;
-const float RIGHT_BRIDGE_CENTER_Y = LEFT_BRIDGE_CENTER_Y;
+const float BRIDGE_CENTER_Y = (float)GAME_GRID_HEIGHT / 2.0f;
 
 // Defining the tower positions
 const float KingX = (float)GAME_GRID_WIDTH / 2.f;
-const float PrincessLeftX = (float)GAME_GRID_WIDTH / 4.f;
-const float PrincessRightX = (float)GAME_GRID_WIDTH - PrincessLeftX;
+const float PrincessLeftX = LEFT_BRIDGE_CENTER_X;
+const float PrincessRightX = RIGHT_BRIDGE_CENTER_X;
 
-const float NorthPrincessY = (float)GAME_GRID_HEIGHT * (3.f / 20.f);
-const float NorthKingY = (float)GAME_GRID_HEIGHT * (1.f / 20.f);
+const float NorthPrincessY = 6.5f;
+const float NorthKingY = 3.f;
 const float SouthPrincessY = (float)GAME_GRID_HEIGHT - NorthPrincessY;
 const float SouthKingY = (float)GAME_GRID_HEIGHT - NorthKingY;
 
 // Waypoints
-const int NORTH_KING_WAYPOINT_INDEX = 0;
-const int NORTH_RIGHT_TOWER_WAYPOINT_INDEX = 2;
-const int NORTH_LEFT_TOWER_WAYPOINT_INDEX = 20;
-
-const int SOUTH_KING_WAYPOINT_INDEX = 11;
-const int SOUTH_RIGHT_TOWER_WAYPOINT_INDEX = 9;
-const int SOUTH_LEFT_TOWER_WAYPOINT_INDEX = 13;
-
-const float WAYPOINT_SIZE = 1.f;
+const float WAYPOINT_LEFT_X = LEFT_BRIDGE_CENTER_X;
+const float WAYPOINT_RIGHT_X = RIGHT_BRIDGE_CENTER_X;
+const float WAYPOINT_Y_INCREMENT = 2.f;
 
 // Tick limitations
 const float TICK_MIN = 0.05f;
