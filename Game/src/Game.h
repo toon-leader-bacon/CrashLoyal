@@ -45,10 +45,9 @@ public:
 
     Player& getPlayer(bool bNorth) { return bNorth ? *m_pNorthPlayer : *m_pSouthPlayer; }
 
-    Building* getBuilding(BuildingType b) { return m_Buildings[(size_t)b]; }
-
     const std::vector<Waypoint*>& getWaypoints() const { return m_Waypoints; }
     const std::vector<Mob*>& getMobs() const { return m_Mobs; }
+    const std::vector<Building*>& getBuildings() { return m_Buildings; }
 
     void addMob(Mob* mob) { m_Mobs.push_back(mob); }    // takes ownership
 

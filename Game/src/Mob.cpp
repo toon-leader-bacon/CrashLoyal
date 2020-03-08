@@ -31,15 +31,13 @@
 int Mob::s_PreviousUID = 0;
 
 Mob::Mob(const iEntityStats& stats, const Vec2& pos, bool isNorth)
-    : m_Uid(++s_PreviousUID)
-    , m_bIsNorth(isNorth)
-    , m_Stats(stats)
+    : Entity(stats, pos, isNorth)
+    , m_Uid(++s_PreviousUID)
     , m_pAttackTarget(NULL)
     , m_pMoveTarget(NULL)
     , m_LastAttackTime(0)
 {
-    m_Pos = pos;
-    m_Health = stats.getMaxHealth();
+    assert(dynamic_cast<const iEntityStats_Mob*>(&stats) != NULL);
 }
 
 const Waypoint* Mob::findClosestWaypoint() {
@@ -88,29 +86,20 @@ void Mob::pickTargets() {
 
         float closestDistSq = FLT_MAX;
 
-        const BuildingType firstTower = m_bIsNorth
-            ? BuildingType::FirstSouthTower
-            : BuildingType::FirstNorthTower;
-        const BuildingType lastTower = m_bIsNorth
-            ? BuildingType::LastSouthTower
-            : BuildingType::LastNorthTower;
-
-        for (int i = firstTower; i <= lastTower; ++i)
-        {
-            Building* pTower = game.getBuilding((BuildingType)i);
-            if (!pTower->isDead())
+        for (Building* pBuilding : Game::get().getBuildings()) {
+            if ((pBuilding->isNorth() != isNorth()) && !pBuilding->isDead())
             {
-                float distSq = Vec2::distSqr(m_Pos, pTower->getPosition());
+                float distSq = Vec2::distSqr(m_Pos, pBuilding->getPosition());
                 if (distSq < closestDistSq)
                 {
                     closestDistSq = distSq;
-                    m_pAttackTarget = pTower;
+                    m_pAttackTarget = pBuilding;
                 }
             }
         }
 
         for (Mob* pOtherMob : Game::get().getMobs()) {
-            if ((pOtherMob->m_bIsNorth != m_bIsNorth) && !pOtherMob->isDead())
+            if ((pOtherMob->isNorth() != isNorth()) && !pOtherMob->isDead())
             {
                 float distSq = Vec2::distSqr(m_Pos, pOtherMob->getPosition());
                 if (distSq < closestDistSq)
@@ -147,8 +136,8 @@ void Mob::pickTargets() {
 
 // TODO: unify with similar functionality in the buildings
 bool Mob::targetInRange() {
-    float range = getSize(); // TODO: change this for ranged mobs
-    float totalSize = range + m_pAttackTarget->getSize();
+    float range = getStats().getSize(); // TODO: change this for ranged mobs
+    float totalSize = range + m_pAttackTarget->getStats().getSize();
     return m_Pos.insideOf(m_pAttackTarget->getPosition(), totalSize);
 }
 
@@ -210,7 +199,7 @@ void Mob::moveProcedure(float elapsedTime) {
     moveTowards(targetPos, elapsedTime);
 
     // Check for collisions
-    if (targetPos.insideOf(m_Pos, (getSize() + WAYPOINT_SIZE))) {
+    if (targetPos.insideOf(m_Pos, (getStats().getSize() + WAYPOINT_SIZE))) {
         m_pMoveTarget = m_bIsNorth
             ? m_pMoveTarget->m_DownNeighbor
             : m_pMoveTarget->m_UpNeighbor;

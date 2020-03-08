@@ -21,3 +21,11 @@
 // SOFTWARE.
 
 #include "Entity.h"
+
+Entity::Entity(const iEntityStats& stats, const Vec2& pos, bool isNorth)
+    : m_Stats(stats)
+    , m_bIsNorth(isNorth)
+    , m_Health(stats.getMaxHealth())
+    , m_Pos(pos)
+{
+}

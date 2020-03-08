@@ -62,7 +62,7 @@ void Graphics::drawMob(Mob* m) {
 
 	float centerX = m->getPosition().x * PIXELS_PER_METER;
 	float centerY = m->getPosition().y * PIXELS_PER_METER;
-	float squareSize = m->getSize() * PIXELS_PER_METER;
+	float squareSize = m->getStats().getSize() * PIXELS_PER_METER;
 
 	drawSquare(centerX, centerY, squareSize);
 
@@ -91,7 +91,7 @@ void Graphics::drawSquare(float centerX, float centerY, float size) {
 int Graphics::healthToAlpha(const Entity* e)
 {
     float health = std::max(0.f, (float)e->getHealth());
-    float maxHealth = (float)e->getMaxHealth();
+    float maxHealth = (float)e->getStats().getMaxHealth();
     return (int)(((health / maxHealth) * 200.f) + 55.f);
 }
 
@@ -107,7 +107,7 @@ void Graphics::drawBuilding(Building* b) {
 
     drawSquare(b->getPosition().x * PIXELS_PER_METER,
         b->getPosition().y * PIXELS_PER_METER,
-        b->getSize() * PIXELS_PER_METER);
+        b->getStats().getSize() * PIXELS_PER_METER);
 }
 
 void Graphics::drawText(const char* textToDraw, SDL_Rect messageRect, SDL_Color color) {

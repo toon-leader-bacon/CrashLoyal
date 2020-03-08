@@ -102,7 +102,7 @@ int main(int argc, char* args[]) {
             if (Controller_UI::exists()) {
                 Controller_UI::get().tick((float)deltaTSec);
             }
-            
+
 
             game.tick((float)deltaTSec);
 
@@ -119,11 +119,8 @@ int main(int argc, char* args[]) {
             //               WAYPOINT_SIZE * PIXELS_PER_METER);
             //}
 
-            for (size_t i = 0; i < BuildingType::NumBuildingTypes; ++i)
-            {
-                Building* pBuilding = game.getBuilding((BuildingType)i);
-                if (pBuilding)
-                    graphics->drawBuilding(pBuilding);
+            for (Building* pBuilding : Game::get().getBuildings()) {
+                graphics->drawBuilding(pBuilding);
             }
 
             for (Mob* m : game.getMobs()) {
@@ -131,7 +128,7 @@ int main(int argc, char* args[]) {
                     graphics->drawMob(m);
                 }
             }
-            
+
             // If there is a winner, draw the message to the screen
             graphics->drawWinScreen(game.checkGameOver());
 
