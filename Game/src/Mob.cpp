@@ -22,8 +22,8 @@
 
 #include "Mob.h"
 
+#include "Constants.h"
 #include "Game.h"
-#include "Waypoint.h"
 
 #include <algorithm>
 #include <vector>

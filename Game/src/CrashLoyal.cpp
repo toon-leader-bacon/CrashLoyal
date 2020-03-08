@@ -20,41 +20,24 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 
+#include "Building.h"
 #include "Constants.h"
 #include "Controller_UI.h"
-#include "Building.h"
 #include "Game.h"
 #include "Graphics.h"
-#include "Mob.h"
-#include "Player.h"
-#include "Vec2.h"
-#include "Waypoint.h"
 
-#include "SDL.h"
-#include "SDL_image.h"
-#include "SDL_ttf.h"
-
-#include <algorithm>
-#include <assert.h>
-#include <cmath>
-#include <iostream>
-#include <time.h>
 #include <chrono>
-#include <memory>
-#include <stdio.h>
-#include <string>
-#include <vector>
-
-
-Graphics* graphics;
 
 bool init() {
-    graphics = &Graphics::get();
+    // create the Graphics singleton.  It will take ownership of itself.
+    new Graphics;   
+
     return true;
 }
 
 void close() {
-    graphics->~Graphics();
+    // You should never call the destructor directly!!!
+    //graphics->~Graphics();
 
     IMG_Quit();
     SDL_Quit();
@@ -62,6 +45,8 @@ void close() {
 
 int main(int argc, char* args[]) {
     Game& game = Game::get();
+    Graphics& graphics = Graphics::get();
+
     //Start up SDL and create window
     if (!init()) {
         printf("Failed to initialize!\n");
@@ -88,7 +73,7 @@ int main(int argc, char* args[]) {
 
             prevTime = now;
 
-            graphics->resetFrame();
+            graphics.resetFrame();
 
             // TICK 
 
@@ -108,31 +93,20 @@ int main(int argc, char* args[]) {
 
             // RENDER
 
-            // TODO: Move the rendering into a separate singleton (like the 
-            // Game singleton)
-
-            // Debug draw waypoints
-            //for (const Waypoint* wp : game.getWaypoints())
-            //{
-            //    drawSquare(wp->pos.x * PIXELS_PER_METER, 
-            //               wp->pos.y * PIXELS_PER_METER, 
-            //               WAYPOINT_SIZE * PIXELS_PER_METER);
-            //}
-
             for (Building* pBuilding : Game::get().getBuildings()) {
-                graphics->drawBuilding(pBuilding);
+                graphics.drawBuilding(pBuilding);
             }
 
             for (Mob* m : game.getMobs()) {
                 if (!m->isDead()) {
-                    graphics->drawMob(m);
+                    graphics.drawMob(m);
                 }
             }
 
             // If there is a winner, draw the message to the screen
-            graphics->drawWinScreen(game.checkGameOver());
+            graphics.drawWinScreen(game.checkGameOver());
 
-            graphics->render();
+            graphics.render();
         }
 
     }

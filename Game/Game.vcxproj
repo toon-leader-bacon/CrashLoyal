@@ -34,7 +34,6 @@
     <ClInclude Include="src\Graphics.h" />
     <ClInclude Include="src\Mob.h" />
     <ClInclude Include="src\Player.h" />
-    <ClInclude Include="src\Waypoint.h" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Controller_UI\Controller_UI.vcxproj">
