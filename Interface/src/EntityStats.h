@@ -92,14 +92,14 @@ class EntityStats_Swordsman : public iEntityStats_Mob
 public:
     virtual MobType getMobType() const { return Swordsman; }
     virtual float getElixirCost() const { return 3.f; }
-    virtual int getMaxHealth() const { return 10; }
+    virtual int getMaxHealth() const { return 1452; }
     virtual float getSpeed() const { return 3.f; }
     virtual float getSize() const { return 0.5f; }
     virtual float getMass() const { return 3.f; }
     virtual TargetType getTargetType() const { return Any; }
     virtual float getAttackRange() const { return 1.f; }
-    virtual int getDamage() const { return 3; }
-    virtual float getAttackTime() const { return 1.4f; }
+    virtual int getDamage() const { return 167; }
+    virtual float getAttackTime() const { return 1.2f; }
     const char* getDisplayLetter() const { return "S"; }
 };
 
@@ -108,14 +108,14 @@ class EntityStats_Archer : public iEntityStats_Mob
 public:
     virtual MobType getMobType() const { return Archer; }
     virtual float getElixirCost() const { return 2.f; }
-    virtual int getMaxHealth() const { return 3; }
+    virtual int getMaxHealth() const { return 216; }
     virtual float getSpeed() const { return 5.0f; }
     virtual float getSize() const { return 0.4f; }
     virtual float getMass() const { return 2.f; }
     virtual TargetType getTargetType() const { return Any; }
-    virtual float getAttackRange() const { return 5.f; }
-    virtual int getDamage() const { return 2; }
-    virtual float getAttackTime() const { return 0.8f; }
+    virtual float getAttackRange() const { return 6.5f; }
+    virtual int getDamage() const { return 100; }
+    virtual float getAttackTime() const { return 0.7f; }
     const char* getDisplayLetter() const { return "A"; }
 };
 
@@ -123,15 +123,15 @@ class EntityStats_Giant : public iEntityStats_Mob
 {
 public:
     virtual MobType getMobType() const { return Giant; }
-    virtual float getElixirCost() const { return 6.f; }
-    virtual int getMaxHealth() const { return 30; }
+    virtual float getElixirCost() const { return 5.f; }
+    virtual int getMaxHealth() const { return 3275; }
     virtual float getSpeed() const { return 2.f; }
     virtual float getSize() const { return 0.9f; }
     virtual float getMass() const { return 8.f; }
     virtual TargetType getTargetType() const { return Building; }
     virtual float getAttackRange() const { return 1.5f; }
-    virtual int getDamage() const { return 5; }
-    virtual float getAttackTime() const { return 2.4f; }
+    virtual int getDamage() const { return 211; }
+    virtual float getAttackTime() const { return 1.5f; }
     const char* getDisplayLetter() const { return "G"; }
 };
 
@@ -149,12 +149,12 @@ class EntityStats_Princess : public iEntityStats_Building
 {
 public:
     virtual BuildingType getBuildingType() const { return Princess; }
-    virtual int getMaxHealth() const { return 300; }
-    virtual float getSize() const { return 2.f; }
+    virtual int getMaxHealth() const { return 2534; }
+    virtual float getSize() const { return 3.f; }
     virtual TargetType getTargetType() const { return Any; }
-    virtual int getDamage() const { return 2; }
-    virtual float getAttackRange() const { return 1.5f; }
-    virtual float getAttackTime() const { return 2.4f; }
+    virtual int getDamage() const { return 90; }
+    virtual float getAttackRange() const { return 7.5f; }
+    virtual float getAttackTime() const { return 0.8f; }
     const char* getDisplayLetter() const { return "P"; }
 };
 
@@ -162,11 +162,11 @@ class EntityStats_King : public iEntityStats_Building
 {
 public:
     virtual BuildingType getBuildingType() const { return King; }
-    virtual int getMaxHealth() const { return 500; }
-    virtual float getSize() const { return 3.0f; }
+    virtual int getMaxHealth() const { return 4008; }
+    virtual float getSize() const { return 4.f; }
     virtual TargetType getTargetType() const { return Any; }
-    virtual int getDamage() const { return 2; }
-    virtual float getAttackRange() const { return 10.f; }
-    virtual float getAttackTime() const { return 1.4f; }
+    virtual int getDamage() const { return 90; }
+    virtual float getAttackRange() const { return 7.f; }
+    virtual float getAttackTime() const { return 1.f; }
     const char* getDisplayLetter() const { return "K"; }
 };
