@@ -30,7 +30,7 @@
 
 int Mob::s_PreviousUID = 0;
 
-Mob::Mob(const iMobStats& stats, const Vec2& pos, bool isNorth)
+Mob::Mob(const iEntityStats& stats, const Vec2& pos, bool isNorth)
     : m_Uid(++s_PreviousUID)
     , m_bIsNorth(isNorth)
     , m_Stats(stats)

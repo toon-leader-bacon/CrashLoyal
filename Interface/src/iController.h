@@ -29,6 +29,7 @@
 #pragma once
 
 #include <assert.h>
+#include "SDL.h"
 
 class iPlayer;
 

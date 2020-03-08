@@ -23,7 +23,7 @@
 #include "Controller_UI.h"
 
 #include "Constants.h"
-#include "MobStats.h"
+#include "EntityStats.h"
 #include "iPlayer.h"
 #include "Vec2.h"
 
@@ -33,21 +33,24 @@ Controller_UI* Singleton<Controller_UI>::s_Obj = NULL;
 
 Controller_UI::~Controller_UI()
 {
-    std::cout << "Controller_UI is being deleted... this probably means that "
-        << "you made more than one..." << std::endl;
+    std::cout << "Controller_UI is being deleted. This probably means that "
+        << "you made more than one." << std::endl;
 }
 
-void Controller_UI::tick(float deltaTSec)
-{
-    SDL_Event e;
-    while (SDL_PollEvent(&e) != 0) {
+void Controller_UI::tick(float deltaTSec) {
+    while(!events.empty()) {
+        SDL_Event e = events.front();
+        events.pop();
+
         if ((e.type == SDL_MOUSEBUTTONUP) && (e.button.button == SDL_BUTTON_LEFT)) {
             int pixelX = -1;
             int pixelY = -1;
             SDL_GetMouseState(&pixelX, &pixelY);
             const Vec2 mousePos((float)(pixelX / PIXELS_PER_METER), (float)(pixelY / PIXELS_PER_METER));
 
-            MobType mobType = SDL_GetKeyboardState(NULL)[SDL_SCANCODE_LSHIFT] ? Archer : Swordsman;
+            iEntityStats::MobType mobType = SDL_GetKeyboardState(NULL)[SDL_SCANCODE_LSHIFT] 
+                ? iEntityStats::Archer 
+                : iEntityStats::Swordsman;
 
             assert(m_pPlayer);
             m_pPlayer->placeMob(mobType, mousePos);
@@ -55,18 +58,6 @@ void Controller_UI::tick(float deltaTSec)
     }
 }
 
-
-//void drawUI() {
-//    // Draws the rectangle to the right of the play area that contains the UI
-//
-//    SDL_Rect uiRect = {
-//        (int)(GAME_GRID_WIDTH * PIXELS_PER_METER),
-//        (int)0,
-//        (int)(UI_WIDTH * PIXELS_PER_METER),
-//        (int)(UI_HEIGHT * PIXELS_PER_METER),
-//    };
-//    SDL_SetRenderDrawColor(gRenderer, 0x50, 0x50, 0x50, 100);
-//    SDL_SDL_RenderFillRect(gRenderer, &uiRect);
-//
-//
-//}
+void Controller_UI::loadEvent(SDL_Event e) {
+    events.push(e);
+}
