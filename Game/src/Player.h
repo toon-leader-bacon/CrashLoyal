@@ -37,6 +37,7 @@ public:
     virtual ~Player();
 
     virtual float getElixir() const { return (float)m_Elixir; }
+    virtual const std::vector<iEntityStats::MobType>& GetAvailableMobTypes() const { return m_AvailableMobs; }
     virtual PlacementResult placeMob(iEntityStats::MobType type, const Vec2& pos);
 
     void tick(float deltaTSec);
@@ -48,4 +49,5 @@ private:
     iController* m_pControl;    // owned, may be NULL
     bool m_bNorth;
     float m_Elixir;
+    std::vector<iEntityStats::MobType> m_AvailableMobs;
 };

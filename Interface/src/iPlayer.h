@@ -30,6 +30,8 @@
 #include "EntityStats.h"
 #include "Vec2.h"
 
+#include <vector>
+
 enum MobType;
 
 class iPlayer {
@@ -42,12 +44,18 @@ public:
     // maximum is and how fast it accumulates.
     virtual float getElixir() const = 0;
 
+    // Final Project: This vector tells you what types of mobs are currently 
+    // available to be placed.
+    // TODO: Implement this feature - right now it's all of them!
+    virtual const std::vector<iEntityStats::MobType>& GetAvailableMobTypes() const = 0;
+
     enum PlacementResult
     {
         Success = 0,
         InsufficientElixir,
         InvalidX,
         InvalidY,
+        MobTypeUnavailable,
     };
 
     // Final Project: Your AI will call this function to place its mobs.  The
