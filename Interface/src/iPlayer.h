@@ -23,18 +23,19 @@
 #pragma once
 
 // Final Project:  A player is one of the two players in the game - either the 
-// north or the south player.  We have two APIs - iPlayer, which is what you'll
-// be able to access for your own player, and iOpposingPlayer which is what 
-// you'll be able to access for the opposing player.
+// north or the south player.  This interface provides the functions you use to 
+// query into the state of your player and the opposing player, and to control 
+// your player.
 
 #include "EntityStats.h"
 #include "Vec2.h"
-
 #include <vector>
 
-enum MobType;
+class iEntity;
+class iOpposingEntity;
 
-class iPlayer {
+class iPlayer 
+{
 public:
     iPlayer() {}
     virtual ~iPlayer() {}
@@ -54,6 +55,8 @@ public:
     // TODO: Implement this feature - right now it's all of them!
     virtual const std::vector<iEntityStats::MobType>& GetAvailableMobTypes() const = 0;
 
+    // Final Project: Your AI will call this function to place its mobs.  The
+    // return value will tell you whether it succeeded and why it failed.
     enum PlacementResult
     {
         Success = 0,
@@ -62,10 +65,32 @@ public:
         InvalidY,
         MobTypeUnavailable,
     };
-
-    // Final Project: Your AI will call this function to place its mobs.  The
-    // return value will tell you whether it succeeded and why it failed.
     virtual PlacementResult placeMob(iEntityStats::MobType type, const Vec2& pos) = 0;
+
+    // Final Project: Use these interfaces to get data about your own entities and/or
+    // the opposing player's entities.
+    // NOTE: When getting buildings or mobs, you are responsible for ensuring you pass
+    // in a valid index, but if you don't I'll create an invalid one for you.
+    struct EntityData
+    {
+        const iEntityStats& m_Stats;
+        const int& m_Health;
+        const Vec2& m_Position;
+
+        EntityData();
+        EntityData(const iEntityStats& stats, const int& health, const Vec2& pos);
+        EntityData(const EntityData& rhs);
+    };
+
+    virtual unsigned int getNumBuildings() const = 0;
+    virtual EntityData getBuilding(unsigned int i) const = 0;
+    virtual unsigned int getNumMobs() const = 0;
+    virtual EntityData getMob(unsigned int i) const = 0;
+
+    virtual unsigned int getNumOpponentBuildings() const = 0;
+    virtual EntityData getOpponentBuilding(unsigned int i) const = 0;
+    virtual unsigned int getNumOpponentMobs() const = 0;
+    virtual EntityData getOpponentMob(unsigned int i) const = 0;
 
 private:
     // DELIBERATELY UNDEFINED
@@ -74,4 +99,6 @@ private:
     bool operator==(const iPlayer& rhs) const;
     bool operator<(const iPlayer& rhs) const;
 };
+
+
 

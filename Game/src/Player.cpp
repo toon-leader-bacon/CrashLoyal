@@ -22,16 +22,19 @@
 
 #include "Player.h"
 
+#include "Building.h"
 #include "Constants.h"
 #include "iController.h"
 #include "Game.h"
 #include "Mob.h"
 
-Player::Player(iController* pControl, bool bNorth) 
+Player::Player(iController* pControl, bool bNorth)
     : m_pControl(pControl)
     , m_bNorth(bNorth)
     , m_Elixir(capElixir(STARTING_ELIXIR))
 {
+    buildBuildings();
+
     // for now, all mob types are available.
     for (size_t i = 0; i < iEntityStats::numMobTypes; ++i)
     {
@@ -45,6 +48,9 @@ Player::Player(iController* pControl, bool bNorth)
 Player::~Player()
 {
     delete m_pControl;      // it's safe to delete NULL
+    for (Entity* pBuilding : m_Buildings) delete pBuilding;
+    for (Entity* pMob : m_Mobs) delete pMob;
+    for (Entity* pMob : m_DeadMobs) delete pMob;
 }
 
 iPlayer::PlacementResult Player::placeMob(iEntityStats::MobType type, const Vec2& pos)
@@ -80,7 +86,7 @@ iPlayer::PlacementResult Player::placeMob(iEntityStats::MobType type, const Vec2
     {
         if (tilePos.y <= RIVER_BOT_Y)
         {
-            std::cout << "Invalid Location (Y): (" << tilePos.x << ", " << 
+            std::cout << "Invalid Location (Y): (" << tilePos.x << ", " <<
                 tilePos.y << ")\n";
 
             return InvalidY;
@@ -92,7 +98,7 @@ iPlayer::PlacementResult Player::placeMob(iEntityStats::MobType type, const Vec2
     const float cost = stats.getElixirCost();
     if (cost > m_Elixir)
     {
-        std::cout << "Insufficient Elixir: " << cost << " > " << m_Elixir << 
+        std::cout << "Insufficient Elixir: " << cost << " > " << m_Elixir <<
             std::endl;
 
         return InsufficientElixir;
@@ -109,7 +115,7 @@ iPlayer::PlacementResult Player::placeMob(iEntityStats::MobType type, const Vec2
     // Checks are done - make the mob.
     m_Elixir -= cost;
     Mob* pMob = new Mob(stats, tilePos, m_bNorth);
-    Game::get().addMob(pMob);
+    m_Mobs.push_back(pMob);
 
     return Success;
 }
@@ -118,6 +124,106 @@ void Player::tick(float deltaTSec)
 {
     m_Elixir += deltaTSec * ELIXIR_PER_SECOND;
 
-    if (m_pControl) 
+    if (m_pControl)
         m_pControl->tick(deltaTSec);
+
+    for (Entity* pBuilding : m_Buildings) {
+        if (!pBuilding->isDead()) {
+            pBuilding->tick(deltaTSec);
+        }
+    }
+
+    for (Entity* m : m_Mobs) {
+        if (!m->isDead()) {
+            m->tick(deltaTSec);
+        }
+    }
+
+    // Move any mobs that died this tick into m_DeadMobs
+    size_t newIndex = 0;
+    for (size_t oldIndex = 0; oldIndex < m_Mobs.size(); ++oldIndex)
+    {
+        Entity* pMob = m_Mobs[oldIndex];
+        if (!pMob->isDead())
+        {
+            Entity* pTemp = m_Mobs[newIndex];
+            m_Mobs[newIndex] = m_Mobs[oldIndex];
+            m_Mobs[oldIndex] = pTemp;
+            ++newIndex;
+        }
+        else
+        {
+            m_DeadMobs.push_back(m_Mobs[oldIndex]);
+        }
+    }
+
+    assert(newIndex <= m_Mobs.size());
+    m_Mobs.resize(newIndex);
 }
+
+iPlayer::EntityData Player::getBuilding(unsigned int i) const
+{
+    if (i < m_Buildings.size())
+    {
+        return m_Buildings[i]->getData();
+    }
+
+    return EntityData();
+}
+
+iPlayer::EntityData Player::getMob(unsigned int i) const
+{
+    if (i < m_Mobs.size())
+    {
+        return m_Mobs[i]->getData();
+    }
+
+    return EntityData();
+}
+
+iPlayer::EntityData Player::getOpponentBuilding(unsigned int i) const
+{
+    if (i < GetOpponent().getBuildings().size())
+    {
+        return GetOpponent().getBuildings()[i]->getData();
+    }
+
+    return EntityData();
+}
+
+iPlayer::EntityData Player::getOpponentMob(unsigned int i) const
+{
+    if (i < GetOpponent().getMobs().size())
+    {
+        return GetOpponent().getMobs()[i]->getData();
+    }
+
+    return EntityData();
+}
+
+void Player::buildBuildings()
+{
+    const iEntityStats& kingStats = iEntityStats::getBuildingStats(iEntityStats::King);
+    const iEntityStats& princessStats = iEntityStats::getBuildingStats(iEntityStats::Princess);
+
+    if (m_bNorth)
+    {
+        m_Buildings.push_back(new Building(kingStats, Vec2(KingX, NorthKingY), true));
+        m_Buildings.push_back(new Building(princessStats, Vec2(PrincessLeftX, NorthPrincessY), true));
+        m_Buildings.push_back(new Building(princessStats, Vec2(PrincessRightX, NorthPrincessY), true));
+    }
+    else
+    {
+        m_Buildings.push_back(new Building(kingStats, Vec2(KingX, SouthKingY), false));
+        m_Buildings.push_back(new Building(princessStats, Vec2(PrincessLeftX, SouthPrincessY), false));
+        m_Buildings.push_back(new Building(princessStats, Vec2(PrincessRightX, SouthPrincessY), false));
+    }
+}
+
+const Player& Player::GetOpponent() const
+{
+    const Player& opPlayer = Game::get().getPlayer(!m_bNorth);
+    assert(&opPlayer != this);
+    return opPlayer;
+}
+

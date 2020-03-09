@@ -42,14 +42,10 @@ Game::Game()
     buildPlayers(NULL, new Controller_UI);
 
     buildWaypoints();
-    buildBuildings();
 }
 
 Game::~Game()
 {
-    for (Building* pBuilding : m_Buildings) delete pBuilding;
-    for (Mob* pMob : m_Mobs) delete pMob;
-    for (Mob* pMob : m_DeadMobs) delete pMob;
     delete m_pNorthPlayer;
     delete m_pSouthPlayer;
 }
@@ -58,55 +54,24 @@ void Game::tick(float deltaTSec)
 {
     m_pNorthPlayer->tick(deltaTSec);
     m_pSouthPlayer->tick(deltaTSec);
-
-    for (Building* pBuilding : m_Buildings) {
-        if (!pBuilding->isDead()) {
-            pBuilding->tick(deltaTSec);
-        }
-    }
-
-    for (Mob* m : m_Mobs) {
-        if (!m->isDead()) {
-            m->tick(deltaTSec);
-        }
-    }
-
-    // Clean up the last tick's dead mobs
-    for (Mob* pDeadMob : m_DeadMobs)
-    {
-        delete pDeadMob;
-    }
-    m_DeadMobs.resize(0);
-
-    // Move any mobs that died this tick into m_DeadMobs
-    size_t newIndex = 0;
-    for (size_t oldIndex = 0; oldIndex < m_Mobs.size(); ++oldIndex)
-    {
-        Mob* pMob = m_Mobs[oldIndex];
-        if (!pMob->isDead())
-        {
-            Mob* pTemp = m_Mobs[newIndex];
-            m_Mobs[newIndex] = m_Mobs[oldIndex];
-            m_Mobs[oldIndex] = pTemp;
-            ++newIndex;
-        }
-        else
-        {
-            m_DeadMobs.push_back(m_Mobs[oldIndex]);
-        }
-    }
-
-    assert(newIndex <= m_Mobs.size());
-    m_Mobs.resize(newIndex);
 }
 
 int Game::checkGameOver() {
     if (gameOverState == 0) {
+        // The king towers should always have index 0.
+        iPlayer::EntityData northKingData = m_pNorthPlayer->getBuilding(0);
+        assert(northKingData.m_Stats.getBuildingType() == iEntityStats::King);
 
-        for (Building* pBuilding : Game::get().getBuildings()) {
-            if ((pBuilding->getStats().getBuildingType() == iEntityStats::King) && pBuilding->isDead()) {
-                gameOverState = pBuilding->isNorth() ? -1 : 1;
-            }
+        iPlayer::EntityData southKingData = m_pSouthPlayer->getBuilding(0);
+        assert(southKingData.m_Stats.getBuildingType() == iEntityStats::King);
+
+        if (northKingData.m_Health <= 0)
+        {
+            gameOverState = -1;
+        }
+        if (southKingData.m_Health <= 0)
+        {
+            gameOverState = 1;
         }
     }
 
@@ -141,18 +106,4 @@ void Game::addFourWaypoints(Vec2 pt)
     m_Waypoints.push_back(Vec2(rightX, pt.y));
     m_Waypoints.push_back(Vec2(pt.x, bottomY));
     m_Waypoints.push_back(Vec2(rightX, bottomY));
-}
-
-void Game::buildBuildings()
-{
-    const iEntityStats& kingStats = iEntityStats::getBuildingStats(iEntityStats::King);
-    const iEntityStats& princessStats = iEntityStats::getBuildingStats(iEntityStats::Princess);
-
-    m_Buildings.push_back(new Building(kingStats, Vec2(KingX, NorthKingY), true));
-    m_Buildings.push_back(new Building(princessStats, Vec2(PrincessLeftX, NorthPrincessY), true));
-    m_Buildings.push_back(new Building(princessStats, Vec2(PrincessRightX, NorthPrincessY), true));
-
-    m_Buildings.push_back(new Building(kingStats, Vec2(KingX, SouthKingY), false));
-    m_Buildings.push_back(new Building(princessStats, Vec2(PrincessLeftX, SouthPrincessY), false));
-    m_Buildings.push_back(new Building(princessStats, Vec2(PrincessRightX, SouthPrincessY), false));
 }
