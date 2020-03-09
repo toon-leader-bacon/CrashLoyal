@@ -128,8 +128,8 @@ const Vec2* Mob::pickWaypoint()
         // Filter out any waypoints that are behind (or barely in front of) us.
         // NOTE: (0, 0) is the top left corner of the screen
         float yOffset = pt.y - m_Pos.y;
-        if ((m_bIsNorth && (yOffset < 1.f)) ||
-            (!m_bIsNorth && (yOffset > -1.f)))
+        if ((m_bNorth && (yOffset < 1.f)) ||
+            (!m_bNorth && (yOffset > -1.f)))
         {
             continue;
         }
@@ -149,15 +149,15 @@ const Vec2* Mob::pickWaypoint()
 //  2) handle collision with towers & river 
 Mob* Mob::checkCollision() 
 {
-    for (const Mob* pOtherMob : Game::get().getMobs())
-    {
-        if (this == pOtherMob) 
-        {
-            continue;
-        }
+    //for (const Mob* pOtherMob : Game::get().getMobs())
+    //{
+    //    if (this == pOtherMob) 
+    //    {
+    //        continue;
+    //    }
 
-        // PROJECT 3: YOUR CODE CHECKING FOR A COLLISION GOES HERE
-    }
+    //    // PROJECT 3: YOUR CODE CHECKING FOR A COLLISION GOES HERE
+    //}
     return NULL;
 }
 

@@ -53,7 +53,7 @@ void Graphics::resetFrame() {
     drawUI();
 }
 
-void Graphics::drawMob(Mob* m) {
+void Graphics::drawMob(Entity* m) {
 	int alpha = healthToAlpha(m);
 
 	if (m->isNorth())
@@ -96,7 +96,7 @@ int Graphics::healthToAlpha(const Entity* e)
     return (int)(((health / maxHealth) * 200.f) + 55.f);
 }
 
-void Graphics::drawBuilding(Building* b) {
+void Graphics::drawBuilding(Entity* b) {
     int alpha = healthToAlpha(b);
 
     if (b->isDead())

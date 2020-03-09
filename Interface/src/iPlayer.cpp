@@ -20,22 +20,31 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 
-#pragma once
+#include "iPlayer.h"
 
-#include "iController.h"
-#include <Singleton.h>
+const Vec2 ksInvalidPos;
 
-struct SDL_MouseButtonEvent;
 
-class Controller_KevinDill : public iController, 
+iPlayer::EntityData::EntityData()
+    : m_Stats(iEntityStats::getStats(iEntityStats::InvalidMobType))
+    , m_Health(INT_MIN)
+    , m_Position(ksInvalidPos)
 {
-public:
-    Controller_KevinDill() {}
-    virtual ~Controller_KevinDill();
+}
 
-    // For now, the UI doesn't do it's work in tick().  Instead, it does it
-    // when the mouse event is handled.
-    // TODO: move all the UI event handling out of the main function, and in 
-    // to here.
-    virtual void tick(float) {}
-};
+iPlayer::EntityData::EntityData(const iEntityStats& stats, const int& health, const Vec2& pos)
+
+    : m_Stats(stats)
+    , m_Health(health)
+    , m_Position(pos)
+{
+}
+
+iPlayer::EntityData::EntityData(const EntityData& rhs)
+    : m_Stats(rhs.m_Stats)
+    , m_Health(rhs.m_Health)
+    , m_Position(rhs.m_Position)
+{
+}
+
+

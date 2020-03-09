@@ -42,20 +42,12 @@ public:
     Player& getPlayer(bool bNorth) { return bNorth ? *m_pNorthPlayer : *m_pSouthPlayer; }
 
     const std::vector<Vec2>& getWaypoints() const { return m_Waypoints; }
-    const std::vector<Building*>& getBuildings() { return m_Buildings; }
-
-    // NOTE: IT IS NOT SAFE to hang onto pointers in this array for more than 1 tick
-    //  after they die, because they'll be deleted.
-    // TODO: Is there a better way to handle entity life cycles?
-    const std::vector<Mob*>& getMobs() const { return m_Mobs; }
-
-    void addMob(Mob* mob) { m_Mobs.push_back(mob); }    // takes ownership
 
     int checkGameOver();
 
 private:
     void buildPlayers(iController* pNorthControl, iController* pSouthControl);
-    void buildBuildings();
+
     void buildWaypoints();
     void addFourWaypoints(Vec2 pt);
 
@@ -64,13 +56,6 @@ private:
     Player* m_pSouthPlayer;
 
     std::vector<Vec2> m_Waypoints;
-
-    std::vector<Building*> m_Buildings;         // owned
-    std::vector<Mob*> m_Mobs;                   // owned
-
-    // When mobs die, we move them to this vector.  For now we just hang on to 
-    // them forever - we never delete them - so as to avoid memory issues.
-    std::vector<Mob*> m_DeadMobs;               // owned
 
     // Negative => South won, Positive => North won, 0 => no winner yet
     int gameOverState; 

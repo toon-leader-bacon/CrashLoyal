@@ -22,45 +22,15 @@
 
 #pragma once
 
-#include "EntityStats.h"
-#include "iPlayer.h"
-#include "Vec2.h"
+#include "iController.h"
 
-class Entity 
+
+
+class Controller_AI_KevinDill : public iController
 {
-
 public:
-    Entity(const iEntityStats& stats, const Vec2& pos, bool isNorth);
-    virtual ~Entity() {}
+    Controller_AI_KevinDill() {}
+    virtual ~Controller_AI_KevinDill() {}
 
-    virtual const iEntityStats& getStats() const { return m_Stats; }
-
-    virtual void tick(float deltaTSec);
-
-    virtual bool isNorth() const { return m_bNorth; }
-
-    virtual bool isDead() const { return m_Health <= 0; }
-    virtual int getHealth() const { return m_Health; }
-    void takeDamage(int dmg) { m_Health -= dmg; }
-
-    virtual const Vec2& getPosition() const { return m_Pos; }
-
-    iPlayer::EntityData getData() const { return iPlayer::EntityData(m_Stats, m_Health, m_Pos); }
-
-protected:
-    void pickTarget();
-    bool targetInRange();
-
-protected:
-    const iEntityStats& m_Stats;
-    bool m_bNorth;
-    int m_Health;
-    Vec2 m_Pos;
-
-    // Our target will be the closest target (may change every tick) until
-    //  we attack it.  Once we attack a target, we stay locked on it until
-    //  it dies
-    Entity* m_pTarget;
-    bool m_bTargetLock;
-    float m_TimeSinceAttack;
+    void tick(float deltaTSec);
 };

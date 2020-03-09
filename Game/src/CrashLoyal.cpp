@@ -25,13 +25,11 @@
 #include "Controller_UI.h"
 #include "Game.h"
 #include "Graphics.h"
+#include "Player.h"
 
 #include <chrono>
 
 bool init() {
-    // create the Graphics singleton.  It will take ownership of itself.
-    new Graphics;   
-
     return true;
 }
 
@@ -92,12 +90,24 @@ int main(int argc, char* args[]) {
             game.tick((float)deltaTSec);
 
             // RENDER
+            Player& northPlayer = game.getPlayer(true);
+            Player& southPlayer = game.getPlayer(false);
 
-            for (Building* pBuilding : Game::get().getBuildings()) {
+            for (Entity* pBuilding : northPlayer.getBuildings()) {
                 graphics.drawBuilding(pBuilding);
             }
 
-            for (Mob* m : game.getMobs()) {
+            for (Entity* pBuilding : southPlayer.getBuildings()) {
+                graphics.drawBuilding(pBuilding);
+            }
+
+            for (Entity* m : northPlayer.getMobs()) {
+                if (!m->isDead()) {
+                    graphics.drawMob(m);
+                }
+            }
+
+            for (Entity* m : southPlayer.getMobs()) {
                 if (!m->isDead()) {
                     graphics.drawMob(m);
                 }

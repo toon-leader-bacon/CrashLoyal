@@ -71,7 +71,7 @@ public:
     virtual float getSize() const { return 0.9f; }
     virtual float getMass() const { return 8.f; }
     virtual TargetType getTargetType() const { return Building; }
-    virtual float getAttackRange() const { return 1.5f; }
+    virtual float getAttackRange() const { return .5f; }
     virtual DamageType getDamageType() const { return Melee; }
     virtual int getDamage() const { return 211; }
     virtual float getAttackTime() const { return 1.5f; }
@@ -107,6 +107,25 @@ public:
     virtual const char* getDisplayLetter() const { return "K"; }
 };
 
+class EntityStats_Invalid : public iEntityStats_Mob
+{
+public:
+    virtual MobType getMobType() const { return InvalidMobType; }
+    virtual BuildingType getBuildingType() const { return InvalidBuildingType; }
+    virtual float getElixirCost() const { return FLT_MAX; }
+    virtual int getMaxHealth() const { return INT_MAX; }
+    virtual float getSpeed() const { return FLT_MAX; }
+    virtual float getSize() const { return FLT_MAX; }
+    virtual float getMass() const { return FLT_MAX; }
+    virtual TargetType getTargetType() const { return Any; }
+    virtual float getAttackRange() const { return FLT_MAX; }
+    virtual DamageType getDamageType() const { return Melee; }
+    virtual int getDamage() const { return INT_MAX; }
+    virtual float getAttackTime() const { return FLT_MAX; }
+    virtual const char* getName() const { return "Invalid"; }
+    virtual const char* getDisplayLetter() const { return ""; }
+};
+
 const iEntityStats& iEntityStats::getStats(MobType t)
 {
     // NOTE: This vector must be in synch with the MobType enum (in the .h)
@@ -122,7 +141,13 @@ const iEntityStats& iEntityStats::getStats(MobType t)
     assert(!!sStats[t]);
     assert(sStats[t]->getMobType() == t);
 
-    return *sStats[t];
+    if ((size_t)t < sStats.size())
+    {
+        return *sStats[t];
+    }
+
+    static const EntityStats_Invalid ksInvalidStats;
+    return ksInvalidStats;
 }
 
 
@@ -140,6 +165,12 @@ const iEntityStats& iEntityStats::getBuildingStats(BuildingType t)
     assert(!!sStats[t]);
     assert(sStats[t]->getBuildingType() == t);
 
-    return *sStats[t];
+    if ((size_t)t < sStats.size())
+    {
+        return *sStats[t];
+    }
+
+    static const EntityStats_Invalid ksInvalidStats;
+    return ksInvalidStats;
 }
 

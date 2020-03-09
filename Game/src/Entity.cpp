@@ -25,10 +25,11 @@
 #include "Building.h"
 #include "Game.h"
 #include "Mob.h"
+#include "Player.h"
 
 Entity::Entity(const iEntityStats& stats, const Vec2& pos, bool isNorth)
     : m_Stats(stats)
-    , m_bIsNorth(isNorth)
+    , m_bNorth(isNorth)
     , m_Health(stats.getMaxHealth())
     , m_Pos(pos)
     , m_pTarget(NULL)
@@ -45,7 +46,7 @@ void Entity::tick(float deltaTSec)
     {
         char buff[200];
         snprintf(buff, 200, "%s %s attacks %s %s for %d damage.\n",
-                 m_bIsNorth ? "North" : "South",
+                 m_bNorth ? "North" : "South",
                  m_Stats.getName(),
                  m_pTarget->isNorth() ? "North" : "South",
                  m_pTarget->getStats().getName(),
@@ -73,30 +74,34 @@ void Entity::pickTarget()
 
     float closestDistSq = FLT_MAX;
 
-    for (Building* pBuilding : Game::get().getBuildings()) 
+    Player& opposingPlayer = Game::get().getPlayer(!m_bNorth);
+
+    for (Entity* pEntity : opposingPlayer.getBuildings())
     {
-        if ((pBuilding->isNorth() != isNorth()) && !pBuilding->isDead())
+        assert(pEntity->isNorth() != isNorth());
+        if (!pEntity->isDead())
         {
-            float distSq = m_Pos.distSqr(pBuilding->getPosition());
+            float distSq = m_Pos.distSqr(pEntity->getPosition());
             if (distSq < closestDistSq)
             {
                 closestDistSq = distSq;
-                m_pTarget = pBuilding;
+                m_pTarget = pEntity;
             }
         }
     }
 
     if (m_Stats.getTargetType() != iEntityStats::Building)
     {
-        for (Mob* pOtherMob : Game::get().getMobs()) 
+        for (Entity* pEntity : opposingPlayer.getMobs())
         {
-            if ((pOtherMob->isNorth() != isNorth()) && !pOtherMob->isDead())
+            assert(pEntity->isNorth() != isNorth());
+            if (!pEntity->isDead())
             {
-                float distSq = m_Pos.distSqr(pOtherMob->getPosition());
+                float distSq = m_Pos.distSqr(pEntity->getPosition());
                 if (distSq < closestDistSq)
                 {
                     closestDistSq = distSq;
-                    m_pTarget = pOtherMob;
+                    m_pTarget = pEntity;
                 }
             }
         }
