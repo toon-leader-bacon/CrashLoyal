@@ -19,10 +19,10 @@
     </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="src\Controller_KevinDill.h" />
+    <ClInclude Include="src\Controller_AI_KevinDill.h" />
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="src\Controller_KevinDill.cpp" />
+    <ClCompile Include="src\Controller_AI_KevinDill.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Interface\Interface.vcxproj">
@@ -31,7 +31,7 @@
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <VCProjectVersion>16.0</VCProjectVersion>
-    <ProjectGuid>{C490EFFC-F057-433F-A29D-0EC935E1FCED}</ProjectGuid>
+    <ProjectGuid>{AD6764CD-C862-4814-9412-9028F0BB6A10}</ProjectGuid>
     <Keyword>Win32Proj</Keyword>
     <RootNamespace>ControllerUI</RootNamespace>
     <WindowsTargetPlatformVersion>10.0</WindowsTargetPlatformVersion>
@@ -103,6 +103,7 @@
       <PrecompiledHeaderFile>
       </PrecompiledHeaderFile>
       <AdditionalIncludeDirectories>../Interface/src;../external/SDL2/include</AdditionalIncludeDirectories>
+      <DisableSpecificWarnings>26812</DisableSpecificWarnings>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>

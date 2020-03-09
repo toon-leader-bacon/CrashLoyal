@@ -21,6 +21,7 @@
 // SOFTWARE.
 
 #include "Vec2.h"
+#include "Constants.h"
 
 float Vec2::normalize() 
 {
@@ -33,4 +34,14 @@ float Vec2::normalize()
 
     *this /= mag;
     return mag;
+}
+
+Vec2 Vec2::Player2Game(bool bPlayerIsNorth) const
+{ 
+    if (!bPlayerIsNorth) 
+    {
+        return Vec2(x, GAME_GRID_HEIGHT - y);
+    }
+
+    return *this;
 }

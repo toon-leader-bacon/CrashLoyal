@@ -63,6 +63,11 @@ public:
     //  sets the vector to (0,0) and returns 0.
     float normalize();
 
+    // Final Project: These helper functions can convert between Player coordinates
+    // (which have the player's towers at the y=0 end of the field) and Game 
+    // coordinates (with the north player on the y = 0 side of the field) 
+    Vec2 Player2Game(bool bPlayerIsNorth) const;
+
 private:
     // DELIBERATELY UNDEFINED
     bool operator<(const Vec2& rhs) const;

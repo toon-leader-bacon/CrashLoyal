@@ -71,7 +71,7 @@ public:
     virtual float getSize() const { return 0.9f; }
     virtual float getMass() const { return 8.f; }
     virtual TargetType getTargetType() const { return Building; }
-    virtual float getAttackRange() const { return 1.5f; }
+    virtual float getAttackRange() const { return .5f; }
     virtual DamageType getDamageType() const { return Melee; }
     virtual int getDamage() const { return 211; }
     virtual float getAttackTime() const { return 1.5f; }

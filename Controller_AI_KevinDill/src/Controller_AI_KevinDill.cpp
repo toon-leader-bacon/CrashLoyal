@@ -20,36 +20,32 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 
-#include "Controller_UI.h"
+#include "Controller_AI_KevinDill.h"
 
 #include "Constants.h"
+#include "EntityStats.h"
 #include "iPlayer.h"
-#include "iMobManager.h"
 #include "Vec2.h"
 
-#include "SDL.h"
+static const Vec2 ksGiantPos(LEFT_BRIDGE_CENTER_X, RIVER_TOP_Y - 0.5f);
+static const Vec2 ksArcherPos(LEFT_BRIDGE_CENTER_X, 0.f);
 
-Controller_UI* Singleton<Controller_UI>::s_Obj = NULL;
-
-Controller_UI::~Controller_UI()
+void Controller_AI_KevinDill::tick(float deltaTSec)
 {
-    std::cout << "Controller_UI is being deleted... this probably means that "
-        << "you made more than one..." << std::endl;
-}
+    assert(m_pPlayer);
 
-void Controller_UI::onClick(const SDL_MouseButtonEvent& mouseEvent)
-{
-    if (mouseEvent.button == SDL_BUTTON_LEFT)
+    // wait for elixir
+    if (m_pPlayer->getElixir() >= 9)
     {
-        int pixelX = -1;
-        int pixelY = -1;
-        SDL_GetMouseState(&pixelX, &pixelY);
-        const Vec2 mousePos((float)(pixelX / PIXELS_PER_METER), (float)(pixelY / PIXELS_PER_METER));
+        // convert the positions from player space to game space
+        bool isNorth = m_pPlayer->isNorth();
+        Vec2 giantPos_Game = ksGiantPos.Player2Game(isNorth);
+        Vec2 archerPos_Game = ksArcherPos.Player2Game(isNorth);
 
-        MobType mobType = SDL_GetKeyboardState(NULL)[SDL_SCANCODE_LSHIFT] ? Archer : Swordsman;
-
-        assert(m_pPlayer);
-        m_pPlayer->placeMob(mobType, mousePos);
+        // Create two archers and a giant
+        m_pPlayer->placeMob(iEntityStats::Giant, giantPos_Game);
+        m_pPlayer->placeMob(iEntityStats::Archer, archerPos_Game);
+        m_pPlayer->placeMob(iEntityStats::Archer, archerPos_Game);
     }
 }
 

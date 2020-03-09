@@ -23,19 +23,14 @@
 #pragma once
 
 #include "iController.h"
-#include <Singleton.h>
 
-struct SDL_MouseButtonEvent;
 
-class Controller_KevinDill : public iController, 
+
+class Controller_AI_KevinDill : public iController
 {
 public:
-    Controller_KevinDill() {}
-    virtual ~Controller_KevinDill();
+    Controller_AI_KevinDill() {}
+    virtual ~Controller_AI_KevinDill() {}
 
-    // For now, the UI doesn't do it's work in tick().  Instead, it does it
-    // when the mouse event is handled.
-    // TODO: move all the UI event handling out of the main function, and in 
-    // to here.
-    virtual void tick(float) {}
+    void tick(float deltaTSec);
 };
